@@ -30,7 +30,8 @@
     "expo:ios": "expo start --ios",
     "expo:web": "expo start --web",
     "expo:build:detox": "detox build -c ios.sim.expo",
-    "expo:test:detox": "./bin/downloadExpoApp.sh && detox test --configuration ios.sim.expo"
+    "expo:test:detox": "./bin/downloadExpoApp.sh && detox test --configuration ios.sim.expo",
+    "prepare": "husky install"
   },
   "overrides": {
     "react-error-overlay": "6.0.9"
@@ -102,10 +103,12 @@
     "expo-detox-hook": "1.0.10",
     "expo-modules-autolinking": "~1.0.0",
     "fbjs-scripts": "3.0.1",
+    "husky": "^8.0.3",
     "jest": "^26.6.3",
     "jest-circus": "26",
     "jest-environment-node": "26",
     "jest-expo": "^47.0.0",
+    "lint-staged": "^13.2.0",
     "metro-config": "0.71.1",
     "metro-react-native-babel-preset": "0.72.3",
     "metro-source-map": "0.71.1",
