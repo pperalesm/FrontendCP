@@ -22,7 +22,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated"
 import { Button, Card, EmptyState, Icon, Screen, Text, Toggle } from "../components"
-import { isRTL, translate } from "../i18n"
+import { translate } from "../i18n"
 import { useStores } from "../models"
 import { Episode } from "../models/Episode"
 import { DemoTabScreenProps } from "../navigators/DemoNavigator"
@@ -91,7 +91,6 @@ export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = 
                 }
                 button={episodeStore.favoritesOnly ? null : undefined}
                 buttonOnPress={manualRefresh}
-                imageStyle={$emptyStateImage}
                 ImageProps={{ resizeMode: "contain" }}
               />
             )
@@ -365,10 +364,6 @@ const $unFavoriteButton: ViewStyle = {
 
 const $emptyState: ViewStyle = {
   marginTop: spacing.huge,
-}
-
-const $emptyStateImage: ImageStyle = {
-  transform: [{ scaleX: isRTL ? -1 : 1 }],
 }
 // #endregion
 

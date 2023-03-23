@@ -5,7 +5,6 @@ import {
   Button, // @demo remove-current-line
   Text,
 } from "../components"
-import { isRTL } from "../i18n"
 import { useStores } from "../models" // @demo remove-current-line
 import { AppStackScreenProps } from "../navigators" // @demo remove-current-line
 import { colors, spacing } from "../theme"
@@ -102,7 +101,6 @@ const $welcomeFace: ImageStyle = {
   position: "absolute",
   bottom: -47,
   right: -80,
-  transform: [{ scaleX: isRTL ? -1 : 1 }],
 }
 
 const $welcomeHeading: TextStyle = {

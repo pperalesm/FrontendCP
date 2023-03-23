@@ -48,5 +48,3 @@ export const EpisodeStoreModel = types
 
 export interface EpisodeStore extends Instance<typeof EpisodeStoreModel> {}
 export interface EpisodeStoreSnapshot extends SnapshotOut<typeof EpisodeStoreModel> {}
-
-// @demo remove-file
