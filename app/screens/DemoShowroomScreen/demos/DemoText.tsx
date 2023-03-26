@@ -121,7 +121,7 @@ export const DemoText: Demo = {
           nostrud.
         </Text>
         {` `}
-        <Text style={{ color: colors.palette.neutral100, backgroundColor: colors.error }}>
+        <Text style={{ backgroundColor: colors.error }}>
           Eiusmod occaecat laboris eu ex veniam ipsum adipisicing consectetur. Magna ullamco
           adipisicing tempor adipisicing.
         </Text>

@@ -15,7 +15,7 @@ import { DrawerLayout, DrawerState } from "react-native-gesture-handler"
 import { useSharedValue, withTiming } from "react-native-reanimated"
 import { ListItem, Screen, Text } from "../../components"
 import { DemoTabParamList, DemoTabScreenProps } from "../../navigators/DemoNavigator"
-import { colors, spacing } from "../../theme"
+import { colors, spacing, timing } from "../../theme"
 import { useSafeAreaInsetsStyle } from "../../utils/useSafeAreaInsetsStyle"
 import * as Demos from "./demos"
 import { DrawerIconButton } from "./DrawerIconButton"
@@ -164,14 +164,15 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
         drawerWidth={Platform.select({ default: 326, web: Dimensions.get("window").width * 0.3 })}
         drawerType={"slide"}
         drawerPosition={"left"}
-        overlayColor={open ? colors.palette.overlay20 : "transparent"}
+        overlayColor={open ? colors.overlay : "transparent"}
+        drawerBackgroundColor={colors.primarySurface}
         onDrawerSlide={(drawerProgress) => {
           progress.value = open ? 1 - drawerProgress : drawerProgress
         }}
         onDrawerStateChanged={(newState: DrawerState, drawerWillShow: boolean) => {
           if (newState === "Settling") {
             progress.value = withTiming(drawerWillShow ? 1 : 0, {
-              duration: 250,
+              duration: timing.quick,
             })
             setOpen(drawerWillShow)
           }

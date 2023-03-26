@@ -51,7 +51,7 @@ const $divider: ViewStyle = {
 }
 
 const $line: ViewStyle = {
-  backgroundColor: colors.border,
+  backgroundColor: colors.divider,
   position: "absolute",
   left: "50%",
   top: "50%",

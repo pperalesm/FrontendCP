@@ -108,7 +108,7 @@ const $title: TextStyle = {
 }
 
 const $reportBugsLink: TextStyle = {
-  color: colors.tint,
+  color: colors.primary,
   marginBottom: spacing.large,
   alignSelf: "flex-end",
 }
@@ -130,7 +130,7 @@ const $buttonContainer: ViewStyle = {
 }
 
 const $hint: TextStyle = {
-  color: colors.palette.neutral600,
+  color: colors.secondaryText,
   fontSize: 12,
   lineHeight: 15,
   paddingBottom: spacing.large,

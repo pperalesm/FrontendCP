@@ -22,7 +22,7 @@ export const DemoCard: Demo = {
         heading="Reversed Preset"
         content="Reprehenderit occaecat proident amet id laboris."
         footer="Consectetur tempor ea non labore anim ."
-        preset="reversed"
+        preset="filled"
       />
     </DemoUseCase>,
 
@@ -40,7 +40,7 @@ export const DemoCard: Demo = {
       <Card
         heading="Center"
         verticalAlignment="center"
-        preset="reversed"
+        preset="filled"
         content="Content is centered relative to the card's height."
         footer="Me too!"
         style={{ minHeight: 160 }}
@@ -55,7 +55,7 @@ export const DemoCard: Demo = {
       />
       <DemoDivider />
       <Card
-        preset="reversed"
+        preset="filled"
         heading="Force Footer Bottom"
         verticalAlignment="force-footer-bottom"
         content="This pushes the footer where it belongs."
@@ -71,7 +71,7 @@ export const DemoCard: Demo = {
       <Card heading="Via `heading` Prop" content="Via `content` Prop" footer="Via `footer` Prop" />
       <DemoDivider />
       <Card
-        preset="reversed"
+        preset="filled"
         headingTx="demoShowroomScreen.demoViaSpecifiedTxProp"
         headingTxOptions={{ prop: "heading" }}
         contentTx="demoShowroomScreen.demoViaSpecifiedTxProp"
@@ -88,7 +88,7 @@ export const DemoCard: Demo = {
       <Card
         HeadingComponent={
           <Button
-            preset="reversed"
+            preset="filled"
             text="HeadingComponent"
             LeftAccessory={(props) => <Icon style={props.style} icon="ladybug" />}
           />
@@ -102,7 +102,7 @@ export const DemoCard: Demo = {
         }
         FooterComponent={
           <Button
-            preset="reversed"
+            preset="filled"
             text="FooterComponent"
             LeftAccessory={(props) => <Icon style={props.style} icon="ladybug" />}
           />
@@ -125,7 +125,7 @@ export const DemoCard: Demo = {
       />
       <DemoDivider />
       <Card
-        preset="reversed"
+        preset="filled"
         heading="LeftComponent"
         verticalAlignment="center"
         LeftComponent={
@@ -146,7 +146,7 @@ export const DemoCard: Demo = {
         heading="Style the Heading"
         headingStyle={{ color: colors.error }}
         content="Style the Content"
-        contentStyle={{ backgroundColor: colors.error, color: colors.palette.neutral100 }}
+        contentStyle={{ backgroundColor: colors.error }}
         footer="Style the Footer"
         footerStyle={{
           textDecorationLine: "underline line-through",

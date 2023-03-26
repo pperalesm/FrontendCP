@@ -188,12 +188,12 @@ function ListItemAction(props: ListItemActionProps) {
 
 const $separatorTop: ViewStyle = {
   borderTopWidth: 1,
-  borderTopColor: colors.separator,
+  borderTopColor: colors.divider,
 }
 
 const $separatorBottom: ViewStyle = {
   borderBottomWidth: 1,
-  borderBottomColor: colors.separator,
+  borderBottomColor: colors.divider,
 }
 
 const $textStyle: TextStyle = {

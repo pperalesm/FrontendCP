@@ -9,21 +9,17 @@ import { DemoUseCase } from "../DemoUseCase"
 
 const $customInputStyle: TextStyle = {
   backgroundColor: colors.error,
-  color: colors.palette.neutral100,
 }
 
 const $customInputWrapperStyle: ViewStyle = {
   backgroundColor: colors.error,
-  borderColor: colors.palette.neutral800,
 }
 
 const $customContainerStyle: ViewStyle = {
   backgroundColor: colors.error,
 }
 
-const $customLabelAndHelperStyle: TextStyle = {
-  color: colors.palette.neutral100,
-}
+const $customLabelAndHelperStyle: TextStyle = {}
 
 const $customInputWithAbsoluteAccessoriesStyle: ViewStyle = {
   marginHorizontal: spacing.huge,

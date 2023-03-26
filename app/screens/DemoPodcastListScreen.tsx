@@ -219,14 +219,14 @@ const EpisodeCard = observer(function EpisodeCard({
               <Icon
                 icon="heart"
                 size={ICON_SIZE}
-                color={colors.palette.neutral800} // dark grey
+                color={colors.primaryDark} // dark grey
               />
             </Animated.View>
             <Animated.View style={[$iconContainer, animatedUnlikeButtonStyles]}>
               <Icon
                 icon="heart"
                 size={ICON_SIZE}
-                color={colors.palette.primary400} // pink
+                color={colors.primary} // pink
               />
             </Animated.View>
           </View>
@@ -333,13 +333,13 @@ const $iconContainer: ViewStyle = {
 }
 
 const $metadata: TextStyle = {
-  color: colors.textDim,
+  color: colors.secondaryText,
   marginTop: spacing.extraSmall,
   flexDirection: "row",
 }
 
 const $metadataText: TextStyle = {
-  color: colors.textDim,
+  color: colors.secondaryText,
   marginEnd: spacing.medium,
   marginBottom: spacing.extraSmall,
 }
@@ -348,8 +348,8 @@ const $favoriteButton: ViewStyle = {
   borderRadius: 17,
   marginTop: spacing.medium,
   justifyContent: "flex-start",
-  backgroundColor: colors.palette.neutral300,
-  borderColor: colors.palette.neutral300,
+  backgroundColor: colors.secondarySurface,
+  borderColor: colors.divider,
   paddingHorizontal: spacing.medium,
   paddingTop: spacing.micro,
   paddingBottom: 0,
@@ -358,8 +358,8 @@ const $favoriteButton: ViewStyle = {
 }
 
 const $unFavoriteButton: ViewStyle = {
-  borderColor: colors.palette.primary100,
-  backgroundColor: colors.palette.primary100,
+  borderColor: colors.divider,
+  backgroundColor: colors.secondarySurface,
 }
 
 const $emptyState: ViewStyle = {

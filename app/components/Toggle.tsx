@@ -258,28 +258,28 @@ function Checkbox(props: ToggleInputProps) {
   } = props
 
   const offBackgroundColor = [
-    disabled && colors.palette.neutral400,
+    disabled && colors.secondarySurface,
     status === "error" && colors.errorBackground,
-    colors.palette.neutral200,
+    colors.secondarySurface,
   ].filter(Boolean)[0]
 
   const outerBorderColor = [
-    disabled && colors.palette.neutral400,
+    disabled && colors.disabled,
     status === "error" && colors.error,
-    !on && colors.palette.neutral800,
-    colors.palette.secondary500,
+    !on && colors.divider,
+    colors.divider,
   ].filter(Boolean)[0]
 
   const onBackgroundColor = [
-    disabled && colors.transparent,
+    disabled && colors.secondarySurface,
     status === "error" && colors.errorBackground,
-    colors.palette.secondary500,
+    colors.secondarySurface,
   ].filter(Boolean)[0]
 
   const iconTintColor = [
-    disabled && colors.palette.neutral600,
+    disabled && colors.disabled,
     status === "error" && colors.error,
-    colors.palette.accent100,
+    colors.primary,
   ].filter(Boolean)[0]
 
   return (
@@ -318,28 +318,28 @@ function Radio(props: ToggleInputProps) {
   } = props
 
   const offBackgroundColor = [
-    disabled && colors.palette.neutral400,
+    disabled && colors.secondarySurface,
     status === "error" && colors.errorBackground,
-    colors.palette.neutral200,
+    colors.secondarySurface,
   ].filter(Boolean)[0]
 
   const outerBorderColor = [
-    disabled && colors.palette.neutral400,
+    disabled && colors.disabled,
     status === "error" && colors.error,
-    !on && colors.palette.neutral800,
-    colors.palette.secondary500,
+    !on && colors.divider,
+    colors.divider,
   ].filter(Boolean)[0]
 
   const onBackgroundColor = [
-    disabled && colors.transparent,
+    disabled && colors.secondarySurface,
     status === "error" && colors.errorBackground,
-    colors.palette.neutral100,
+    colors.secondarySurface,
   ].filter(Boolean)[0]
 
   const dotBackgroundColor = [
-    disabled && colors.palette.neutral600,
+    disabled && colors.disabled,
     status === "error" && colors.error,
-    colors.palette.secondary500,
+    colors.primary,
   ].filter(Boolean)[0]
 
   return (
@@ -387,31 +387,36 @@ function Switch(props: ToggleInputProps) {
   )
 
   const offBackgroundColor = [
-    disabled && colors.palette.neutral400,
+    disabled && colors.secondarySurface,
     status === "error" && colors.errorBackground,
-    colors.palette.neutral300,
+    colors.secondarySurface,
   ].filter(Boolean)[0]
 
   const onBackgroundColor = [
-    disabled && colors.transparent,
+    disabled && colors.primaryLight,
     status === "error" && colors.errorBackground,
-    colors.palette.secondary500,
+    colors.primaryLight,
+  ].filter(Boolean)[0]
+
+  const outerBorderColor = [
+    disabled && colors.disabled,
+    status === "error" && colors.error,
+    !on && colors.divider,
+    colors.divider,
   ].filter(Boolean)[0]
 
   const knobBackgroundColor = (function () {
     if (on) {
       return [
-        $detailStyleOverride?.backgroundColor,
+        disabled && colors.disabled,
         status === "error" && colors.error,
-        disabled && colors.palette.neutral600,
-        colors.palette.neutral100,
+        colors.primary,
       ].filter(Boolean)[0]
     } else {
       return [
-        $innerStyleOverride?.backgroundColor,
-        disabled && colors.palette.neutral600,
+        disabled && colors.disabled,
         status === "error" && colors.error,
-        colors.palette.neutral200,
+        colors.primary,
       ].filter(Boolean)[0]
     }
   })()
@@ -439,7 +444,7 @@ function Switch(props: ToggleInputProps) {
     <View
       style={[
         $inputOuterVariants.switch,
-        { backgroundColor: offBackgroundColor },
+        { backgroundColor: offBackgroundColor, borderColor: outerBorderColor },
         $outerStyleOverride,
       ]}
     >
@@ -482,10 +487,10 @@ function SwitchAccessibilityLabel(props: ToggleInputProps & { role: "on" | "off"
   ]
 
   const color = (function () {
-    if (disabled) return colors.palette.neutral600
+    if (disabled) return colors.divider
     if (status === "error") return colors.error
-    if (!on) return innerStyle?.backgroundColor || colors.palette.secondary500
-    return detailStyle?.backgroundColor || colors.palette.neutral100
+    if (!on) return innerStyle?.backgroundColor || colors.primary
+    return detailStyle?.backgroundColor || colors.primarySurface
   })()
 
   return (
@@ -553,7 +558,7 @@ const $inputWrapper: ViewStyle = {
 const $inputOuterBase: ViewStyle = {
   height: 24,
   width: 24,
-  borderWidth: 2,
+  borderWidth: 1,
   alignItems: "center",
   overflow: "hidden",
   flexGrow: 0,
@@ -565,7 +570,7 @@ const $inputOuterBase: ViewStyle = {
 const $inputOuterVariants: Record<Variants, StyleProp<ViewStyle>> = {
   checkbox: [$inputOuterBase, { borderRadius: 4 }],
   radio: [$inputOuterBase, { borderRadius: 12 }],
-  switch: [$inputOuterBase, { height: 32, width: 56, borderRadius: 16, borderWidth: 0 }],
+  switch: [$inputOuterBase, { height: 32, width: 56, borderRadius: 16 }],
 }
 
 const $checkboxInner: ViewStyle = {

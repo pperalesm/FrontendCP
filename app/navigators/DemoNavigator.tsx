@@ -38,8 +38,8 @@ export function DemoNavigator() {
         headerShown: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: [$tabBar, { height: bottom + 70 }],
-        tabBarActiveTintColor: colors.text,
-        tabBarInactiveTintColor: colors.text,
+        tabBarActiveTintColor: colors.primaryText,
+        tabBarInactiveTintColor: colors.primaryText,
         tabBarLabelStyle: $tabBarLabel,
         tabBarItemStyle: $tabBarItem,
       }}
@@ -50,7 +50,7 @@ export function DemoNavigator() {
         options={{
           tabBarLabel: translate("demoNavigator.componentsTab"),
           tabBarIcon: ({ focused }) => (
-            <Icon icon="components" color={focused && colors.tint} size={30} />
+            <Icon icon="components" color={focused && colors.primary} size={30} />
           ),
         }}
       />
@@ -61,7 +61,7 @@ export function DemoNavigator() {
         options={{
           tabBarLabel: translate("demoNavigator.communityTab"),
           tabBarIcon: ({ focused }) => (
-            <Icon icon="components" color={focused && colors.tint} size={30} />
+            <Icon icon="components" color={focused && colors.primary} size={30} />
           ),
         }}
       />
@@ -72,7 +72,7 @@ export function DemoNavigator() {
         options={{
           tabBarLabel: translate("demoNavigator.podcastListTab"),
           tabBarIcon: ({ focused }) => (
-            <Icon icon="components" color={focused && colors.tint} size={30} />
+            <Icon icon="components" color={focused && colors.primary} size={30} />
           ),
         }}
       />
@@ -83,7 +83,7 @@ export function DemoNavigator() {
         options={{
           tabBarLabel: translate("demoNavigator.debugTab"),
           tabBarIcon: ({ focused }) => (
-            <Icon icon="components" color={focused && colors.tint} size={30} />
+            <Icon icon="components" color={focused && colors.primary} size={30} />
           ),
         }}
       />
@@ -92,7 +92,7 @@ export function DemoNavigator() {
 }
 
 const $tabBar: ViewStyle = {
-  backgroundColor: colors.background,
+  backgroundColor: colors.secondarySurface,
   borderTopColor: colors.transparent,
 }
 

@@ -240,15 +240,13 @@ export function Card(props: CardProps) {
 }
 
 const $containerBase: ViewStyle = {
-  borderRadius: spacing.medium,
-  padding: spacing.extraSmall,
-  borderWidth: 1,
-  shadowColor: colors.palette.neutral800,
+  borderRadius: 16,
+  padding: spacing.small,
+  shadowColor: colors.shadow,
   shadowOffset: { width: 0, height: 12 },
   shadowOpacity: 0.08,
   shadowRadius: 12.81,
   elevation: 16,
-  minHeight: 96,
   flexDirection: "row",
 }
 
@@ -268,28 +266,24 @@ const $containerPresets = {
   default: [
     $containerBase,
     {
-      backgroundColor: colors.palette.neutral100,
-      borderColor: colors.palette.neutral300,
+      backgroundColor: colors.primarySurface,
     },
   ] as StyleProp<ViewStyle>,
 
-  reversed: [
-    $containerBase,
-    { backgroundColor: colors.palette.neutral800, borderColor: colors.palette.neutral500 },
-  ] as StyleProp<ViewStyle>,
+  filled: [$containerBase, { backgroundColor: colors.primaryDark }] as StyleProp<ViewStyle>,
 }
 
 const $headingPresets: Record<Presets, TextStyle> = {
   default: {},
-  reversed: { color: colors.palette.neutral100 },
+  filled: { color: colors.filledText },
 }
 
 const $contentPresets: Record<Presets, TextStyle> = {
   default: {},
-  reversed: { color: colors.palette.neutral100 },
+  filled: { color: colors.filledText },
 }
 
 const $footerPresets: Record<Presets, TextStyle> = {
-  default: {},
-  reversed: { color: colors.palette.neutral100 },
+  default: { color: colors.secondaryText },
+  filled: { color: colors.primaryLight },
 }

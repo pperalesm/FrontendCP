@@ -28,7 +28,7 @@ const $customTitle: TextStyle = {
   textDecorationColor: colors.error,
 }
 
-const $customWhiteTitle: TextStyle = { color: colors.palette.neutral100 }
+const $customWhiteTitle: TextStyle = {}
 
 export const DemoHeader: Demo = {
   name: "Header",
@@ -70,7 +70,7 @@ export const DemoHeader: Demo = {
         LeftActionComponent={
           <View style={$customLeftAction}>
             {Array.from({ length: 20 }, (x, i) => i).map((i) => (
-              <Icon key={i} icon="ladybug" color={colors.palette.neutral100} size={20} />
+              <Icon key={i} icon="ladybug" size={20} />
             ))}
           </View>
         }
@@ -109,7 +109,6 @@ export const DemoHeader: Demo = {
         titleStyle={$customWhiteTitle}
         backgroundColor={colors.error}
         leftIcon="ladybug"
-        leftIconColor={colors.palette.neutral100}
         safeAreaEdges={[]}
       />
     </DemoUseCase>,

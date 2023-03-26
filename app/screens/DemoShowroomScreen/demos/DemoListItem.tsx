@@ -33,12 +33,10 @@ const $customTouchableStyle: ViewStyle = {
 
 const $customContainerStyle: ViewStyle = {
   borderTopWidth: 5,
-  borderTopColor: colors.palette.neutral100,
 }
 
 const $flatListStyle: ViewStyle = {
   paddingHorizontal: spacing.extraSmall,
-  backgroundColor: colors.palette.neutral200,
   flex: 1,
   overflow: "scroll",
 }
@@ -103,7 +101,7 @@ export const DemoListItem: Demo = {
         LeftComponent={
           <View style={[$customLeft, { marginEnd: spacing.medium }]}>
             {Array.from({ length: 9 }, (x, i) => i).map((i) => (
-              <Icon key={i} icon="ladybug" color={colors.palette.neutral100} size={20} />
+              <Icon key={i} icon="ladybug" size={20} />
             ))}
           </View>
         }
@@ -117,7 +115,7 @@ export const DemoListItem: Demo = {
         RightComponent={
           <View style={[$customLeft, { marginStart: spacing.medium }]}>
             {Array.from({ length: 9 }, (x, i) => i).map((i) => (
-              <Icon key={i} icon="ladybug" color={colors.palette.neutral100} size={20} />
+              <Icon key={i} icon="ladybug" size={20} />
             ))}
           </View>
         }
@@ -169,31 +167,19 @@ export const DemoListItem: Demo = {
         Styled Text
       </ListItem>
 
-      <ListItem
-        topSeparator
-        textStyle={{ color: colors.palette.neutral100 }}
-        style={$customTouchableStyle}
-      >
+      <ListItem topSeparator style={$customTouchableStyle}>
         Styled Text
       </ListItem>
 
-      <ListItem
-        topSeparator
-        textStyle={{ color: colors.palette.neutral100 }}
-        style={$customTouchableStyle}
-        containerStyle={$customContainerStyle}
-      >
+      <ListItem topSeparator style={$customTouchableStyle} containerStyle={$customContainerStyle}>
         Styled Container (separators)
       </ListItem>
       <ListItem
         topSeparator
-        textStyle={{ color: colors.palette.neutral100 }}
         style={$customTouchableStyle}
         containerStyle={$customContainerStyle}
         rightIcon="ladybug"
         leftIcon="ladybug"
-        rightIconColor={colors.palette.neutral100}
-        leftIconColor={colors.palette.neutral100}
       >
         Tinted Icons
       </ListItem>

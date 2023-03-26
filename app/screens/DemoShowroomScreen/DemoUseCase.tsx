@@ -29,7 +29,7 @@ const $description: TextStyle = {
 }
 
 const $item: ViewStyle = {
-  backgroundColor: colors.palette.neutral100,
+  backgroundColor: colors.background,
   borderRadius: 8,
   padding: spacing.large,
   marginVertical: spacing.medium,

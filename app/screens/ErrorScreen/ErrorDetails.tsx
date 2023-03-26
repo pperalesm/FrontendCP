@@ -31,12 +31,7 @@ export function ErrorDetails(props: ErrorDetailsProps) {
         />
       </ScrollView>
 
-      <Button
-        preset="reversed"
-        style={$resetButton}
-        onPress={props.onReset}
-        tx="errorScreen.reset"
-      />
+      <Button preset="filled" style={$resetButton} onPress={props.onReset} tx="errorScreen.reset" />
     </Screen>
   )
 }
@@ -60,7 +55,7 @@ const $heading: TextStyle = {
 
 const $errorSection: ViewStyle = {
   flex: 2,
-  backgroundColor: colors.separator,
+  backgroundColor: colors.divider,
   marginVertical: spacing.medium,
   borderRadius: 6,
 }
@@ -75,7 +70,7 @@ const $errorContent: TextStyle = {
 
 const $errorBacktrace: TextStyle = {
   marginTop: spacing.medium,
-  color: colors.textDim,
+  color: colors.secondaryText,
 }
 
 const $resetButton: ViewStyle = {

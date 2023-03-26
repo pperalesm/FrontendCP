@@ -16,7 +16,7 @@ const $customButtonTextStyle: TextStyle = {
   textDecorationLine: "underline",
   textDecorationColor: colors.error,
 }
-const $customButtonPressedTextStyle: TextStyle = { color: colors.palette.neutral100 }
+const $customButtonPressedTextStyle: TextStyle = {}
 const $customButtonRightAccessoryStyle: ViewStyle = {
   width: "53%",
   height: "200%",
@@ -25,7 +25,7 @@ const $customButtonRightAccessoryStyle: ViewStyle = {
   top: 0,
   right: 0,
 }
-const $customButtonPressedRightAccessoryStyle: ImageStyle = { tintColor: colors.palette.neutral100 }
+const $customButtonPressedRightAccessoryStyle: ImageStyle = {}
 
 export const DemoButton: Demo = {
   name: "Button",
@@ -39,7 +39,7 @@ export const DemoButton: Demo = {
       <Button preset="filled">Filled - Laboris Ex</Button>
       <DemoDivider />
 
-      <Button preset="reversed">Reversed - Ad Ipsum</Button>
+      <Button preset="filled">Reversed - Ad Ipsum</Button>
     </DemoUseCase>,
 
     <DemoUseCase
@@ -89,7 +89,7 @@ export const DemoButton: Demo = {
       <DemoDivider />
 
       <Button
-        preset="reversed"
+        preset="filled"
         RightAccessory={(props) => (
           <Icon containerStyle={props.style} style={$iconStyle} icon="ladybug" />
         )}
@@ -112,7 +112,7 @@ export const DemoButton: Demo = {
       <DemoDivider />
 
       <Button
-        preset="reversed"
+        preset="filled"
         RightAccessory={() => <View style={$customButtonRightAccessoryStyle} />}
       >
         Style Accessories - enim ea id fugiat anim ad.

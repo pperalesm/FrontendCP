@@ -2,7 +2,7 @@
 import React from "react"
 import { ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { Icon, iconRegistry, IconTypes, Text } from "../../../components"
-import { colors, spacing } from "../../../theme"
+import { spacing } from "../../../theme"
 import { Demo } from "../DemoShowroomScreen"
 import { DemoUseCase } from "../DemoUseCase"
 
@@ -18,17 +18,13 @@ const $iconTile: ViewStyle = {
 
 const $iconTileLabel: TextStyle = {
   marginTop: spacing.tiny,
-  color: colors.textDim,
 }
 
 const $customIconContainer: ViewStyle = {
   padding: spacing.medium,
-  backgroundColor: colors.palette.angry500,
 }
 
-const $customIcon: ImageStyle = {
-  tintColor: colors.palette.neutral100,
-}
+const $customIcon: ImageStyle = {}
 
 export const DemoIcon: Demo = {
   name: "Icon",
@@ -42,7 +38,7 @@ export const DemoIcon: Demo = {
     >
       {Object.keys(iconRegistry).map((icon) => (
         <View key={icon} style={$iconTile}>
-          <Icon icon={icon as IconTypes} color={colors.tint} size={35} />
+          <Icon icon={icon as IconTypes} size={35} />
 
           <Text size="xs" style={$iconTileLabel}>
             {icon}
@@ -59,15 +55,11 @@ export const DemoIcon: Demo = {
     </DemoUseCase>,
 
     <DemoUseCase name="Color" description="There's a color prop." layout="row">
-      <Icon icon="ladybug" color={colors.palette.accent500} containerStyle={$demoIconContainer} />
-      <Icon icon="ladybug" color={colors.palette.primary500} containerStyle={$demoIconContainer} />
-      <Icon
-        icon="ladybug"
-        color={colors.palette.secondary500}
-        containerStyle={$demoIconContainer}
-      />
-      <Icon icon="ladybug" color={colors.palette.neutral700} containerStyle={$demoIconContainer} />
-      <Icon icon="ladybug" color={colors.palette.angry500} containerStyle={$demoIconContainer} />
+      <Icon icon="ladybug" containerStyle={$demoIconContainer} />
+      <Icon icon="ladybug" containerStyle={$demoIconContainer} />
+      <Icon icon="ladybug" containerStyle={$demoIconContainer} />
+      <Icon icon="ladybug" containerStyle={$demoIconContainer} />
+      <Icon icon="ladybug" containerStyle={$demoIconContainer} />
     </DemoUseCase>,
 
     <DemoUseCase name="Styling" description="The component can be styled easily." layout="row">

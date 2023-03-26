@@ -1,4 +1,4 @@
-import React, { ComponentType, forwardRef, Ref, useImperativeHandle, useRef } from "react"
+import React, { ComponentType, forwardRef, Ref, useImperativeHandle, useRef, useState } from "react"
 import {
   StyleProp,
   TextInput,
@@ -125,6 +125,8 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
   } = props
   const input = useRef<TextInput>()
 
+  const [hasFocus, setHasFocus] = useState(false)
+
   const disabled = TextInputProps.editable === false || status === "disabled"
 
   const placeholderContent = placeholderTx
@@ -137,7 +139,9 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
   const $inputWrapperStyles = [
     $inputWrapperStyle,
+    hasFocus && { borderColor: colors.primary },
     status === "error" && { borderColor: colors.error },
+    disabled && { borderColor: colors.disabled },
     TextInputProps.multiline && { minHeight: 112 },
     LeftAccessory && { paddingStart: 0 },
     RightAccessory && { paddingEnd: 0 },
@@ -146,7 +150,7 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
   const $inputStyles = [
     $inputStyle,
-    disabled && { color: colors.textDim },
+    disabled && { color: colors.disabled },
     TextInputProps.multiline && { height: "auto" },
     $inputStyleOverride,
   ]
@@ -195,10 +199,12 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
         <TextInput
           ref={input}
+          onBlur={() => setHasFocus(false)}
+          onFocus={() => setHasFocus(true)}
           underlineColorAndroid={colors.transparent}
           textAlignVertical="top"
           placeholder={placeholderContent}
-          placeholderTextColor={colors.textDim}
+          placeholderTextColor={colors.disabled}
           {...TextInputProps}
           editable={!disabled}
           style={$inputStyles}
@@ -237,16 +243,15 @@ const $inputWrapperStyle: ViewStyle = {
   alignItems: "flex-start",
   borderWidth: 1,
   borderRadius: 4,
-  backgroundColor: colors.palette.neutral200,
-  borderColor: colors.palette.neutral400,
-  overflow: "hidden",
+  backgroundColor: colors.secondarySurface,
+  borderColor: colors.divider,
 }
 
 const $inputStyle: TextStyle = {
   flex: 1,
   alignSelf: "stretch",
   fontFamily: typography.primary.normal,
-  color: colors.text,
+  color: colors.primaryText,
   fontSize: 16,
   height: 24,
   // https://github.com/facebook/react-native/issues/21720#issuecomment-532642093
@@ -258,6 +263,7 @@ const $inputStyle: TextStyle = {
 
 const $helperStyle: TextStyle = {
   marginTop: spacing.extraSmall,
+  color: colors.secondaryText,
 }
 
 const $rightAccessoryStyle: ViewStyle = {

@@ -195,8 +195,6 @@ export const DemoToggle: Demo = {
         inputOuterStyle={{
           width: 50,
           height: 50,
-          backgroundColor: colors.palette.accent300,
-          borderColor: colors.palette.accent500,
         }}
       />
       <ControlledToggle
@@ -206,8 +204,6 @@ export const DemoToggle: Demo = {
           width: 50,
           height: 50,
           borderRadius: 25,
-          backgroundColor: colors.palette.accent300,
-          borderColor: colors.palette.accent500,
         }}
       />
       <ControlledToggle
@@ -217,8 +213,6 @@ export const DemoToggle: Demo = {
           width: 70,
           height: 50,
           borderRadius: 25,
-          backgroundColor: colors.palette.accent300,
-          borderColor: colors.palette.accent500,
         }}
       />
       <Text preset="formHelper" style={$centeredText}>
@@ -234,12 +228,8 @@ export const DemoToggle: Demo = {
         inputOuterStyle={{
           width: 50,
           height: 50,
-          backgroundColor: colors.palette.accent300,
-          borderColor: colors.palette.accent500,
         }}
-        inputInnerStyle={{
-          backgroundColor: colors.palette.accent500,
-        }}
+        inputInnerStyle={{}}
       />
       <ControlledToggle
         value
@@ -249,12 +239,8 @@ export const DemoToggle: Demo = {
           width: 50,
           height: 50,
           borderRadius: 25,
-          backgroundColor: colors.palette.accent300,
-          borderColor: colors.palette.accent500,
         }}
-        inputInnerStyle={{
-          backgroundColor: colors.palette.accent500,
-        }}
+        inputInnerStyle={{}}
       />
       <ControlledToggle
         value
@@ -264,11 +250,8 @@ export const DemoToggle: Demo = {
           width: 70,
           height: 50,
           borderRadius: 25,
-          backgroundColor: colors.palette.accent300,
-          borderColor: colors.palette.accent500,
         }}
         inputInnerStyle={{
-          backgroundColor: colors.palette.accent500,
           paddingLeft: 10,
           paddingRight: 10,
         }}
@@ -287,14 +270,9 @@ export const DemoToggle: Demo = {
         inputOuterStyle={{
           width: 50,
           height: 50,
-          backgroundColor: colors.palette.accent300,
-          borderColor: colors.palette.accent500,
         }}
-        inputInnerStyle={{
-          backgroundColor: colors.palette.accent500,
-        }}
+        inputInnerStyle={{}}
         inputDetailStyle={{
-          tintColor: colors.tint,
           height: 35,
           width: 35,
         }}
@@ -307,14 +285,9 @@ export const DemoToggle: Demo = {
           width: 50,
           height: 50,
           borderRadius: 25,
-          backgroundColor: colors.palette.accent300,
-          borderColor: colors.palette.accent500,
         }}
-        inputInnerStyle={{
-          backgroundColor: colors.palette.accent500,
-        }}
+        inputInnerStyle={{}}
         inputDetailStyle={{
-          backgroundColor: colors.tint,
           height: 36,
           width: 36,
           borderRadius: 18,
@@ -329,16 +302,12 @@ export const DemoToggle: Demo = {
           width: 70,
           height: 50,
           borderRadius: 25,
-          backgroundColor: colors.palette.accent300,
-          borderColor: colors.palette.accent500,
         }}
         inputInnerStyle={{
-          backgroundColor: colors.tint,
           paddingLeft: 10,
           paddingRight: 10,
         }}
         inputDetailStyle={{
-          backgroundColor: colors.palette.accent300,
           height: 36,
           width: 18,
           borderRadius: 36,
@@ -361,7 +330,6 @@ export const DemoToggle: Demo = {
           status="error"
           labelStyle={{
             backgroundColor: colors.error,
-            color: colors.palette.neutral100,
             paddingHorizontal: 5,
           }}
         />
@@ -377,7 +345,6 @@ export const DemoToggle: Demo = {
           containerStyle={{ padding: 10, backgroundColor: colors.error }}
           label="Or, style the entire container"
           status="error"
-          labelStyle={{ color: colors.palette.neutral100 }}
         />
       </View>
     </DemoUseCase>,

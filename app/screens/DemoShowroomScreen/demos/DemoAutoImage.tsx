@@ -31,8 +31,6 @@ const $aspectRatioHeightExampleContainer: ViewStyle = {
 const $aspectRatioBox: ViewStyle & ImageStyle = {
   borderRadius: 4,
   borderWidth: 3,
-  borderColor: colors.palette.secondary300,
-  backgroundColor: colors.palette.neutral800,
 }
 
 export const DemoAutoImage: Demo = {
@@ -69,19 +67,19 @@ export const DemoAutoImage: Demo = {
           text="<View />"
           size="xxs"
           weight="bold"
-          style={{ flexBasis: "33.3333%", color: colors.palette.secondary400 }}
+          style={{ flexBasis: "33.3333%", color: colors.primary }}
         />
         <Text
           text="<Image />"
           size="xxs"
           weight="bold"
-          style={{ flexBasis: "33.3333%", textAlign: "center", color: colors.palette.secondary400 }}
+          style={{ flexBasis: "33.3333%", textAlign: "center", color: colors.primary }}
         />
         <Text
           text="<AutoImage />"
           size="xxs"
           weight="bold"
-          style={{ flexBasis: "33.3333%", textAlign: "right", color: colors.palette.secondary400 }}
+          style={{ flexBasis: "33.3333%", textAlign: "right", color: colors.primary }}
         />
       </View>
 
@@ -113,24 +111,9 @@ export const DemoAutoImage: Demo = {
 
       <View style={{ flexDirection: "row" }}>
         <View style={$aspectRatioHeightExampleContainer}>
-          <Text
-            text="<View />"
-            size="xxs"
-            weight="bold"
-            style={{ color: colors.palette.secondary400 }}
-          />
-          <Text
-            text="<Image />"
-            size="xxs"
-            weight="bold"
-            style={{ color: colors.palette.secondary400 }}
-          />
-          <Text
-            text="<AutoImage />"
-            size="xxs"
-            weight="bold"
-            style={{ color: colors.palette.secondary400 }}
-          />
+          <Text text="<View />" size="xxs" weight="bold" style={{ color: colors.primary }} />
+          <Text text="<Image />" size="xxs" weight="bold" style={{ color: colors.primary }} />
+          <Text text="<AutoImage />" size="xxs" weight="bold" style={{ color: colors.primary }} />
         </View>
 
         <View style={[$aspectRatioHeightExampleContainer, { flex: 1, marginStart: spacing.small }]}>
@@ -163,19 +146,19 @@ export const DemoAutoImage: Demo = {
           text="<View />"
           size="xxs"
           weight="bold"
-          style={{ flexBasis: "33.3333%", color: colors.palette.secondary400 }}
+          style={{ flexBasis: "33.3333%", color: colors.primary }}
         />
         <Text
           text="<Image />"
           size="xxs"
           weight="bold"
-          style={{ flexBasis: "33.3333%", textAlign: "center", color: colors.palette.secondary400 }}
+          style={{ flexBasis: "33.3333%", textAlign: "center", color: colors.primary }}
         />
         <Text
           text="<AutoImage />"
           size="xxs"
           weight="bold"
-          style={{ flexBasis: "33.3333%", textAlign: "right", color: colors.palette.secondary400 }}
+          style={{ flexBasis: "33.3333%", textAlign: "right", color: colors.primary }}
         />
       </View>
 

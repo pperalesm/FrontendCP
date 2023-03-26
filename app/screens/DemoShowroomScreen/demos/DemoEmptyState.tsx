@@ -52,23 +52,17 @@ export const DemoEmptyState: Demo = {
       <EmptyState
         preset="generic"
         style={{ backgroundColor: colors.error, paddingVertical: 20 }}
-        imageStyle={{ height: 75, tintColor: colors.palette.neutral100 }}
+        imageStyle={{ height: 75 }}
         ImageProps={{ resizeMode: "contain" }}
         headingStyle={{
-          color: colors.palette.neutral100,
           textDecorationLine: "underline",
-          textDecorationColor: colors.palette.neutral100,
         }}
         contentStyle={{
-          color: colors.palette.neutral100,
           textDecorationLine: "underline",
-          textDecorationColor: colors.palette.neutral100,
         }}
-        buttonStyle={{ alignSelf: "center", backgroundColor: colors.palette.neutral100 }}
+        buttonStyle={{ alignSelf: "center" }}
         buttonTextStyle={{ color: colors.error }}
-        ButtonProps={{
-          preset: "reversed",
-        }}
+        ButtonProps={{ preset: "filled" }}
       />
     </DemoUseCase>,
   ],

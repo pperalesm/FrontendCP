@@ -1,33 +1,34 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import { api } from "../services/api"
+import { withSetPropAction } from "./helpers/withSetPropAction"
+import { UserModel } from "./User"
 
 export const AuthenticationStoreModel = types
   .model("AuthenticationStore")
   .props({
-    authToken: types.maybe(types.string),
-    authEmail: "",
+    accessToken: types.maybe(types.string),
+    refreshToken: types.maybe(types.string),
+    user: types.maybe(UserModel),
   })
   .views((store) => ({
     get isAuthenticated() {
-      return !!store.authToken
-    },
-    get validationError() {
-      if (store.authEmail.length === 0) return "can't be blank"
-      if (store.authEmail.length < 6) return "must be at least 6 characters"
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(store.authEmail))
-        return "must be a valid email address"
-      return ""
+      return !!store.accessToken
     },
   }))
+  .actions(withSetPropAction)
   .actions((store) => ({
-    setAuthToken(value?: string) {
-      store.authToken = value
-    },
-    setAuthEmail(value: string) {
-      store.authEmail = value.replace(/ /g, "")
+    async signIn(email: string, password: string) {
+      const response = await api.signIn(email, password)
+      if (response.kind === "ok") {
+        store.setProp("accessToken", response.accessToken)
+        store.setProp("refreshToken", response.refreshToken)
+        store.setProp("user", response.user)
+      }
     },
     logout() {
-      store.authToken = undefined
-      store.authEmail = ""
+      store.accessToken = undefined
+      store.refreshToken = undefined
+      store.user = undefined
     },
   }))
 

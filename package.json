@@ -57,6 +57,7 @@
     "expo-modules-core": "~1.0.4 || ~1.1.0",
     "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
+    "expo-system-ui": "^2.2.1",
     "i18n-js": "3.9.2",
     "mobx": "6.6.0",
     "mobx-react-lite": "3.4.0",

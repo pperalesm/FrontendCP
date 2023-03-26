@@ -1,3 +1,5 @@
+import { UserSnapshotIn } from "../../models/User"
+
 /**
  * These types indicate the shape of the data you expect to receive from your
  * API endpoint, assuming it's a JSON object like we have.
@@ -32,6 +34,12 @@ export interface ApiFeedResponse {
     image: string
   }
   items: EpisodeItem[]
+}
+
+export interface ApiSignInResponse {
+  accessToken: string
+  refreshToken: string
+  user: UserSnapshotIn
 }
 
 /**
