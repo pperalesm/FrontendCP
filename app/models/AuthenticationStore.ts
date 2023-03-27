@@ -1,35 +1,37 @@
-import { Instance, SnapshotOut, types } from "mobx-state-tree"
-import { api } from "../services/api"
-import { withSetPropAction } from "./helpers/withSetPropAction"
-import { UserModel } from "./User"
+import { Instance, SnapshotOut, types } from 'mobx-state-tree';
+import { api } from '../services/api';
+import { withSetPropAction } from './helpers/withSetPropAction';
+import { UserModel } from './User';
 
 export const AuthenticationStoreModel = types
-  .model("AuthenticationStore")
+  .model('AuthenticationStore')
   .props({
     user: types.maybe(UserModel),
   })
   .views((store) => ({
     get isAuthenticated() {
-      return !!store.user
+      return !!store.user;
     },
   }))
   .actions(withSetPropAction)
   .actions((store) => ({
     async signIn(email: string, password: string) {
-      const response = await api.signIn(email, password)
-      if (response.kind === "ok") {
-        store.setProp("user", response.user)
+      const response = await api.signIn(email, password);
+      if (response.kind === 'ok') {
+        store.setProp('user', response.user);
       }
-      return response
+      return response;
     },
     async signUp(email: string, password: string) {
-      return await api.signUp(email, password)
+      return await api.signUp(email, password);
     },
     async signOut() {
-      await api.signOut()
-      store.setProp("user", undefined)
+      await api.signOut();
+      store.setProp('user', undefined);
     },
-  }))
+  }));
 
-export interface AuthenticationStore extends Instance<typeof AuthenticationStoreModel> {}
-export interface AuthenticationStoreSnapshot extends SnapshotOut<typeof AuthenticationStoreModel> {}
+export interface AuthenticationStore
+  extends Instance<typeof AuthenticationStoreModel> {}
+export interface AuthenticationStoreSnapshot
+  extends SnapshotOut<typeof AuthenticationStoreModel> {}

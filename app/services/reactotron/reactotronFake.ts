@@ -1,5 +1,5 @@
 /** Do Nothing. */
-const noop = () => undefined
+const noop = () => undefined;
 
 /**
  * Fake no-op version of Reactotron, so nothing breaks if a console.tron.*
@@ -25,4 +25,4 @@ export const fakeReactotron = {
   use: noop,
   useReactNative: noop,
   warn: noop,
-}
+};

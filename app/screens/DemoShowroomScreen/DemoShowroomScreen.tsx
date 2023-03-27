@@ -1,5 +1,5 @@
-import { Link, RouteProp, useRoute } from "@react-navigation/native"
-import React, { FC, ReactElement, useEffect, useRef, useState } from "react"
+import { Link, RouteProp, useRoute } from '@react-navigation/native';
+import React, { FC, ReactElement, useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
   FlatList,
@@ -10,40 +10,43 @@ import {
   TextStyle,
   View,
   ViewStyle,
-} from "react-native"
-import { DrawerLayout, DrawerState } from "react-native-gesture-handler"
-import { useSharedValue, withTiming } from "react-native-reanimated"
-import { ListItem, Screen, Text } from "../../components"
-import { MainTabParamList, MainTabScreenProps } from "../../navigators/MainNavigator"
-import { colors, spacing, timing } from "../../theme"
-import { useSafeAreaInsetsStyle } from "../../utils/useSafeAreaInsetsStyle"
-import * as Demos from "./demos"
-import { DrawerIconButton } from "./DrawerIconButton"
+} from 'react-native';
+import { DrawerLayout, DrawerState } from 'react-native-gesture-handler';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
+import { ListItem, Screen, Text } from '../../components';
+import {
+  MainTabParamList,
+  MainTabScreenProps,
+} from '../../navigators/MainNavigator';
+import { colors, spacing, timing } from '../../theme';
+import { useSafeAreaInsetsStyle } from '../../utils/useSafeAreaInsetsStyle';
+import * as Demos from './demos';
+import { DrawerIconButton } from './DrawerIconButton';
 
-const logo = require("../../../assets/images/logo.png")
+const logo = require('../../../assets/images/logo.png');
 
 export interface Demo {
-  name: string
-  description: string
-  data: ReactElement[]
+  name: string;
+  description: string;
+  data: ReactElement[];
 }
 
 interface DemoListItem {
-  item: { name: string; useCases: string[] }
-  sectionIndex: number
-  handleScroll?: (sectionIndex: number, itemIndex?: number) => void
+  item: { name: string; useCases: string[] };
+  sectionIndex: number;
+  handleScroll?: (sectionIndex: number, itemIndex?: number) => void;
 }
 
 const slugify = (str) =>
   str
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 
 const WebListItem: FC<DemoListItem> = ({ item, sectionIndex }) => {
-  const sectionSlug = item.name.toLowerCase()
+  const sectionSlug = item.name.toLowerCase();
 
   return (
     <View>
@@ -51,22 +54,33 @@ const WebListItem: FC<DemoListItem> = ({ item, sectionIndex }) => {
         <Text preset="bold">{item.name}</Text>
       </Link>
       {item.useCases.map((u) => {
-        const itemSlug = slugify(u)
+        const itemSlug = slugify(u);
 
         return (
-          <Link key={`section${sectionIndex}-${u}`} to={`/showroom/${sectionSlug}/${itemSlug}`}>
+          <Link
+            key={`section${sectionIndex}-${u}`}
+            to={`/showroom/${sectionSlug}/${itemSlug}`}
+          >
             <Text>{u}</Text>
           </Link>
-        )
+        );
       })}
     </View>
-  )
-}
+  );
+};
 
-const NativeListItem: FC<DemoListItem> = ({ item, sectionIndex, handleScroll }) => {
+const NativeListItem: FC<DemoListItem> = ({
+  item,
+  sectionIndex,
+  handleScroll,
+}) => {
   return (
     <View>
-      <Text onPress={() => handleScroll(sectionIndex)} preset="bold" style={$menuContainer}>
+      <Text
+        onPress={() => handleScroll(sectionIndex)}
+        preset="bold"
+        style={$menuContainer}
+      >
         {item.name}
       </Text>
       {item.useCases.map((u, index) => (
@@ -74,73 +88,76 @@ const NativeListItem: FC<DemoListItem> = ({ item, sectionIndex, handleScroll }) 
           key={`section${sectionIndex}-${u}`}
           onPress={() => handleScroll(sectionIndex, index + 1)}
           text={u}
-          rightIcon={"caretRight"}
+          rightIcon={'caretRight'}
         />
       ))}
     </View>
-  )
-}
+  );
+};
 
-const ShowroomListItem = Platform.select({ web: WebListItem, default: NativeListItem })
+const ShowroomListItem = Platform.select({
+  web: WebListItem,
+  default: NativeListItem,
+});
 
-export const DemoShowroomScreen: FC<MainTabScreenProps<"DemoShowroom">> =
+export const DemoShowroomScreen: FC<MainTabScreenProps<'DemoShowroom'>> =
   function DemoShowroomScreen(_props) {
-    const [open, setOpen] = useState(false)
-    const timeout = useRef<ReturnType<typeof setTimeout>>()
-    const drawerRef = useRef<DrawerLayout>()
-    const listRef = useRef<SectionList>()
-    const menuRef = useRef<FlatList>()
-    const progress = useSharedValue(0)
-    const route = useRoute<RouteProp<MainTabParamList, "DemoShowroom">>()
-    const params = route.params
+    const [open, setOpen] = useState(false);
+    const timeout = useRef<ReturnType<typeof setTimeout>>();
+    const drawerRef = useRef<DrawerLayout>();
+    const listRef = useRef<SectionList>();
+    const menuRef = useRef<FlatList>();
+    const progress = useSharedValue(0);
+    const route = useRoute<RouteProp<MainTabParamList, 'DemoShowroom'>>();
+    const params = route.params;
 
     // handle Web links
     React.useEffect(() => {
       if (route.params) {
-        const demoValues = Object.values(Demos)
+        const demoValues = Object.values(Demos);
         const findSectionIndex = demoValues.findIndex(
           (x) => x.name.toLowerCase() === params.queryIndex,
-        )
-        let findItemIndex = 0
+        );
+        let findItemIndex = 0;
         if (params.itemIndex) {
           try {
             findItemIndex =
               demoValues[findSectionIndex].data.findIndex(
                 (u) => slugify(u.props.name) === params.itemIndex,
-              ) + 1
+              ) + 1;
           } catch (err) {
-            console.error(err)
+            console.error(err);
           }
         }
-        handleScroll(findSectionIndex, findItemIndex)
+        handleScroll(findSectionIndex, findItemIndex);
       }
-    }, [route])
+    }, [route]);
 
     const toggleDrawer = () => {
       if (!open) {
-        setOpen(true)
-        drawerRef.current?.openDrawer({ speed: 2 })
+        setOpen(true);
+        drawerRef.current?.openDrawer({ speed: 2 });
       } else {
-        setOpen(false)
-        drawerRef.current?.closeDrawer({ speed: 2 })
+        setOpen(false);
+        drawerRef.current?.closeDrawer({ speed: 2 });
       }
-    }
+    };
 
     const handleScroll = (sectionIndex: number, itemIndex = 0) => {
       listRef.current.scrollToLocation({
         animated: true,
         itemIndex,
         sectionIndex,
-      })
-      toggleDrawer()
-    }
+      });
+      toggleDrawer();
+    };
 
     const scrollToIndexFailed = (info: {
-      index: number
-      highestMeasuredFrameIndex: number
-      averageItemLength: number
+      index: number;
+      highestMeasuredFrameIndex: number;
+      averageItemLength: number;
     }) => {
-      listRef.current?.getScrollResponder()?.scrollToEnd()
+      listRef.current?.getScrollResponder()?.scrollToEnd();
       timeout.current = setTimeout(
         () =>
           listRef.current?.scrollToLocation({
@@ -149,32 +166,38 @@ export const DemoShowroomScreen: FC<MainTabScreenProps<"DemoShowroom">> =
             sectionIndex: 0,
           }),
         50,
-      )
-    }
+      );
+    };
 
     useEffect(() => {
-      return () => timeout.current && clearTimeout(timeout.current)
-    }, [])
+      return () => timeout.current && clearTimeout(timeout.current);
+    }, []);
 
-    const $drawerInsets = useSafeAreaInsetsStyle(["top"])
+    const $drawerInsets = useSafeAreaInsetsStyle(['top']);
 
     return (
       <DrawerLayout
         ref={drawerRef}
-        drawerWidth={Platform.select({ default: 326, web: Dimensions.get("window").width * 0.3 })}
-        drawerType={"slide"}
-        drawerPosition={"left"}
-        overlayColor={open ? colors.overlay : "transparent"}
+        drawerWidth={Platform.select({
+          default: 326,
+          web: Dimensions.get('window').width * 0.3,
+        })}
+        drawerType={'slide'}
+        drawerPosition={'left'}
+        overlayColor={open ? colors.overlay : 'transparent'}
         drawerBackgroundColor={colors.primarySurface}
         onDrawerSlide={(drawerProgress) => {
-          progress.value = open ? 1 - drawerProgress : drawerProgress
+          progress.value = open ? 1 - drawerProgress : drawerProgress;
         }}
-        onDrawerStateChanged={(newState: DrawerState, drawerWillShow: boolean) => {
-          if (newState === "Settling") {
+        onDrawerStateChanged={(
+          newState: DrawerState,
+          drawerWillShow: boolean,
+        ) => {
+          if (newState === 'Settling') {
             progress.value = withTiming(drawerWillShow ? 1 : 0, {
               duration: timing.quick,
-            })
-            setOpen(drawerWillShow)
+            });
+            setOpen(drawerWillShow);
           }
         }}
         renderNavigationView={() => (
@@ -198,7 +221,11 @@ export const DemoShowroomScreen: FC<MainTabScreenProps<"DemoShowroom">> =
           </View>
         )}
       >
-        <Screen preset="fixed" safeAreaEdges={["top"]} contentContainerStyle={$screenContainer}>
+        <Screen
+          preset="fixed"
+          safeAreaEdges={['top']}
+          contentContainerStyle={$screenContainer}
+        >
           <DrawerIconButton onPress={toggleDrawer} {...{ open, progress }} />
 
           <SectionList
@@ -220,63 +247,65 @@ export const DemoShowroomScreen: FC<MainTabScreenProps<"DemoShowroom">> =
                   <Text preset="heading" style={$demoItemName}>
                     {section.name}
                   </Text>
-                  <Text style={$demoItemDescription}>{section.description}</Text>
+                  <Text style={$demoItemDescription}>
+                    {section.description}
+                  </Text>
                 </View>
-              )
+              );
             }}
           />
         </Screen>
       </DrawerLayout>
-    )
-  }
+    );
+  };
 
 const $screenContainer: ViewStyle = {
   flex: 1,
-}
+};
 
 const $drawer: ViewStyle = {
   flex: 1,
-}
+};
 
 const $flatListContentContainer: ViewStyle = {
   paddingHorizontal: spacing.large,
-}
+};
 
 const $sectionListContentContainer: ViewStyle = {
   paddingHorizontal: spacing.large,
-}
+};
 
 const $heading: ViewStyle = {
   marginBottom: spacing.massive,
-}
+};
 
 const $logoImage: ImageStyle = {
   height: 42,
   width: 77,
-}
+};
 
 const $logoContainer: ViewStyle = {
-  alignSelf: "flex-start",
+  alignSelf: 'flex-start',
   height: 56,
   paddingHorizontal: spacing.large,
-}
+};
 
 const $menuContainer: ViewStyle = {
   paddingBottom: spacing.extraSmall,
   paddingTop: spacing.large,
-}
+};
 
 const $demoItemName: TextStyle = {
   fontSize: 24,
   marginBottom: spacing.medium,
-}
+};
 
 const $demoItemDescription: TextStyle = {
   marginBottom: spacing.huge,
-}
+};
 
 const $demoUseCasesSpacer: ViewStyle = {
   paddingBottom: spacing.huge,
-}
+};
 
 // @demo remove-file

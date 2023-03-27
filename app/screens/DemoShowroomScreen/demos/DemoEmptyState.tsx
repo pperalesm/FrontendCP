@@ -1,15 +1,15 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
-import React from "react"
-import { EmptyState } from "../../../components"
-import { colors } from "../../../theme"
-import { DemoDivider } from "../DemoDivider"
-import { Demo } from "../DemoShowroomScreen"
-import { DemoUseCase } from "../DemoUseCase"
+import React from 'react';
+import { EmptyState } from '../../../components';
+import { colors } from '../../../theme';
+import { DemoDivider } from '../DemoDivider';
+import { Demo } from '../DemoShowroomScreen';
+import { DemoUseCase } from '../DemoUseCase';
 
 export const DemoEmptyState: Demo = {
-  name: "EmptyState",
+  name: 'EmptyState',
   description:
-    "A component to use when there is no data to display. It can be utilized to direct the user what to do next",
+    'A component to use when there is no data to display. It can be utilized to direct the user what to do next',
   data: [
     <DemoUseCase
       name="Presets"
@@ -23,7 +23,7 @@ export const DemoEmptyState: Demo = {
       description="There are a few different ways to pass content."
     >
       <EmptyState
-        imageSource={require("../../../../assets/images/logo.png")}
+        imageSource={require('../../../../assets/images/logo.png')}
         heading="Customize Image"
         content="You can pass in any image source."
       />
@@ -40,32 +40,35 @@ export const DemoEmptyState: Demo = {
 
       <EmptyState
         headingTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        headingTxOptions={{ prop: "heading" }}
+        headingTxOptions={{ prop: 'heading' }}
         contentTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        contentTxOptions={{ prop: "content" }}
+        contentTxOptions={{ prop: 'content' }}
         buttonTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        buttonTxOptions={{ prop: "button" }}
+        buttonTxOptions={{ prop: 'button' }}
       />
     </DemoUseCase>,
 
-    <DemoUseCase name="Styling" description="The component can be styled easily.">
+    <DemoUseCase
+      name="Styling"
+      description="The component can be styled easily."
+    >
       <EmptyState
         preset="generic"
         style={{ backgroundColor: colors.error, paddingVertical: 20 }}
         imageStyle={{ height: 75 }}
-        ImageProps={{ resizeMode: "contain" }}
+        ImageProps={{ resizeMode: 'contain' }}
         headingStyle={{
-          textDecorationLine: "underline",
+          textDecorationLine: 'underline',
         }}
         contentStyle={{
-          textDecorationLine: "underline",
+          textDecorationLine: 'underline',
         }}
-        buttonStyle={{ alignSelf: "center" }}
+        buttonStyle={{ alignSelf: 'center' }}
         buttonTextStyle={{ color: colors.error }}
-        ButtonProps={{ preset: "filled" }}
+        ButtonProps={{ preset: 'filled' }}
       />
     </DemoUseCase>,
   ],
-}
+};
 
 // @demo remove-file

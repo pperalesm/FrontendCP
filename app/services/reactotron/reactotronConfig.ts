@@ -1,16 +1,16 @@
 export interface ReactotronConfig {
   /** The name of the app. */
-  name?: string
+  name?: string;
   /** The host to connect to: default 'localhost'. */
-  host?: string
+  host?: string;
   /** Should we use async storage */
-  useAsyncStorage?: boolean
+  useAsyncStorage?: boolean;
   /** Should we clear Reactotron when load? */
-  clearOnLoad?: boolean
+  clearOnLoad?: boolean;
   /** log the initial data that we put into the state on startup? */
-  logInitialState?: boolean
+  logInitialState?: boolean;
   /** log snapshot changes. */
-  logSnapshots?: boolean
+  logSnapshots?: boolean;
 }
 
 /**
@@ -18,8 +18,8 @@ export interface ReactotronConfig {
  */
 export const DEFAULT_REACTOTRON_CONFIG: ReactotronConfig = {
   clearOnLoad: true,
-  host: "localhost",
+  host: 'localhost',
   useAsyncStorage: true,
   logInitialState: true,
   logSnapshots: false,
-}
+};

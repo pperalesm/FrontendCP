@@ -1,35 +1,35 @@
 /* eslint-disable react/jsx-key */
-import React from "react"
-import { ImageStyle, TextStyle, View, ViewStyle } from "react-native"
-import { Icon, iconRegistry, IconTypes, Text } from "../../../components"
-import { spacing } from "../../../theme"
-import { Demo } from "../DemoShowroomScreen"
-import { DemoUseCase } from "../DemoUseCase"
+import React from 'react';
+import { ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
+import { Icon, iconRegistry, IconTypes, Text } from '../../../components';
+import { spacing } from '../../../theme';
+import { Demo } from '../DemoShowroomScreen';
+import { DemoUseCase } from '../DemoUseCase';
 
 const $demoIconContainer: ViewStyle = {
   padding: spacing.extraSmall,
-}
+};
 
 const $iconTile: ViewStyle = {
-  width: "33.333%",
-  alignItems: "center",
+  width: '33.333%',
+  alignItems: 'center',
   paddingVertical: spacing.extraSmall,
-}
+};
 
 const $iconTileLabel: TextStyle = {
   marginTop: spacing.tiny,
-}
+};
 
 const $customIconContainer: ViewStyle = {
   padding: spacing.medium,
-}
+};
 
-const $customIcon: ImageStyle = {}
+const $customIcon: ImageStyle = {};
 
 export const DemoIcon: Demo = {
-  name: "Icon",
+  name: 'Icon',
   description:
-    "A component to render a registered icon. It is wrapped in a <TouchableOpacity /> if `onPress` is provided, otherwise a <View />.",
+    'A component to render a registered icon. It is wrapped in a <TouchableOpacity /> if `onPress` is provided, otherwise a <View />.',
   data: [
     <DemoUseCase
       name="Icons"
@@ -62,10 +62,19 @@ export const DemoIcon: Demo = {
       <Icon icon="ladybug" containerStyle={$demoIconContainer} />
     </DemoUseCase>,
 
-    <DemoUseCase name="Styling" description="The component can be styled easily." layout="row">
-      <Icon icon="ladybug" style={$customIcon} size={40} containerStyle={$customIconContainer} />
+    <DemoUseCase
+      name="Styling"
+      description="The component can be styled easily."
+      layout="row"
+    >
+      <Icon
+        icon="ladybug"
+        style={$customIcon}
+        size={40}
+        containerStyle={$customIconContainer}
+      />
     </DemoUseCase>,
   ],
-}
+};
 
 // @demo remove-file

@@ -1,139 +1,152 @@
-import React, { FC } from "react"
-import * as Application from "expo-application"
-import { Linking, Platform, TextStyle, View, ViewStyle } from "react-native"
-import { Button, ListItem, Screen, Text } from "../components"
-import { MainTabScreenProps } from "../navigators/MainNavigator"
-import { colors, spacing } from "../theme"
-import { useStores } from "../models"
+import React, { FC } from 'react';
+import * as Application from 'expo-application';
+import { Linking, Platform, TextStyle, View, ViewStyle } from 'react-native';
+import { Button, ListItem, Screen, Text } from '../components';
+import { MainTabScreenProps } from '../navigators/MainNavigator';
+import { colors, spacing } from '../theme';
+import { useStores } from '../models';
 
 function openLinkInBrowser(url: string) {
-  Linking.canOpenURL(url).then((canOpen) => canOpen && Linking.openURL(url))
+  Linking.canOpenURL(url).then((canOpen) => canOpen && Linking.openURL(url));
 }
 
-export const DemoDebugScreen: FC<MainTabScreenProps<"DemoDebug">> = function DemoDebugScreen(
-  _props,
-) {
-  const {
-    authenticationStore: { signOut },
-  } = useStores()
+export const DemoDebugScreen: FC<MainTabScreenProps<'DemoDebug'>> =
+  function DemoDebugScreen(_props) {
+    const {
+      authenticationStore: { signOut },
+    } = useStores();
 
-  const usingHermes = typeof HermesInternal === "object" && HermesInternal !== null
+    const usingHermes =
+      typeof HermesInternal === 'object' && HermesInternal !== null;
 
-  const demoReactotron = React.useMemo(
-    () => async () => {
-      console.tron.display({
-        name: "DISPLAY",
-        value: {
-          appId: Application.applicationId,
-          appName: Application.applicationName,
-          appVersion: Application.nativeApplicationVersion,
-          appBuildVersion: Application.nativeBuildVersion,
-          hermesEnabled: usingHermes,
-        },
-        important: true,
-      })
-    },
-    [],
-  )
+    const demoReactotron = React.useMemo(
+      () => async () => {
+        console.tron.display({
+          name: 'DISPLAY',
+          value: {
+            appId: Application.applicationId,
+            appName: Application.applicationName,
+            appVersion: Application.nativeApplicationVersion,
+            appBuildVersion: Application.nativeBuildVersion,
+            hermesEnabled: usingHermes,
+          },
+          important: true,
+        });
+      },
+      [],
+    );
 
-  return (
-    <Screen preset="scroll" safeAreaEdges={["top"]} contentContainerStyle={$container}>
-      <Text
-        style={$reportBugsLink}
-        tx="demoDebugScreen.reportBugs"
-        onPress={() => openLinkInBrowser("https://github.com/infinitered/ignite/issues")}
-      />
-      <Text style={$title} preset="heading" tx="demoDebugScreen.title" />
-      <View style={$itemsContainer}>
-        <ListItem
-          LeftComponent={
-            <View style={$item}>
-              <Text preset="bold">App Id</Text>
-              <Text>{Application.applicationId}</Text>
-            </View>
+    return (
+      <Screen
+        preset="scroll"
+        safeAreaEdges={['top']}
+        contentContainerStyle={$container}
+      >
+        <Text
+          style={$reportBugsLink}
+          tx="demoDebugScreen.reportBugs"
+          onPress={() =>
+            openLinkInBrowser('https://github.com/infinitered/ignite/issues')
           }
         />
-        <ListItem
-          LeftComponent={
-            <View style={$item}>
-              <Text preset="bold">App Name</Text>
-              <Text>{Application.applicationName}</Text>
-            </View>
-          }
-        />
-        <ListItem
-          LeftComponent={
-            <View style={$item}>
-              <Text preset="bold">App Version</Text>
-              <Text>{Application.nativeApplicationVersion}</Text>
-            </View>
-          }
-        />
-        <ListItem
-          LeftComponent={
-            <View style={$item}>
-              <Text preset="bold">App Build Version</Text>
-              <Text>{Application.nativeBuildVersion}</Text>
-            </View>
-          }
-        />
-        <ListItem
-          LeftComponent={
-            <View style={$item}>
-              <Text preset="bold">Hermes Enabled</Text>
-              <Text>{String(usingHermes)}</Text>
-            </View>
-          }
-        />
-      </View>
-      <View style={$buttonContainer}>
-        <Button style={$button} tx="demoDebugScreen.reactotron" onPress={demoReactotron} />
-        <Text style={$hint} tx={`demoDebugScreen.${Platform.OS}ReactotronHint` as const} />
-      </View>
-      <View style={$buttonContainer}>
-        <Button style={$button} tx="common.signOut" onPress={signOut} />
-      </View>
-    </Screen>
-  )
-}
+        <Text style={$title} preset="heading" tx="demoDebugScreen.title" />
+        <View style={$itemsContainer}>
+          <ListItem
+            LeftComponent={
+              <View style={$item}>
+                <Text preset="bold">App Id</Text>
+                <Text>{Application.applicationId}</Text>
+              </View>
+            }
+          />
+          <ListItem
+            LeftComponent={
+              <View style={$item}>
+                <Text preset="bold">App Name</Text>
+                <Text>{Application.applicationName}</Text>
+              </View>
+            }
+          />
+          <ListItem
+            LeftComponent={
+              <View style={$item}>
+                <Text preset="bold">App Version</Text>
+                <Text>{Application.nativeApplicationVersion}</Text>
+              </View>
+            }
+          />
+          <ListItem
+            LeftComponent={
+              <View style={$item}>
+                <Text preset="bold">App Build Version</Text>
+                <Text>{Application.nativeBuildVersion}</Text>
+              </View>
+            }
+          />
+          <ListItem
+            LeftComponent={
+              <View style={$item}>
+                <Text preset="bold">Hermes Enabled</Text>
+                <Text>{String(usingHermes)}</Text>
+              </View>
+            }
+          />
+        </View>
+        <View style={$buttonContainer}>
+          <Button
+            style={$button}
+            tx="demoDebugScreen.reactotron"
+            onPress={demoReactotron}
+          />
+          <Text
+            style={$hint}
+            tx={`demoDebugScreen.${Platform.OS}ReactotronHint` as const}
+          />
+        </View>
+        <View style={$buttonContainer}>
+          <Button style={$button} tx="common.signOut" onPress={signOut} />
+        </View>
+      </Screen>
+    );
+  };
 
 const $container: ViewStyle = {
   paddingTop: spacing.large + spacing.extraLarge,
   paddingBottom: spacing.huge,
   paddingHorizontal: spacing.large,
-}
+};
 
 const $title: TextStyle = {
   marginBottom: spacing.huge,
-}
+};
 
 const $reportBugsLink: TextStyle = {
   color: colors.primary,
   marginBottom: spacing.large,
-  alignSelf: "flex-end",
-}
+  alignSelf: 'flex-end',
+};
 
 const $item: ViewStyle = {
   marginBottom: spacing.medium,
-}
+};
 
 const $itemsContainer: ViewStyle = {
   marginBottom: spacing.extraLarge,
-}
+};
 
 const $button: ViewStyle = {
   marginBottom: spacing.extraSmall,
-}
+};
 
 const $buttonContainer: ViewStyle = {
   marginBottom: spacing.medium,
-}
+};
 
 const $hint: TextStyle = {
   color: colors.secondaryText,
   fontSize: 12,
   lineHeight: 15,
   paddingBottom: spacing.large,
-}
+};
 
 // @demo remove-file

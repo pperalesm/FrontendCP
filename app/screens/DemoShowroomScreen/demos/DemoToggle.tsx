@@ -1,32 +1,32 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
-import React from "react"
-import { TextStyle, View, ViewStyle } from "react-native"
-import { Text, Toggle, ToggleProps } from "../../../components"
-import { colors, spacing } from "../../../theme"
-import { Demo } from "../DemoShowroomScreen"
-import { DemoDivider } from "../DemoDivider"
-import { DemoUseCase } from "../DemoUseCase"
+import React from 'react';
+import { TextStyle, View, ViewStyle } from 'react-native';
+import { Text, Toggle, ToggleProps } from '../../../components';
+import { colors, spacing } from '../../../theme';
+import { Demo } from '../DemoShowroomScreen';
+import { DemoDivider } from '../DemoDivider';
+import { DemoUseCase } from '../DemoUseCase';
 
 function ControlledToggle(props: ToggleProps) {
-  const [value, setValue] = React.useState(props.value || false)
-  return <Toggle {...props} value={value} onPress={() => setValue(!value)} />
+  const [value, setValue] = React.useState(props.value || false);
+  return <Toggle {...props} value={value} onPress={() => setValue(!value)} />;
 }
 
 const $centeredOneThirdCol: ViewStyle = {
-  width: "33.33333%",
-  alignItems: "center",
-  justifyContent: "center",
-}
+  width: '33.33333%',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
 const $centeredText: TextStyle = {
-  textAlign: "center",
-  width: "100%",
+  textAlign: 'center',
+  width: '100%',
   marginTop: spacing.extraSmall,
-}
+};
 
 export const DemoToggle: Demo = {
-  name: "Toggle",
+  name: 'Toggle',
   description:
-    "Renders a boolean input. This is a controlled component that requires an onValueChange callback that updates the value prop in order for the component to reflect user actions. If the value prop is not updated, the component will continue to render the supplied value prop instead of the expected result of any user actions.",
+    'Renders a boolean input. This is a controlled component that requires an onValueChange callback that updates the value prop in order for the component to reflect user actions. If the value prop is not updated, the component will continue to render the supplied value prop instead of the expected result of any user actions.',
   data: [
     <DemoUseCase
       name="Variants"
@@ -56,23 +56,53 @@ export const DemoToggle: Demo = {
       description="There is a status prop - similar to `preset` in other components, but affects component functionality as well."
       layout="row"
     >
-      <ControlledToggle variant="checkbox" containerStyle={$centeredOneThirdCol} />
+      <ControlledToggle
+        variant="checkbox"
+        containerStyle={$centeredOneThirdCol}
+      />
       <ControlledToggle variant="radio" containerStyle={$centeredOneThirdCol} />
-      <ControlledToggle variant="switch" containerStyle={$centeredOneThirdCol} />
-      <DemoDivider style={{ width: "100%" }} />
-      <ControlledToggle variant="checkbox" value containerStyle={$centeredOneThirdCol} />
-      <ControlledToggle variant="radio" value containerStyle={$centeredOneThirdCol} />
-      <ControlledToggle variant="switch" value containerStyle={$centeredOneThirdCol} />
+      <ControlledToggle
+        variant="switch"
+        containerStyle={$centeredOneThirdCol}
+      />
+      <DemoDivider style={{ width: '100%' }} />
+      <ControlledToggle
+        variant="checkbox"
+        value
+        containerStyle={$centeredOneThirdCol}
+      />
+      <ControlledToggle
+        variant="radio"
+        value
+        containerStyle={$centeredOneThirdCol}
+      />
+      <ControlledToggle
+        variant="switch"
+        value
+        containerStyle={$centeredOneThirdCol}
+      />
       <Text preset="formHelper" style={$centeredText}>
         No status - this is the default
       </Text>
 
-      <DemoDivider size={24} style={{ width: "100%" }} />
+      <DemoDivider size={24} style={{ width: '100%' }} />
 
-      <ControlledToggle variant="checkbox" status="error" containerStyle={$centeredOneThirdCol} />
-      <ControlledToggle variant="radio" status="error" containerStyle={$centeredOneThirdCol} />
-      <ControlledToggle variant="switch" status="error" containerStyle={$centeredOneThirdCol} />
-      <DemoDivider style={{ width: "100%" }} />
+      <ControlledToggle
+        variant="checkbox"
+        status="error"
+        containerStyle={$centeredOneThirdCol}
+      />
+      <ControlledToggle
+        variant="radio"
+        status="error"
+        containerStyle={$centeredOneThirdCol}
+      />
+      <ControlledToggle
+        variant="switch"
+        status="error"
+        containerStyle={$centeredOneThirdCol}
+      />
+      <DemoDivider style={{ width: '100%' }} />
       <ControlledToggle
         variant="checkbox"
         value
@@ -95,16 +125,24 @@ export const DemoToggle: Demo = {
         Error status - use when there is an error
       </Text>
 
-      <DemoDivider size={24} style={{ width: "100%" }} />
+      <DemoDivider size={24} style={{ width: '100%' }} />
 
       <ControlledToggle
         variant="checkbox"
         status="disabled"
         containerStyle={$centeredOneThirdCol}
       />
-      <ControlledToggle variant="radio" status="disabled" containerStyle={$centeredOneThirdCol} />
-      <ControlledToggle variant="switch" status="disabled" containerStyle={$centeredOneThirdCol} />
-      <DemoDivider style={{ width: "100%" }} />
+      <ControlledToggle
+        variant="radio"
+        status="disabled"
+        containerStyle={$centeredOneThirdCol}
+      />
+      <ControlledToggle
+        variant="switch"
+        status="disabled"
+        containerStyle={$centeredOneThirdCol}
+      />
+      <DemoDivider style={{ width: '100%' }} />
       <ControlledToggle
         variant="checkbox"
         value
@@ -143,9 +181,9 @@ export const DemoToggle: Demo = {
         variant="radio"
         value
         labelTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        labelTxOptions={{ prop: "label" }}
+        labelTxOptions={{ prop: 'label' }}
         helperTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        helperTxOptions={{ prop: "helper" }}
+        helperTxOptions={{ prop: 'helper' }}
       />
       <DemoDivider size={24} />
       <ControlledToggle
@@ -188,7 +226,11 @@ export const DemoToggle: Demo = {
       />
     </DemoUseCase>,
 
-    <DemoUseCase name="Styling" description="The component can be styled easily." layout="row">
+    <DemoUseCase
+      name="Styling"
+      description="The component can be styled easily."
+      layout="row"
+    >
       <ControlledToggle
         variant="checkbox"
         containerStyle={$centeredOneThirdCol}
@@ -219,7 +261,7 @@ export const DemoToggle: Demo = {
         1 - style the input outer wrapper
       </Text>
 
-      <DemoDivider style={{ width: "100%" }} />
+      <DemoDivider style={{ width: '100%' }} />
 
       <ControlledToggle
         value
@@ -260,7 +302,7 @@ export const DemoToggle: Demo = {
         2 - style the input inner wrapper
       </Text>
 
-      <DemoDivider style={{ width: "100%" }} />
+      <DemoDivider style={{ width: '100%' }} />
 
       <ControlledToggle
         value
@@ -319,14 +361,14 @@ export const DemoToggle: Demo = {
         3 - style the input detail
       </Text>
 
-      <DemoDivider size={32} style={{ width: "100%" }} />
+      <DemoDivider size={32} style={{ width: '100%' }} />
 
-      <View style={{ width: "100%" }}>
+      <View style={{ width: '100%' }}>
         <ControlledToggle
           value
           variant="radio"
           label="You can also style the label"
-          LabelTextProps={{ size: "xs", weight: "bold" }}
+          LabelTextProps={{ size: 'xs', weight: 'bold' }}
           status="error"
           labelStyle={{
             backgroundColor: colors.error,
@@ -335,9 +377,9 @@ export const DemoToggle: Demo = {
         />
       </View>
 
-      <DemoDivider size={24} style={{ width: "100%" }} />
+      <DemoDivider size={24} style={{ width: '100%' }} />
 
-      <View style={{ width: "100%" }}>
+      <View style={{ width: '100%' }}>
         <ControlledToggle
           value
           variant="radio"
@@ -349,6 +391,6 @@ export const DemoToggle: Demo = {
       </View>
     </DemoUseCase>,
   ],
-}
+};
 
 // @demo remove-file

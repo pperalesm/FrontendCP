@@ -1,10 +1,10 @@
 // we always make sure 'react-native' gets included first
-import * as ReactNative from "react-native"
-import mockAsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock"
-import mockFile from "./mockFile"
+import * as ReactNative from 'react-native';
+import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock';
+import mockFile from './mockFile';
 
 // libraries to mock
-jest.doMock("react-native", () => {
+jest.doMock('react-native', () => {
   // Extend ReactNative
   return Object.setPrototypeOf(
     {
@@ -21,21 +21,21 @@ jest.doMock("react-native", () => {
       },
     },
     ReactNative,
-  )
-})
+  );
+});
 
-jest.mock("@react-native-async-storage/async-storage", () => mockAsyncStorage)
+jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 
-jest.mock("i18n-js", () => ({
-  currentLocale: () => "en",
+jest.mock('i18n-js', () => ({
+  currentLocale: () => 'en',
   t: (key: string, params: Record<string, string>) => {
-    return `${key} ${JSON.stringify(params)}`
+    return `${key} ${JSON.stringify(params)}`;
   },
-}))
+}));
 
-declare const tron // eslint-disable-line @typescript-eslint/no-unused-vars
+declare const tron; // eslint-disable-line @typescript-eslint/no-unused-vars
 
-jest.useFakeTimers()
+jest.useFakeTimers();
 declare global {
-  let __TEST__
+  let __TEST__;
 }

@@ -136,9 +136,7 @@
     "@expo/dev-server": "0.1.120"
   },
   "prettier": {
-    "printWidth": 100,
-    "semi": false,
-    "singleQuote": false,
+    "singleQuote": true,
     "trailingComma": "all"
   },
   "detox": {

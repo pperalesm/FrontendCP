@@ -1,45 +1,46 @@
 /* eslint-disable react/jsx-key */
-import React from "react"
-import { TextStyle, ViewStyle } from "react-native"
-import { Icon, TextField } from "../../../components"
-import { colors, spacing } from "../../../theme"
-import { Demo } from "../DemoShowroomScreen"
-import { DemoDivider } from "../DemoDivider"
-import { DemoUseCase } from "../DemoUseCase"
+import React from 'react';
+import { TextStyle, ViewStyle } from 'react-native';
+import { Icon, TextField } from '../../../components';
+import { colors, spacing } from '../../../theme';
+import { Demo } from '../DemoShowroomScreen';
+import { DemoDivider } from '../DemoDivider';
+import { DemoUseCase } from '../DemoUseCase';
 
 const $customInputStyle: TextStyle = {
   backgroundColor: colors.error,
-}
+};
 
 const $customInputWrapperStyle: ViewStyle = {
   backgroundColor: colors.error,
-}
+};
 
 const $customContainerStyle: ViewStyle = {
   backgroundColor: colors.error,
-}
+};
 
-const $customLabelAndHelperStyle: TextStyle = {}
+const $customLabelAndHelperStyle: TextStyle = {};
 
 const $customInputWithAbsoluteAccessoriesStyle: ViewStyle = {
   marginHorizontal: spacing.huge,
-}
+};
 
 const $customLeftAccessoryStyle: ViewStyle = {
   backgroundColor: colors.error,
-  position: "absolute",
+  position: 'absolute',
   left: 0,
-}
+};
 
 const $customRightAccessoryStyle: ViewStyle = {
   backgroundColor: colors.error,
-  position: "absolute",
+  position: 'absolute',
   right: 0,
-}
+};
 
 export const DemoTextField: Demo = {
-  name: "TextField",
-  description: "TextField component allows for the entering and editing of text.",
+  name: 'TextField',
+  description:
+    'TextField component allows for the entering and editing of text.',
   data: [
     <DemoUseCase
       name="Statuses"
@@ -87,11 +88,11 @@ export const DemoTextField: Demo = {
 
       <TextField
         labelTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        labelTxOptions={{ prop: "label" }}
+        labelTxOptions={{ prop: 'label' }}
         helperTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        helperTxOptions={{ prop: "helper" }}
+        helperTxOptions={{ prop: 'helper' }}
         placeholderTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        placeholderTxOptions={{ prop: "placeholder" }}
+        placeholderTxOptions={{ prop: 'placeholder' }}
       />
 
       <DemoDivider size={24} />
@@ -100,7 +101,9 @@ export const DemoTextField: Demo = {
         label="RightAccessory"
         helper="This prop takes a function that returns a React element."
         value="Reprehenderit Lorem magna non consequat ullamco cupidatat."
-        RightAccessory={(props) => <Icon icon="ladybug" containerStyle={props.style} size={21} />}
+        RightAccessory={(props) => (
+          <Icon icon="ladybug" containerStyle={props.style} size={21} />
+        )}
       />
 
       <DemoDivider size={24} />
@@ -109,7 +112,9 @@ export const DemoTextField: Demo = {
         label="LeftAccessory"
         helper="This prop takes a function that returns a React element."
         value="Eiusmod exercitation mollit elit magna occaecat eiusmod Lorem minim veniam."
-        LeftAccessory={(props) => <Icon icon="ladybug" containerStyle={props.style} size={21} />}
+        LeftAccessory={(props) => (
+          <Icon icon="ladybug" containerStyle={props.style} size={21} />
+        )}
       />
 
       <DemoDivider size={24} />
@@ -119,11 +124,16 @@ export const DemoTextField: Demo = {
         helper="Enables a taller input for multiline text."
         value="Eiusmod exercitation mollit elit magna occaecat eiusmod Lorem minim veniam. Laborum Lorem velit velit minim irure ad in ut adipisicing consectetur."
         multiline
-        RightAccessory={(props) => <Icon icon="ladybug" containerStyle={props.style} size={21} />}
+        RightAccessory={(props) => (
+          <Icon icon="ladybug" containerStyle={props.style} size={21} />
+        )}
       />
     </DemoUseCase>,
 
-    <DemoUseCase name="Styling" description="The component can be styled easily.">
+    <DemoUseCase
+      name="Styling"
+      description="The component can be styled easily."
+    >
       <TextField
         label="Style Input"
         helper="Via `style` prop"
@@ -173,7 +183,12 @@ export const DemoTextField: Demo = {
         value="Aute nisi dolore fugiat anim mollit nulla ex minim ipsum ex elit."
         style={$customInputWithAbsoluteAccessoriesStyle}
         LeftAccessory={() => (
-          <Icon icon="ladybug" containerStyle={$customLeftAccessoryStyle} color="white" size={41} />
+          <Icon
+            icon="ladybug"
+            containerStyle={$customLeftAccessoryStyle}
+            color="white"
+            size={41}
+          />
         )}
         RightAccessory={() => (
           <Icon
@@ -186,6 +201,6 @@ export const DemoTextField: Demo = {
       />
     </DemoUseCase>,
   ],
-}
+};
 
 // @demo remove-file

@@ -1,17 +1,20 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
-import React from "react"
-import { AutoImage, Button, Card, Icon } from "../../../components"
-import { colors, spacing } from "../../../theme"
-import { Demo } from "../DemoShowroomScreen"
-import { DemoDivider } from "../DemoDivider"
-import { DemoUseCase } from "../DemoUseCase"
+import React from 'react';
+import { AutoImage, Button, Card, Icon } from '../../../components';
+import { colors, spacing } from '../../../theme';
+import { Demo } from '../DemoShowroomScreen';
+import { DemoDivider } from '../DemoDivider';
+import { DemoUseCase } from '../DemoUseCase';
 
 export const DemoCard: Demo = {
-  name: "Card",
+  name: 'Card',
   description:
-    "Cards are useful for displaying related information in a contained way. If a ListItem displays content horizontally, a Card can be used to display content vertically.",
+    'Cards are useful for displaying related information in a contained way. If a ListItem displays content horizontally, a Card can be used to display content vertically.',
   data: [
-    <DemoUseCase name="Presets" description="There are a few presets that are preconfigured.">
+    <DemoUseCase
+      name="Presets"
+      description="There are a few presets that are preconfigured."
+    >
       <Card
         heading="Default Preset (default)"
         content="Incididunt magna ut aliquip consectetur mollit dolor."
@@ -68,16 +71,20 @@ export const DemoCard: Demo = {
       name="Passing Content"
       description="There are a few different ways to pass content."
     >
-      <Card heading="Via `heading` Prop" content="Via `content` Prop" footer="Via `footer` Prop" />
+      <Card
+        heading="Via `heading` Prop"
+        content="Via `content` Prop"
+        footer="Via `footer` Prop"
+      />
       <DemoDivider />
       <Card
         preset="filled"
         headingTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        headingTxOptions={{ prop: "heading" }}
+        headingTxOptions={{ prop: 'heading' }}
         contentTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        contentTxOptions={{ prop: "content" }}
+        contentTxOptions={{ prop: 'content' }}
         footerTx="demoShowroomScreen.demoViaSpecifiedTxProp"
-        footerTxOptions={{ prop: "footer" }}
+        footerTxOptions={{ prop: 'footer' }}
       />
     </DemoUseCase>,
 
@@ -90,21 +97,27 @@ export const DemoCard: Demo = {
           <Button
             preset="filled"
             text="HeadingComponent"
-            LeftAccessory={(props) => <Icon style={props.style} icon="ladybug" />}
+            LeftAccessory={(props) => (
+              <Icon style={props.style} icon="ladybug" />
+            )}
           />
         }
         ContentComponent={
           <Button
             style={{ marginVertical: spacing.small }}
             text="ContentComponent"
-            LeftAccessory={(props) => <Icon style={props.style} icon="ladybug" />}
+            LeftAccessory={(props) => (
+              <Icon style={props.style} icon="ladybug" />
+            )}
           />
         }
         FooterComponent={
           <Button
             preset="filled"
             text="FooterComponent"
-            LeftAccessory={(props) => <Icon style={props.style} icon="ladybug" />}
+            LeftAccessory={(props) => (
+              <Icon style={props.style} icon="ladybug" />
+            )}
           />
         }
       />
@@ -116,9 +129,9 @@ export const DemoCard: Demo = {
           <AutoImage
             maxWidth={80}
             maxHeight={60}
-            style={{ alignSelf: "center" }}
+            style={{ alignSelf: 'center' }}
             source={{
-              uri: "https://user-images.githubusercontent.com/1775841/184508739-f90d0ce5-7219-42fd-a91f-3382d016eae0.png",
+              uri: 'https://user-images.githubusercontent.com/1775841/184508739-f90d0ce5-7219-42fd-a91f-3382d016eae0.png',
             }}
           />
         }
@@ -132,16 +145,19 @@ export const DemoCard: Demo = {
           <AutoImage
             maxWidth={80}
             maxHeight={60}
-            style={{ alignSelf: "center" }}
+            style={{ alignSelf: 'center' }}
             source={{
-              uri: "https://user-images.githubusercontent.com/1775841/184508739-f90d0ce5-7219-42fd-a91f-3382d016eae0.png",
+              uri: 'https://user-images.githubusercontent.com/1775841/184508739-f90d0ce5-7219-42fd-a91f-3382d016eae0.png',
             }}
           />
         }
       />
     </DemoUseCase>,
 
-    <DemoUseCase name="Styling" description="The component can be styled easily.">
+    <DemoUseCase
+      name="Styling"
+      description="The component can be styled easily."
+    >
       <Card
         heading="Style the Heading"
         headingStyle={{ color: colors.error }}
@@ -149,8 +165,8 @@ export const DemoCard: Demo = {
         contentStyle={{ backgroundColor: colors.error }}
         footer="Style the Footer"
         footerStyle={{
-          textDecorationLine: "underline line-through",
-          textDecorationStyle: "dashed",
+          textDecorationLine: 'underline line-through',
+          textDecorationStyle: 'dashed',
           color: colors.error,
           textDecorationColor: colors.error,
         }}
@@ -162,6 +178,6 @@ export const DemoCard: Demo = {
       />
     </DemoUseCase>,
   ],
-}
+};
 
 // @demo remove-file
