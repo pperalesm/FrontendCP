@@ -14,7 +14,7 @@ import {
 import { DrawerLayout, DrawerState } from "react-native-gesture-handler"
 import { useSharedValue, withTiming } from "react-native-reanimated"
 import { ListItem, Screen, Text } from "../../components"
-import { DemoTabParamList, DemoTabScreenProps } from "../../navigators/DemoNavigator"
+import { MainTabParamList, MainTabScreenProps } from "../../navigators/MainNavigator"
 import { colors, spacing, timing } from "../../theme"
 import { useSafeAreaInsetsStyle } from "../../utils/useSafeAreaInsetsStyle"
 import * as Demos from "./demos"
@@ -83,7 +83,7 @@ const NativeListItem: FC<DemoListItem> = ({ item, sectionIndex, handleScroll }) 
 
 const ShowroomListItem = Platform.select({ web: WebListItem, default: NativeListItem })
 
-export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
+export const DemoShowroomScreen: FC<MainTabScreenProps<"DemoShowroom">> =
   function DemoShowroomScreen(_props) {
     const [open, setOpen] = useState(false)
     const timeout = useRef<ReturnType<typeof setTimeout>>()
@@ -91,7 +91,7 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
     const listRef = useRef<SectionList>()
     const menuRef = useRef<FlatList>()
     const progress = useSharedValue(0)
-    const route = useRoute<RouteProp<DemoTabParamList, "DemoShowroom">>()
+    const route = useRoute<RouteProp<MainTabParamList, "DemoShowroom">>()
     const params = route.params
 
     // handle Web links

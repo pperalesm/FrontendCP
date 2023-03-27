@@ -8,12 +8,12 @@ describe("Example", () => {
     await reloadApp()
   })
 
-  it("should have the login screen first", async () => {
-    await expect(element(by.id("login-heading"))).toBeVisible()
+  it("should have the signIn screen first", async () => {
+    await expect(element(by.id("signIn-heading"))).toBeVisible()
   })
 
   it("should go to welcome screen after logging in", async () => {
-    await element(by.id("login-button")).tap()
+    await element(by.id("signIn-button")).tap()
     await expect(element(by.id("welcome-heading"))).toBeVisible()
   })
 })

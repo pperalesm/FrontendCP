@@ -6,13 +6,11 @@ import { UserModel } from "./User"
 export const AuthenticationStoreModel = types
   .model("AuthenticationStore")
   .props({
-    accessToken: types.maybe(types.string),
-    refreshToken: types.maybe(types.string),
     user: types.maybe(UserModel),
   })
   .views((store) => ({
     get isAuthenticated() {
-      return !!store.accessToken
+      return !!store.user
     },
   }))
   .actions(withSetPropAction)
@@ -20,15 +18,16 @@ export const AuthenticationStoreModel = types
     async signIn(email: string, password: string) {
       const response = await api.signIn(email, password)
       if (response.kind === "ok") {
-        store.setProp("accessToken", response.accessToken)
-        store.setProp("refreshToken", response.refreshToken)
         store.setProp("user", response.user)
       }
+      return response
     },
-    logout() {
-      store.accessToken = undefined
-      store.refreshToken = undefined
-      store.user = undefined
+    async signUp(email: string, password: string) {
+      return await api.signUp(email, password)
+    },
+    async signOut() {
+      await api.signOut()
+      store.setProp("user", undefined)
     },
   }))
 

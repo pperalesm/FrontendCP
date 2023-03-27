@@ -2,7 +2,7 @@ import React, { FC } from "react"
 import * as Application from "expo-application"
 import { Linking, Platform, TextStyle, View, ViewStyle } from "react-native"
 import { Button, ListItem, Screen, Text } from "../components"
-import { DemoTabScreenProps } from "../navigators/DemoNavigator"
+import { MainTabScreenProps } from "../navigators/MainNavigator"
 import { colors, spacing } from "../theme"
 import { useStores } from "../models"
 
@@ -10,11 +10,11 @@ function openLinkInBrowser(url: string) {
   Linking.canOpenURL(url).then((canOpen) => canOpen && Linking.openURL(url))
 }
 
-export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function DemoDebugScreen(
+export const DemoDebugScreen: FC<MainTabScreenProps<"DemoDebug">> = function DemoDebugScreen(
   _props,
 ) {
   const {
-    authenticationStore: { logout },
+    authenticationStore: { signOut },
   } = useStores()
 
   const usingHermes = typeof HermesInternal === "object" && HermesInternal !== null
@@ -91,7 +91,7 @@ export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function Dem
         <Text style={$hint} tx={`demoDebugScreen.${Platform.OS}ReactotronHint` as const} />
       </View>
       <View style={$buttonContainer}>
-        <Button style={$button} tx="common.logOut" onPress={logout} />
+        <Button style={$button} tx="common.signOut" onPress={signOut} />
       </View>
     </Screen>
   )

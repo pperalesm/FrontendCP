@@ -129,7 +129,7 @@ const $baseViewStyle: ViewStyle = {
   alignItems: "center",
   flexDirection: "row",
   paddingVertical: spacing.medium,
-  paddingHorizontal: spacing.small,
+  paddingHorizontal: spacing.medium,
   overflow: "hidden",
   elevation: 4,
 }

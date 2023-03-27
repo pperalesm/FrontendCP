@@ -36,7 +36,7 @@ export interface ApiFeedResponse {
   items: EpisodeItem[]
 }
 
-export interface ApiSignInResponse {
+export interface ApiTokenResponse {
   accessToken: string
   refreshToken: string
   user: UserSnapshotIn

@@ -1,7 +1,7 @@
 import React, { FC } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 import { ListItem, Screen, Text } from "../components"
-import { DemoTabScreenProps } from "../navigators/DemoNavigator"
+import { MainTabScreenProps } from "../navigators/MainNavigator"
 import { spacing } from "../theme"
 import { openLinkInBrowser } from "../utils/openLinkInBrowser"
 
@@ -10,7 +10,7 @@ const reactNativeLiveLogo = require("../../assets/images/rnl-logo.png")
 const reactNativeRadioLogo = require("../../assets/images/rnr-logo.png")
 const reactNativeNewsletterLogo = require("../../assets/images/rnn-logo.png")
 
-export const DemoCommunityScreen: FC<DemoTabScreenProps<"DemoCommunity">> =
+export const DemoCommunityScreen: FC<MainTabScreenProps<"DemoCommunity">> =
   function DemoCommunityScreen(_props) {
     return (
       <Screen preset="scroll" contentContainerStyle={$container} safeAreaEdges={["top"]}>

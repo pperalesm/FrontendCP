@@ -1,46 +1,25 @@
-/**
- * This Api class lets you define an API endpoint and methods to request
- * data and process it.
- *
- * See the [Backend API Integration](https://github.com/infinitered/ignite/blob/master/docs/Backend-API-Integration.md)
- * documentation for more details.
- */
-import {
-  ApiResponse, // @demo remove-current-line
-  ApisauceInstance,
-  create,
-} from "apisauce"
+import { ApiResponse, ApisauceInstance, create } from "apisauce"
 import Config from "../../config"
-import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem" // @demo remove-current-line
-import type {
-  ApiConfig,
-  ApiFeedResponse,
-  ApiSignInResponse, // @demo remove-current-line
-} from "./api.types"
-import type { EpisodeSnapshotIn } from "../../models/Episode" // @demo remove-current-line
+import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem"
+import type { ApiConfig, ApiFeedResponse, ApiTokenResponse } from "./api.types"
+import type { EpisodeSnapshotIn } from "../../models/Episode"
 import { UserSnapshotIn } from "../../models/User"
+import * as SecureStore from "expo-secure-store"
+import { RootStore } from "../../models"
 
-/**
- * Configuring the apisauce instance.
- */
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
   timeout: 10000,
 }
 
-/**
- * Manages all requests to the API. You can use this class to build out
- * various requests that you need to call from your backend API.
- */
 export class Api {
   apisauce: ApisauceInstance
   config: ApiConfig
+  rootStore: RootStore
 
-  /**
-   * Set up our API instance. Keep this lightweight!
-   */
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config
+
     this.apisauce = create({
       baseURL: this.config.url,
       timeout: this.config.timeout,
@@ -48,42 +27,72 @@ export class Api {
         Accept: "application/json",
       },
     })
+
+    this.apisauce.addAsyncResponseTransform(async (response) => {
+      if (response.status === 401) {
+        const refreshToken = await SecureStore.getItemAsync("refreshToken")
+
+        const refreshResponse: ApiResponse<ApiTokenResponse> = await this.apisauce.post(
+          `auth/refresh-tokens`,
+          {
+            refreshToken,
+          },
+        )
+
+        if (refreshResponse.ok) {
+          this.apisauce.setHeader("Authorization", `Bearer ${refreshResponse.data.accessToken}`)
+
+          await SecureStore.setItemAsync("refreshToken", refreshResponse.data.refreshToken)
+
+          response = await this.apisauce.any({
+            ...response.config,
+            headers: {
+              ...response.config.headers,
+              Authorization: `Bearer ${refreshResponse.data.accessToken}`,
+            },
+          })
+        } else {
+          this.rootStore.authenticationStore.signOut()
+        }
+      }
+    })
   }
 
-  // @demo remove-block-start
-  /**
-   * Gets a list of recent React Native Radio episodes.
-   */
+  setRootStore(rootStore: RootStore) {
+    this.rootStore = rootStore
+  }
+
   async getEpisodes(): Promise<{ kind: "ok"; episodes: EpisodeSnapshotIn[] } | GeneralApiProblem> {
-    // make the api call
     const response: ApiResponse<ApiFeedResponse> = await this.apisauce.get(
       `api.json?rss_url=https%3A%2F%2Ffeeds.simplecast.com%2FhEI_f9Dx`,
     )
 
-    // the typical ways to die when calling an api
-    if (!response.ok) {
-      const problem = getGeneralApiProblem(response)
-      if (problem) return problem
-    }
+    let problem: GeneralApiProblem
 
-    // transform the data into the format we are expecting
-    try {
-      const rawData = response.data
+    if (response.ok) {
+      try {
+        const rawData = response.data
 
-      // This is where we transform the data into the shape we expect for our MST model.
-      const episodes: EpisodeSnapshotIn[] = rawData.items.map((raw) => ({
-        ...raw,
-      }))
+        const episodes: EpisodeSnapshotIn[] = rawData.items.map((raw) => ({
+          ...raw,
+        }))
 
-      return { kind: "ok", episodes }
-    } catch (e) {
-      if (__DEV__) {
-        console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
+        return { kind: "ok", episodes }
+      } catch (e) {
+        if (__DEV__) {
+          console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
+        }
+        problem = { kind: "bad-data" }
       }
-      return { kind: "bad-data" }
+    } else {
+      const error = getGeneralApiProblem(response)
+      if (error) {
+        problem = error
+      }
     }
+
+    return problem
   }
-  // @demo remove-block-end
 
   async signIn(
     email: string,
@@ -92,36 +101,73 @@ export class Api {
     | { kind: "ok"; accessToken: string; refreshToken: string; user: UserSnapshotIn }
     | GeneralApiProblem
   > {
-    // make the api call
-    const response: ApiResponse<ApiSignInResponse> = await this.apisauce.post(`auth/sign-in`, {
+    const response: ApiResponse<ApiTokenResponse> = await this.apisauce.post(`auth/sign-in`, {
       email,
       password,
     })
 
-    // the typical ways to die when calling an api
-    if (!response.ok) {
-      const problem = getGeneralApiProblem(response)
-      if (problem) return problem
+    let problem: GeneralApiProblem
+
+    if (response.ok) {
+      try {
+        const user: UserSnapshotIn = {
+          ...response.data.user,
+          createdAt: new Date(response.data.user.createdAt),
+          updatedAt: new Date(response.data.user.updatedAt),
+        }
+
+        this.apisauce.setHeader("Authorization", `Bearer ${response.data.accessToken}`)
+
+        await SecureStore.setItemAsync("refreshToken", response.data.refreshToken)
+
+        return { kind: "ok", ...response.data, user }
+      } catch (e) {
+        if (__DEV__) {
+          console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
+        }
+        return { kind: "bad-data" }
+      }
+    } else {
+      problem = getGeneralApiProblem(response)
     }
 
-    // transform the data into the format we are expecting
-    try {
-      // This is where we transform the data into the shape we expect for our MST model.
-      const user: UserSnapshotIn = {
-        ...response.data.user,
-        createdAt: new Date(response.data.user.createdAt),
-        updatedAt: new Date(response.data.user.updatedAt),
-      }
+    return problem
+  }
 
-      return { kind: "ok", ...response.data, user }
-    } catch (e) {
-      if (__DEV__) {
-        console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
-      }
-      return { kind: "bad-data" }
+  async signUp(email: string, password: string): Promise<{ kind: "ok" } | GeneralApiProblem> {
+    const response: ApiResponse<null> = await this.apisauce.post(`auth/sign-up`, {
+      email,
+      password,
+    })
+
+    let problem: GeneralApiProblem
+
+    if (response.ok) {
+      this.apisauce.deleteHeader("Authorization")
+
+      await SecureStore.deleteItemAsync("refreshToken")
+
+      return { kind: "ok" }
+    } else {
+      problem = getGeneralApiProblem(response)
     }
+
+    return problem
+  }
+
+  async signOut(): Promise<{ kind: "ok" } | GeneralApiProblem> {
+    const response: ApiResponse<null> = await this.apisauce.delete(`auth/sign-out`)
+
+    let problem: GeneralApiProblem
+
+    if (response.ok) {
+      return { kind: "ok" }
+    } else {
+      problem = getGeneralApiProblem(response)
+    }
+
+    return problem
   }
 }
 
-// Singleton instance of the API for convenience
 export const api = new Api()

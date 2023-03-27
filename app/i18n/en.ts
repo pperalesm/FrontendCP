@@ -3,7 +3,7 @@ const en = {
     ok: "OK!",
     cancel: "Cancel",
     back: "Back",
-    logOut: "Log Out", // @demo remove-current-line
+    signOut: "Log Out", // @demo remove-current-line
   },
   welcomeScreen: {
     postscript:
@@ -30,7 +30,7 @@ const en = {
   errors: {
     invalidEmail: "Invalid email address.",
   },
-  loginScreen: {
+  SignInScreen: {
     signIn: "Sign In",
     enterDetails:
       "Enter your details below to unlock top secret info. You'll never guess what we've got waiting. Or maybe you will; it's not rocket science here.",
@@ -123,4 +123,3 @@ const en = {
 }
 
 export default en
-export type Translations = typeof en

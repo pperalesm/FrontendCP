@@ -199,8 +199,8 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
 
         <TextInput
           ref={input}
-          onBlur={() => setHasFocus(false)}
           onFocus={() => setHasFocus(true)}
+          onEndEditing={() => setHasFocus(false)}
           underlineColorAndroid={colors.transparent}
           textAlignVertical="top"
           placeholder={placeholderContent}
@@ -254,7 +254,6 @@ const $inputStyle: TextStyle = {
   color: colors.primaryText,
   fontSize: 16,
   height: 24,
-  // https://github.com/facebook/react-native/issues/21720#issuecomment-532642093
   paddingVertical: 0,
   paddingHorizontal: 0,
   marginVertical: spacing.extraSmall,

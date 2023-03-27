@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react"
+import { api } from "../../services/api"
 import { setReactotronRootStore } from "../../services/reactotron"
 import { RootStore, RootStoreModel } from "../RootStore"
 import { setupRootStore } from "./setupRootStore"
@@ -65,6 +66,8 @@ export const useInitialRootStore = (callback: () => void | Promise<void>) => {
 
       // let the app know we've finished rehydrating
       setRehydrated(true)
+
+      api.setRootStore(rootStore)
 
       // invoke the callback, if provided
       if (callback) callback()
