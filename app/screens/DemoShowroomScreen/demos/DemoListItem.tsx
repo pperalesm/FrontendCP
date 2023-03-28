@@ -66,7 +66,7 @@ export const DemoListItem: Demo = {
 
     <DemoUseCase
       name="Separators"
-      description="The separator / divider is preconfigured and optional."
+      description="The separator / border is preconfigured and optional."
     >
       <ListItem topSeparator>Only top separator</ListItem>
 

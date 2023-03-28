@@ -373,7 +373,7 @@ const $favoriteButton: ViewStyle = {
   marginTop: spacing.medium,
   justifyContent: 'flex-start',
   backgroundColor: colors.secondarySurface,
-  borderColor: colors.divider,
+  borderColor: colors.border,
   paddingHorizontal: spacing.medium,
   paddingTop: spacing.micro,
   paddingBottom: 0,
@@ -382,7 +382,7 @@ const $favoriteButton: ViewStyle = {
 };
 
 const $unFavoriteButton: ViewStyle = {
-  borderColor: colors.divider,
+  borderColor: colors.border,
   backgroundColor: colors.secondarySurface,
 };
 

@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useMemo, useRef, useState } from 'react';
 import {
   ImageStyle,
   TextInput,
@@ -25,6 +25,7 @@ import { colors, spacing } from '../theme';
 import { Feather } from '@expo/vector-icons';
 import { Chase } from 'react-native-animated-spinkit';
 import { isEmailValid } from '../utils/isEmailValid';
+import { isPasswordValid } from '../utils/isPasswordValid';
 
 interface SignUpScreenProps extends AppStackScreenProps<'SignUp'> {}
 
@@ -55,12 +56,6 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
       authenticationStore: { signUp },
     } = useStores();
 
-    useEffect(() => {
-      setEmail('user@email.com');
-      setPassword('ThisIsStrong1!');
-      setRepeatedPassword('ThisIsStrong1!');
-    }, []);
-
     function emailValidationError(): TxKeyPath {
       if (!hasEmailBeenTouched && !hasTriedSubmitting) return undefined;
       if (email.length === 0) return 'common.fieldRequired';
@@ -71,6 +66,8 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
     function passwordValidationError(): TxKeyPath {
       if (!hasPasswordBeenTouched && !hasTriedSubmitting) return undefined;
       if (password.length === 0) return 'common.fieldRequired';
+      if (!isPasswordValid(password))
+        return 'SignUpScreen.passwordFieldInvalid';
       return undefined;
     }
 
@@ -92,9 +89,9 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
       )
         return;
       setIsLoading(true);
-      console.log(await signUp(email, password));
+      const response = await signUp(email, password);
       setIsLoading(false);
-      setHasSubmitted(true);
+      if (response.kind === 'ok') setHasSubmitted(true);
     }
 
     const PasswordRightAccessory = useMemo(
@@ -208,7 +205,8 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
 );
 
 const $image: ImageStyle = {
-  marginVertical: spacing.huge,
+  marginTop: spacing.extraLarge,
+  marginBottom: spacing.huge,
   alignSelf: 'center',
 };
 

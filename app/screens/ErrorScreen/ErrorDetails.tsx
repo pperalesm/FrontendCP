@@ -67,7 +67,7 @@ const $heading: TextStyle = {
 
 const $errorSection: ViewStyle = {
   flex: 2,
-  backgroundColor: colors.divider,
+  backgroundColor: colors.border,
   marginVertical: spacing.medium,
   borderRadius: 6,
 };

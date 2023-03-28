@@ -21,7 +21,7 @@ export function DemoDivider(props: DemoDividerProps) {
   return (
     <View
       style={[
-        $divider,
+        $border,
         type === 'horizontal' && { height: size },
         type === 'vertical' && { width: size },
         $styleOverride,
@@ -50,13 +50,13 @@ export function DemoDivider(props: DemoDividerProps) {
   );
 }
 
-const $divider: ViewStyle = {
+const $border: ViewStyle = {
   flexGrow: 0,
   flexShrink: 0,
 };
 
 const $line: ViewStyle = {
-  backgroundColor: colors.divider,
+  backgroundColor: colors.disabled,
   position: 'absolute',
   left: '50%',
   top: '50%',

@@ -283,8 +283,8 @@ function Checkbox(props: ToggleInputProps) {
   const outerBorderColor = [
     disabled && colors.disabled,
     status === 'error' && colors.error,
-    !on && colors.divider,
-    colors.divider,
+    !on && colors.border,
+    colors.border,
   ].filter(Boolean)[0];
 
   const onBackgroundColor = [
@@ -347,8 +347,8 @@ function Radio(props: ToggleInputProps) {
   const outerBorderColor = [
     disabled && colors.disabled,
     status === 'error' && colors.error,
-    !on && colors.divider,
-    colors.divider,
+    !on && colors.border,
+    colors.border,
   ].filter(Boolean)[0];
 
   const onBackgroundColor = [
@@ -430,8 +430,8 @@ function Switch(props: ToggleInputProps) {
   const outerBorderColor = [
     disabled && colors.disabled,
     status === 'error' && colors.error,
-    !on && colors.divider,
-    colors.divider,
+    !on && colors.border,
+    colors.border,
   ].filter(Boolean)[0];
 
   const knobBackgroundColor = (function () {
@@ -528,7 +528,7 @@ function SwitchAccessibilityLabel(
   ];
 
   const color = (function () {
-    if (disabled) return colors.divider;
+    if (disabled) return colors.border;
     if (status === 'error') return colors.error;
     if (!on) return innerStyle?.backgroundColor || colors.primary;
     return detailStyle?.backgroundColor || colors.primarySurface;

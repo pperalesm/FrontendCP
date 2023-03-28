@@ -19,6 +19,10 @@ export interface ButtonAccessoryProps {
 
 export interface ButtonProps extends PressableProps {
   /**
+   * If true, fit button width to content.
+   */
+  fitToContent?: boolean;
+  /**
    * Text which is looked up via i18n.
    */
   tx?: TextProps['tx'];
@@ -75,6 +79,7 @@ export interface ButtonProps extends PressableProps {
  */
 export function Button(props: ButtonProps) {
   const {
+    fitToContent = false,
     tx,
     text,
     txOptions,
@@ -94,6 +99,7 @@ export function Button(props: ButtonProps) {
       $viewPresets[preset],
       $viewStyleOverride,
       !!pressed && [$pressedViewPresets[preset], $pressedViewStyleOverride],
+      fitToContent && $fitToContent,
     ];
   }
   function $textStyle({ pressed }) {
@@ -142,6 +148,10 @@ const $baseViewStyle: ViewStyle = {
   paddingHorizontal: spacing.medium,
   overflow: 'hidden',
   elevation: 4,
+};
+
+const $fitToContent: ViewStyle = {
+  alignSelf: 'center',
 };
 
 const $baseTextStyle: TextStyle = {

@@ -254,7 +254,7 @@ const $inputWrapperStyle: ViewStyle = {
   borderWidth: 1,
   borderRadius: 4,
   backgroundColor: colors.secondarySurface,
-  borderColor: colors.divider,
+  borderColor: colors.border,
 };
 
 const $inputStyle: TextStyle = {

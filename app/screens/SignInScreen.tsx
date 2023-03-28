@@ -11,9 +11,9 @@ import {
   TextField,
   TextFieldAccessoryProps,
   Text,
-  ListItem,
   AutoImage,
 } from '../components';
+import { Divider } from '../components/Divider';
 import { TxKeyPath } from '../i18n';
 import { useStores } from '../models';
 import { AppStackParamList, AppStackScreenProps } from '../navigators';
@@ -38,6 +38,7 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
     const [hasEmailBeenTouched, setHasEmailBeenTouched] = useState(false);
     const [hasPasswordBeenTouched, setHasPasswordBeenTouched] = useState(false);
     const [hasTriedSubmitting, setHasTriedSubmitting] = useState(false);
+    const [areCredentialsInvalid, setAreCredentialsInvalid] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [ispasswordHidden, setIspasswordHidden] = useState(true);
     const {
@@ -67,8 +68,9 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
       if (emailValidationError() || passwordValidationError() || isLoading)
         return;
       setIsLoading(true);
-      await signIn(email, password);
+      const response = await signIn(email, password);
       setIsLoading(false);
+      if (response.kind === 'unauthorized') setAreCredentialsInvalid(true);
     }
 
     const PasswordRightAccessory = useMemo(
@@ -141,31 +143,36 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           {isLoading && <Chase size={22} color={colors.primaryDark}></Chase>}
         </Button>
 
+        {areCredentialsInvalid && (
+          <Text
+            tx="SignInScreen.invalidCredentials"
+            preset="hint"
+            style={$invalidCredentialsText}
+          />
+        )}
+
         <Text
           tx="SignInScreen.forgotPassword"
           preset="hint"
           style={$forgotPasswordText}
         />
 
-        <ListItem
-          topSeparator
-          containerStyle={$listItemContainer}
-          textStyle={$listItemText}
-        >
-          <Button
-            tx="SignInScreen.signUp"
-            style={$signUpButton}
-            preset={'filled'}
-            onPress={() => navigation.navigate('SignUp')}
-          />
-        </ListItem>
+        <Divider size={spacing.extraLarge} />
+
+        <Button
+          tx="SignInScreen.signUp"
+          fitToContent
+          preset={'filled'}
+          onPress={() => navigation.navigate('SignUp')}
+        />
       </Screen>
     );
   },
 );
 
 const $image: ImageStyle = {
-  marginVertical: spacing.huge,
+  marginTop: spacing.extraLarge,
+  marginBottom: spacing.huge,
   alignSelf: 'center',
 };
 
@@ -181,19 +188,14 @@ const $signInButton: ViewStyle = {
   marginTop: spacing.medium,
 };
 
+const $invalidCredentialsText: TextStyle = {
+  marginTop: spacing.small,
+  textAlign: 'center',
+  color: colors.error,
+};
+
 const $forgotPasswordText: TextStyle = {
   marginTop: spacing.small,
   textAlign: 'center',
   color: colors.primary,
 };
-
-const $signUpButton: ViewStyle = {
-  paddingHorizontal: spacing.huge,
-};
-
-const $listItemContainer: ViewStyle = {
-  marginTop: spacing.extraLarge,
-  paddingTop: spacing.huge,
-};
-
-const $listItemText: TextStyle = { textAlign: 'center' };

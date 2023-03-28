@@ -1,11 +1,13 @@
 import { ApiResponse, ApisauceInstance, create } from 'apisauce';
 import Config from '../../config';
 import { GeneralApiProblem, getGeneralApiProblem } from './apiProblem';
-import type { ApiConfig, ApiFeedResponse, ApiTokenResponse } from './api.types';
+import type { ApiConfig, ApiFeedResponse } from './api.types';
 import type { EpisodeSnapshotIn } from '../../models/Episode';
-import { UserSnapshotIn } from '../../models/User';
 import * as SecureStore from 'expo-secure-store';
 import { RootStore } from '../../models';
+import Toast from 'react-native-root-toast';
+import { colors } from '../../theme';
+import { ApiTokenResponse, signIn, signOut, signUp } from './authApi';
 
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
@@ -16,6 +18,11 @@ export class Api {
   apisauce: ApisauceInstance;
   config: ApiConfig;
   rootStore: RootStore;
+
+  // Auth api
+  signIn = signIn;
+  signUp = signUp;
+  signOut = signOut;
 
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config;
@@ -29,7 +36,10 @@ export class Api {
     });
 
     this.apisauce.addAsyncResponseTransform(async (response) => {
-      if (response.status === 401) {
+      if (
+        response.status === 401 &&
+        this.rootStore.authenticationStore.isAuthenticated
+      ) {
         const refreshToken = await SecureStore.getItemAsync('refreshToken');
 
         const refreshResponse: ApiResponse<ApiTokenResponse> =
@@ -58,6 +68,37 @@ export class Api {
         } else {
           this.rootStore.authenticationStore.signOut();
         }
+      } else if (
+        response.problem === 'SERVER_ERROR' ||
+        response.problem === 'CONNECTION_ERROR' ||
+        response.problem === 'TIMEOUT_ERROR'
+      ) {
+        Toast.show(
+          'El servidor no se encuentra disponible en estos momentos. Por favor, inténtelo de nuevo más tarde.',
+          {
+            backgroundColor: colors.errorBackground,
+            textColor: colors.error,
+            duration: Toast.durations.LONG,
+          },
+        );
+      } else if (response.problem === 'NETWORK_ERROR') {
+        Toast.show(
+          'Error de red. Por favor, compruebe su conexión a Internet.',
+          {
+            backgroundColor: colors.errorBackground,
+            textColor: colors.error,
+            duration: Toast.durations.LONG,
+          },
+        );
+      } else if (response.problem === 'UNKNOWN_ERROR') {
+        Toast.show(
+          'Error desconocido. Por favor, inténtelo de nuevo más tarde.',
+          {
+            backgroundColor: colors.errorBackground,
+            textColor: colors.error,
+            duration: Toast.durations.LONG,
+          },
+        );
       }
     });
   }
@@ -98,106 +139,6 @@ export class Api {
       if (error) {
         problem = error;
       }
-    }
-
-    return problem;
-  }
-
-  async signIn(
-    email: string,
-    password: string,
-  ): Promise<
-    | {
-        kind: 'ok';
-        accessToken: string;
-        refreshToken: string;
-        user: UserSnapshotIn;
-      }
-    | GeneralApiProblem
-  > {
-    const response: ApiResponse<ApiTokenResponse> = await this.apisauce.post(
-      `auth/sign-in`,
-      {
-        email,
-        password,
-      },
-    );
-
-    let problem: GeneralApiProblem;
-
-    if (response.ok) {
-      try {
-        const user: UserSnapshotIn = {
-          ...response.data.user,
-          createdAt: new Date(response.data.user.createdAt),
-          updatedAt: new Date(response.data.user.updatedAt),
-        };
-
-        this.apisauce.setHeader(
-          'Authorization',
-          `Bearer ${response.data.accessToken}`,
-        );
-
-        await SecureStore.setItemAsync(
-          'refreshToken',
-          response.data.refreshToken,
-        );
-
-        return { kind: 'ok', ...response.data, user };
-      } catch (e) {
-        if (__DEV__) {
-          console.tron.error(
-            `Bad data: ${e.message}\n${response.data}`,
-            e.stack,
-          );
-        }
-        return { kind: 'bad-data' };
-      }
-    } else {
-      problem = getGeneralApiProblem(response);
-    }
-
-    return problem;
-  }
-
-  async signUp(
-    email: string,
-    password: string,
-  ): Promise<{ kind: 'ok' } | GeneralApiProblem> {
-    const response: ApiResponse<null> = await this.apisauce.post(
-      `auth/sign-up`,
-      {
-        email,
-        password,
-      },
-    );
-
-    let problem: GeneralApiProblem;
-
-    if (response.ok) {
-      this.apisauce.deleteHeader('Authorization');
-
-      await SecureStore.deleteItemAsync('refreshToken');
-
-      return { kind: 'ok' };
-    } else {
-      problem = getGeneralApiProblem(response);
-    }
-
-    return problem;
-  }
-
-  async signOut(): Promise<{ kind: 'ok' } | GeneralApiProblem> {
-    const response: ApiResponse<null> = await this.apisauce.delete(
-      `auth/sign-out`,
-    );
-
-    let problem: GeneralApiProblem;
-
-    if (response.ok) {
-      return { kind: 'ok' };
-    } else {
-      problem = getGeneralApiProblem(response);
     }
 
     return problem;

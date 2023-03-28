@@ -11,6 +11,7 @@ const es = {
     emailFieldInvalid: 'El correo electrónico debe ser válido',
     passwordFieldLabel: 'Contraseña',
     signIn: 'Iniciar sesión',
+    invalidCredentials: 'Correo o contraseña incorrectos',
     forgotPassword: '¿Has olvidado la contraseña?',
     signUp: 'Crear cuenta',
   },
@@ -18,6 +19,8 @@ const es = {
     emailFieldLabel: 'Correo electrónico',
     emailFieldInvalid: 'El correo electrónico debe ser válido',
     passwordFieldLabel: 'Contraseña',
+    passwordFieldInvalid:
+      'La contraseña debe tener un mínimo de 8 caracteres, entre los cuales:\n- Una mayúscula\n- Una minúscula\n- Un número\n- Un signo',
     repeatedPasswordFieldLabel: 'Repetir contraseña',
     notSamePassword: 'Las contraseñas deben coincidir',
     signUp: 'Crear cuenta',

@@ -5,7 +5,7 @@ export const colors = {
   primaryText: '#212121',
   secondaryText: '#757575',
   filledText: '#ffffff',
-  divider: '#bdbdbd',
+  border: '#bdbdbd',
   disabled: '#dddddd',
   background: '#f3f9fb',
   primarySurface: '#f8fbfd',
