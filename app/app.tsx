@@ -51,7 +51,7 @@ const config = {
     SignIn: {
       path: '',
     },
-    Welcome: 'welcome',
+    Activated: { path: 'activated' },
     Demo: {
       screens: {
         DemoShowroom: {

@@ -11,13 +11,20 @@ import React from 'react';
 import { useColorScheme } from 'react-native';
 import Config from '../config';
 import { useStores } from '../models';
-import { SignInScreen, SignUpScreen } from '../screens';
+import {
+  SignInScreen,
+  SignUpScreen,
+  ActivationScreen,
+  ActivatedScreen,
+} from '../screens';
 import { MainNavigator, MainTabParamList } from './MainNavigator';
 import { navigationRef, useBackButtonHandler } from './navigationUtilities';
 
 export type AppStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
+  Activation: undefined;
+  Activated: undefined;
   Main: NavigatorScreenParams<MainTabParamList>;
 };
 
@@ -30,22 +37,28 @@ const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppStack = observer(function AppStack() {
   const {
-    authenticationStore: { isAuthenticated },
+    authenticationStore: { user },
   } = useStores();
 
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={isAuthenticated ? 'Main' : 'SignIn'}
+      initialRouteName={user ? (user.active ? 'Main' : 'Activation') : 'SignIn'}
     >
-      {isAuthenticated ? (
-        <>
-          <Stack.Screen name="Main" component={MainNavigator} />
-        </>
-      ) : (
+      {!user ? (
         <>
           <Stack.Screen name="SignIn" component={SignInScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="Activated" component={ActivatedScreen} />
+        </>
+      ) : !user.active ? (
+        <>
+          <Stack.Screen name="Activation" component={ActivationScreen} />
+          <Stack.Screen name="Activated" component={ActivatedScreen} />
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="Main" component={MainNavigator} />
         </>
       )}
     </Stack.Navigator>

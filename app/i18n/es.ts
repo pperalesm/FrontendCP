@@ -27,6 +27,17 @@ const es = {
     signIn: 'Inicia sesión aquí',
     accountCreated: 'Cuenta creada con éxito',
   },
+  ActivationScreen: {
+    procedure: 'Esta cuenta aún no ha sido activada.',
+    procedureHint:
+      'Por favor, comprueba que el correo de activación haya llegado correctamente y sigue las instrucciones descritas en dicho correo.',
+    activationRequested: 'Correo reenviado con éxito',
+    requestActivation: 'Reenviar correo de activación',
+    signOut: 'Prueba con otra cuenta',
+  },
+  ActivatedScreen: {
+    accountActivated: 'Cuenta activada con éxito',
+  },
   welcomeScreen: {
     postscript:
       "psst  — This probably isn't what your app looks like. (Unless your designer handed you these screens, and in that case, ship it!)",

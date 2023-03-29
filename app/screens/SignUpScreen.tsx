@@ -8,6 +8,7 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  Image,
 } from 'react-native';
 import {
   Button,
@@ -15,7 +16,6 @@ import {
   Screen,
   TextField,
   TextFieldAccessoryProps,
-  AutoImage,
   Text,
 } from '../components';
 import { TxKeyPath } from '../i18n';
@@ -26,6 +26,8 @@ import { Feather } from '@expo/vector-icons';
 import { Chase } from 'react-native-animated-spinkit';
 import { isEmailValid } from '../utils/isEmailValid';
 import { isPasswordValid } from '../utils/isPasswordValid';
+
+const logoUrl = require('../../assets/images/cp-logo.png');
 
 interface SignUpScreenProps extends AppStackScreenProps<'SignUp'> {}
 
@@ -52,19 +54,15 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
     const [isLoading, setIsLoading] = useState(false);
     const [hasSubmitted, setHasSubmitted] = useState(false);
     const [ispasswordHidden, setIspasswordHidden] = useState(true);
-    const {
-      authenticationStore: { signUp },
-    } = useStores();
+    const rootStore = useStores();
 
-    function emailValidationError(): TxKeyPath {
-      if (!hasEmailBeenTouched && !hasTriedSubmitting) return undefined;
+    function emailValidationError() {
       if (email.length === 0) return 'common.fieldRequired';
       if (!isEmailValid(email)) return 'SignUpScreen.emailFieldInvalid';
       return undefined;
     }
 
     function passwordValidationError(): TxKeyPath {
-      if (!hasPasswordBeenTouched && !hasTriedSubmitting) return undefined;
       if (password.length === 0) return 'common.fieldRequired';
       if (!isPasswordValid(password))
         return 'SignUpScreen.passwordFieldInvalid';
@@ -72,14 +70,12 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
     }
 
     function repeatedPasswordValidationError(): TxKeyPath {
-      if (!hasRepeatedPasswordBeenTouched && !hasTriedSubmitting)
-        return undefined;
       if (repeatedPassword.length === 0) return 'common.fieldRequired';
       if (repeatedPassword !== password) return 'SignUpScreen.notSamePassword';
       return undefined;
     }
 
-    async function trySignUp() {
+    async function signUp() {
       setHasTriedSubmitting(true);
       if (
         emailValidationError() ||
@@ -89,7 +85,10 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
       )
         return;
       setIsLoading(true);
-      const response = await signUp(email, password);
+      const response = await rootStore.authenticationStore.signUp(
+        email,
+        password,
+      );
       setIsLoading(false);
       if (response.kind === 'ok') setHasSubmitted(true);
     }
@@ -116,13 +115,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
         contentContainerStyle={$screenContentContainer}
         safeAreaEdges={['top', 'bottom']}
       >
-        <AutoImage
-          maxHeight={100}
-          style={$image}
-          source={{
-            uri: 'https://user-images.githubusercontent.com/1775841/184508739-f90d0ce5-7219-42fd-a91f-3382d016eae0.png',
-          }}
-        />
+        <Image style={$image} source={logoUrl} />
 
         <TextField
           value={email}
@@ -134,8 +127,18 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
           autoCorrect={false}
           keyboardType="email-address"
           labelTx="SignUpScreen.emailFieldLabel"
-          helperTx={emailValidationError()}
-          status={emailValidationError() ? 'error' : undefined}
+          helperTx={
+            (hasEmailBeenTouched || hasTriedSubmitting) &&
+            emailValidationError()
+              ? emailValidationError()
+              : undefined
+          }
+          status={
+            (hasEmailBeenTouched || hasTriedSubmitting) &&
+            emailValidationError()
+              ? 'error'
+              : undefined
+          }
           onSubmitEditing={() => passwordInput.current?.focus()}
         />
 
@@ -150,8 +153,18 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
           autoCorrect={false}
           secureTextEntry={ispasswordHidden}
           labelTx="SignUpScreen.passwordFieldLabel"
-          helperTx={passwordValidationError()}
-          status={passwordValidationError() ? 'error' : undefined}
+          helperTx={
+            (hasPasswordBeenTouched || hasTriedSubmitting) &&
+            passwordValidationError()
+              ? passwordValidationError()
+              : undefined
+          }
+          status={
+            (hasPasswordBeenTouched || hasTriedSubmitting) &&
+            passwordValidationError()
+              ? 'error'
+              : undefined
+          }
           onSubmitEditing={() => repeatedPasswordInput.current?.focus()}
           RightAccessory={PasswordRightAccessory}
         />
@@ -167,9 +180,19 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
           autoCorrect={false}
           secureTextEntry={ispasswordHidden}
           labelTx="SignUpScreen.repeatedPasswordFieldLabel"
-          helperTx={repeatedPasswordValidationError()}
-          status={repeatedPasswordValidationError() ? 'error' : undefined}
-          onSubmitEditing={trySignUp}
+          helperTx={
+            (hasRepeatedPasswordBeenTouched || hasTriedSubmitting) &&
+            repeatedPasswordValidationError()
+              ? repeatedPasswordValidationError()
+              : undefined
+          }
+          status={
+            (hasRepeatedPasswordBeenTouched || hasTriedSubmitting) &&
+            repeatedPasswordValidationError()
+              ? 'error'
+              : undefined
+          }
+          onSubmitEditing={signUp}
           RightAccessory={PasswordRightAccessory}
         />
 
@@ -187,7 +210,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
             tx={isLoading ? undefined : 'SignUpScreen.signUp'}
             style={$signUpButton}
             preset={'filled'}
-            onPress={trySignUp}
+            onPress={signUp}
           >
             {isLoading && <Chase size={22} color={colors.filledText}></Chase>}
           </Button>
@@ -205,13 +228,14 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
 );
 
 const $image: ImageStyle = {
-  marginTop: spacing.extraLarge,
-  marginBottom: spacing.huge,
+  margin: spacing.extraLarge,
   alignSelf: 'center',
+  height: 150,
+  width: 150,
 };
 
 const $screenContentContainer: ViewStyle = {
-  padding: spacing.huge,
+  padding: spacing.large,
 };
 
 const $textField: ViewStyle = {

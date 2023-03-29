@@ -2,7 +2,13 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
-import { ImageStyle, TextInput, TextStyle, ViewStyle } from 'react-native';
+import {
+  ImageStyle,
+  TextInput,
+  TextStyle,
+  ViewStyle,
+  Image,
+} from 'react-native';
 import { Chase } from 'react-native-animated-spinkit';
 import {
   Button,
@@ -11,7 +17,6 @@ import {
   TextField,
   TextFieldAccessoryProps,
   Text,
-  AutoImage,
 } from '../components';
 import { Divider } from '../components/Divider';
 import { TxKeyPath } from '../i18n';
@@ -19,6 +24,8 @@ import { useStores } from '../models';
 import { AppStackParamList, AppStackScreenProps } from '../navigators';
 import { colors, spacing } from '../theme';
 import { isEmailValid } from '../utils/isEmailValid';
+
+const logoUrl = require('../../assets/images/cp-logo.png');
 
 interface SignInScreenProps extends AppStackScreenProps<'SignIn'> {}
 
@@ -41,9 +48,7 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
     const [areCredentialsInvalid, setAreCredentialsInvalid] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [ispasswordHidden, setIspasswordHidden] = useState(true);
-    const {
-      authenticationStore: { signIn },
-    } = useStores();
+    const rootStore = useStores();
 
     useEffect(() => {
       setEmail('user@email.com');
@@ -51,24 +56,25 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
     }, []);
 
     function emailValidationError(): TxKeyPath {
-      if (!hasEmailBeenTouched && !hasTriedSubmitting) return undefined;
       if (email.length === 0) return 'common.fieldRequired';
       if (!isEmailValid(email)) return 'SignInScreen.emailFieldInvalid';
       return undefined;
     }
 
     function passwordValidationError(): TxKeyPath {
-      if (!hasPasswordBeenTouched && !hasTriedSubmitting) return undefined;
       if (password.length === 0) return 'common.fieldRequired';
       return undefined;
     }
 
-    async function trySignIn() {
+    async function signIn() {
       setHasTriedSubmitting(true);
       if (emailValidationError() || passwordValidationError() || isLoading)
         return;
       setIsLoading(true);
-      const response = await signIn(email, password);
+      const response = await rootStore.authenticationStore.signIn(
+        email,
+        password,
+      );
       setIsLoading(false);
       if (response.kind === 'unauthorized') setAreCredentialsInvalid(true);
     }
@@ -95,13 +101,7 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
         contentContainerStyle={$screenContentContainer}
         safeAreaEdges={['top', 'bottom']}
       >
-        <AutoImage
-          maxHeight={100}
-          style={$image}
-          source={{
-            uri: 'https://user-images.githubusercontent.com/1775841/184508739-f90d0ce5-7219-42fd-a91f-3382d016eae0.png',
-          }}
-        />
+        <Image style={$image} source={logoUrl} />
 
         <TextField
           value={email}
@@ -113,8 +113,18 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           autoCorrect={false}
           keyboardType="email-address"
           labelTx="SignInScreen.emailFieldLabel"
-          helperTx={emailValidationError()}
-          status={emailValidationError() ? 'error' : undefined}
+          helperTx={
+            (hasEmailBeenTouched || hasTriedSubmitting) &&
+            emailValidationError()
+              ? emailValidationError()
+              : undefined
+          }
+          status={
+            (hasEmailBeenTouched || hasTriedSubmitting) &&
+            emailValidationError()
+              ? 'error'
+              : undefined
+          }
           onSubmitEditing={() => passwordInput.current?.focus()}
         />
 
@@ -129,18 +139,29 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           autoCorrect={false}
           secureTextEntry={ispasswordHidden}
           labelTx="SignInScreen.passwordFieldLabel"
-          helperTx={passwordValidationError()}
-          status={passwordValidationError() ? 'error' : undefined}
-          onSubmitEditing={trySignIn}
+          helperTx={
+            (hasPasswordBeenTouched || hasTriedSubmitting) &&
+            passwordValidationError()
+              ? passwordValidationError()
+              : undefined
+          }
+          status={
+            (hasPasswordBeenTouched || hasTriedSubmitting) &&
+            passwordValidationError()
+              ? 'error'
+              : undefined
+          }
+          onSubmitEditing={signIn}
           RightAccessory={PasswordRightAccessory}
         />
 
         <Button
           tx={isLoading ? undefined : 'SignInScreen.signIn'}
+          preset={'filled'}
           style={$signInButton}
-          onPress={trySignIn}
+          onPress={signIn}
         >
-          {isLoading && <Chase size={22} color={colors.primaryDark}></Chase>}
+          {isLoading && <Chase size={22} color={colors.filledText}></Chase>}
         </Button>
 
         {areCredentialsInvalid && (
@@ -162,7 +183,6 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
         <Button
           tx="SignInScreen.signUp"
           fitToContent
-          preset={'filled'}
           onPress={() => navigation.navigate('SignUp')}
         />
       </Screen>
@@ -171,13 +191,14 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
 );
 
 const $image: ImageStyle = {
-  marginTop: spacing.extraLarge,
-  marginBottom: spacing.huge,
+  margin: spacing.extraLarge,
   alignSelf: 'center',
+  height: 150,
+  width: 150,
 };
 
 const $screenContentContainer: ViewStyle = {
-  padding: spacing.huge,
+  padding: spacing.large,
 };
 
 const $textField: ViewStyle = {

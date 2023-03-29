@@ -17,8 +17,6 @@ export async function signIn(
 ): Promise<
   | {
       kind: 'ok';
-      accessToken: string;
-      refreshToken: string;
       user: UserSnapshotIn;
     }
   | GeneralApiProblem
@@ -51,7 +49,7 @@ export async function signIn(
         response.data.refreshToken,
       );
 
-      return { kind: 'ok', ...response.data, user };
+      return { kind: 'ok', user };
     } catch (e) {
       if (__DEV__) {
         console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack);
@@ -101,6 +99,55 @@ export async function signOut(
 
   if (response.ok) {
     return { kind: 'ok' };
+  } else {
+    problem = getGeneralApiProblem(response);
+  }
+
+  return problem;
+}
+
+export async function requestActivation(
+  this: Api,
+): Promise<{ kind: 'ok' } | GeneralApiProblem> {
+  const response: ApiResponse<null> = await this.apisauce.post(
+    `auth/request-activation`,
+  );
+
+  let problem: GeneralApiProblem;
+
+  if (response.ok) {
+    return { kind: 'ok' };
+  } else {
+    problem = getGeneralApiProblem(response);
+  }
+
+  return problem;
+}
+
+export async function me(
+  this: Api,
+): Promise<{ kind: 'ok'; user: UserSnapshotIn } | GeneralApiProblem> {
+  const response: ApiResponse<UserSnapshotIn> = await this.apisauce.get(
+    `users/me`,
+  );
+
+  let problem: GeneralApiProblem;
+
+  if (response.ok) {
+    try {
+      const user: UserSnapshotIn = {
+        ...response.data,
+        createdAt: new Date(response.data.createdAt),
+        updatedAt: new Date(response.data.updatedAt),
+      };
+
+      return { kind: 'ok', user };
+    } catch (e) {
+      if (__DEV__) {
+        console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack);
+      }
+      return { kind: 'bad-data' };
+    }
   } else {
     problem = getGeneralApiProblem(response);
   }

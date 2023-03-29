@@ -1,0 +1,68 @@
+import { observer } from 'mobx-react-lite';
+import React, { FC, useEffect } from 'react';
+import { TextStyle, View, ViewStyle } from 'react-native';
+import { Screen, Text } from '../components';
+import { useStores } from '../models';
+import { AppStackParamList, AppStackScreenProps } from '../navigators';
+import { colors, spacing } from '../theme';
+import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+interface ActivatedScreenProps extends AppStackScreenProps<'Activated'> {}
+
+type ActivatedScreenNavigationProp = NativeStackNavigationProp<
+  AppStackParamList,
+  'Activated'
+>;
+
+export const ActivatedScreen: FC<ActivatedScreenProps> = observer(
+  function ActivatedScreen(_props) {
+    const rootStore = useStores();
+
+    const navigation = useNavigation<ActivatedScreenNavigationProp>();
+
+    useEffect(() => {
+      setTimeout(() => {
+        if (rootStore.authenticationStore.user)
+          rootStore.authenticationStore.me();
+        else navigation.navigate('SignIn');
+      }, 2000);
+    }, []);
+
+    return (
+      <Screen
+        preset="auto"
+        contentContainerStyle={$screenContentContainer}
+        safeAreaEdges={['top', 'bottom']}
+      >
+        <View style={$activationRequestedView}>
+          <Feather name="check-circle" size={24} color={colors.success} />
+          <Text
+            tx="ActivatedScreen.accountActivated"
+            preset="bold"
+            style={$activationRequestedText}
+          />
+        </View>
+      </Screen>
+    );
+  },
+);
+
+const $screenContentContainer: ViewStyle = {
+  justifyContent: 'center',
+  height: '100%',
+};
+
+const $activationRequestedView: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: spacing.medium,
+  marginBottom: spacing.small,
+};
+
+const $activationRequestedText: TextStyle = {
+  color: colors.success,
+  marginLeft: spacing.small,
+};

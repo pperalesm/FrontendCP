@@ -8,11 +8,6 @@ export const AuthenticationStoreModel = types
   .props({
     user: types.maybe(UserModel),
   })
-  .views((store) => ({
-    get isAuthenticated() {
-      return !!store.user;
-    },
-  }))
   .actions(withSetPropAction)
   .actions((store) => ({
     async signIn(email: string, password: string) {
@@ -28,6 +23,16 @@ export const AuthenticationStoreModel = types
     async signOut() {
       await api.signOut();
       store.setProp('user', undefined);
+    },
+    async requestActivation() {
+      return await api.requestActivation();
+    },
+    async me() {
+      const response = await api.me();
+      if (response.kind === 'ok') {
+        store.setProp('user', response.user);
+      }
+      return response;
     },
   }));
 

@@ -7,7 +7,14 @@ import * as SecureStore from 'expo-secure-store';
 import { RootStore } from '../../models';
 import Toast from 'react-native-root-toast';
 import { colors } from '../../theme';
-import { ApiTokenResponse, signIn, signOut, signUp } from './authApi';
+import {
+  ApiTokenResponse,
+  me,
+  requestActivation,
+  signIn,
+  signOut,
+  signUp,
+} from './authApi';
 
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
@@ -23,6 +30,8 @@ export class Api {
   signIn = signIn;
   signUp = signUp;
   signOut = signOut;
+  requestActivation = requestActivation;
+  me = me;
 
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config;
@@ -36,10 +45,7 @@ export class Api {
     });
 
     this.apisauce.addAsyncResponseTransform(async (response) => {
-      if (
-        response.status === 401 &&
-        this.rootStore.authenticationStore.isAuthenticated
-      ) {
+      if (response.status === 401 && this.rootStore.authenticationStore.user) {
         const refreshToken = await SecureStore.getItemAsync('refreshToken');
 
         const refreshResponse: ApiResponse<ApiTokenResponse> =
@@ -58,13 +64,22 @@ export class Api {
             refreshResponse.data.refreshToken,
           );
 
-          response = await this.apisauce.any({
+          const newResponse = await this.apisauce.any({
             ...response.config,
             headers: {
               ...response.config.headers,
               Authorization: `Bearer ${refreshResponse.data.accessToken}`,
             },
           });
+
+          response.config = newResponse.config;
+          response.data = newResponse.data;
+          response.duration = newResponse.duration;
+          response.headers = newResponse.headers;
+          response.ok = newResponse.ok;
+          response.originalError = newResponse.originalError;
+          response.problem = newResponse.problem;
+          response.status = newResponse.status;
         } else {
           this.rootStore.authenticationStore.signOut();
         }
