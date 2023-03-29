@@ -81,7 +81,7 @@ export class Api {
           response.problem = newResponse.problem;
           response.status = newResponse.status;
         } else {
-          this.rootStore.authenticationStore.signOut();
+          this.rootStore.authenticationStore.clearUser();
         }
       } else if (
         response.problem === 'SERVER_ERROR' ||

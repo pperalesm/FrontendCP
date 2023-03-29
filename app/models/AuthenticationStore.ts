@@ -34,6 +34,9 @@ export const AuthenticationStoreModel = types
       }
       return response;
     },
+    clearUser() {
+      store.user = undefined;
+    },
   }));
 
 export interface AuthenticationStore
