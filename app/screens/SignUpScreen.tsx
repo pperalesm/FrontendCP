@@ -23,7 +23,6 @@ import { useStores } from '../models';
 import { AppStackParamList, AppStackScreenProps } from '../navigators';
 import { colors, spacing } from '../theme';
 import { Feather } from '@expo/vector-icons';
-import { Chase } from 'react-native-animated-spinkit';
 import { isEmailValid } from '../utils/isEmailValid';
 import { isPasswordValid } from '../utils/isPasswordValid';
 
@@ -197,30 +196,36 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
         />
 
         {hasSubmitted ? (
-          <View style={$accountCreatedView}>
-            <Feather name="check-circle" size={24} color={colors.success} />
+          <>
+            <View style={$accountCreatedView}>
+              <Feather name="check-circle" size={24} color={colors.success} />
+              <Text
+                tx="SignUpScreen.accountCreated"
+                preset="bold"
+                style={$accountCreatedText}
+              />
+            </View>
             <Text
-              tx="SignUpScreen.accountCreated"
-              preset="bold"
-              style={$accountCreatedText}
+              tx="SignUpScreen.accountCreatedHint"
+              preset="hint"
+              style={$accountCreatedHintText}
             />
-          </View>
+          </>
         ) : (
           <Button
-            tx={isLoading ? undefined : 'SignUpScreen.signUp'}
+            tx={'SignUpScreen.signUp'}
             style={$signUpButton}
             preset={'filled'}
             onPress={signUp}
-          >
-            {isLoading && <Chase size={22} color={colors.filledText}></Chase>}
-          </Button>
+            isLoading={isLoading}
+          />
         )}
 
         <Text
           tx="SignUpScreen.signIn"
           preset="hint"
           style={$signInText}
-          onPress={() => navigation.navigate('SignIn')}
+          onPress={() => navigation.pop()}
         />
       </Screen>
     );
@@ -250,8 +255,7 @@ const $accountCreatedView: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'center',
-  marginTop: spacing.extraLarge,
-  marginBottom: spacing.small,
+  marginTop: spacing.medium,
 };
 
 const $accountCreatedText: TextStyle = {
@@ -259,8 +263,14 @@ const $accountCreatedText: TextStyle = {
   marginLeft: spacing.small,
 };
 
-const $signInText: TextStyle = {
+const $accountCreatedHintText: TextStyle = {
+  color: colors.success,
+  textAlign: 'center',
   marginTop: spacing.small,
+};
+
+const $signInText: TextStyle = {
+  marginTop: spacing.medium,
   textAlign: 'center',
   color: colors.primary,
 };

@@ -9,33 +9,29 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-interface ActivatedScreenProps extends AppStackScreenProps<'Activated'> {}
+interface PasswordResetScreenProps
+  extends AppStackScreenProps<'PasswordReset'> {}
 
-type ActivatedScreenNavigationProp = NativeStackNavigationProp<
+type PasswordResetScreenNavigationProp = NativeStackNavigationProp<
   AppStackParamList,
-  'Activated'
+  'PasswordReset'
 >;
 
-export const ActivatedScreen: FC<ActivatedScreenProps> = observer(
-  function ActivatedScreen(_props) {
+export const PasswordResetScreen: FC<PasswordResetScreenProps> = observer(
+  function PasswordResetScreen(_props) {
     const rootStore = useStores();
 
-    const navigation = useNavigation<ActivatedScreenNavigationProp>();
+    const navigation = useNavigation<PasswordResetScreenNavigationProp>();
 
     useEffect(() => {
-      setTimeout(async () => {
+      setTimeout(() => {
         if (rootStore.authenticationStore.user) {
-          await rootStore.authenticationStore.me();
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Main' }],
-          });
-        } else {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'SignIn' }],
-          });
+          rootStore.authenticationStore.clearUser();
         }
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'SignIn' }],
+        });
       }, 2000);
     }, []);
 
@@ -45,12 +41,12 @@ export const ActivatedScreen: FC<ActivatedScreenProps> = observer(
         contentContainerStyle={$screenContentContainer}
         safeAreaEdges={['top', 'bottom']}
       >
-        <View style={$accountActivatedView}>
+        <View style={$passwordResetView}>
           <Feather name="check-circle" size={24} color={colors.success} />
           <Text
-            tx="ActivatedScreen.accountActivated"
+            tx="PasswordResetScreen.passwordReset"
             preset="bold"
-            style={$accountActivatedText}
+            style={$passwordResetText}
           />
         </View>
       </Screen>
@@ -63,7 +59,7 @@ const $screenContentContainer: ViewStyle = {
   height: '100%',
 };
 
-const $accountActivatedView: ViewStyle = {
+const $passwordResetView: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'center',
@@ -71,7 +67,7 @@ const $accountActivatedView: ViewStyle = {
   marginBottom: spacing.small,
 };
 
-const $accountActivatedText: TextStyle = {
+const $passwordResetText: TextStyle = {
   color: colors.success,
   marginLeft: spacing.small,
 };

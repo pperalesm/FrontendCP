@@ -1,5 +1,7 @@
 import React, { ComponentType } from 'react';
 import {
+  GestureResponderEvent,
+  Keyboard,
   Pressable,
   PressableProps,
   PressableStateCallbackType,
@@ -7,6 +9,7 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
+import { Chase } from 'react-native-animated-spinkit';
 import { colors, spacing, typography } from '../theme';
 import { Text, TextProps } from './Text';
 
@@ -22,6 +25,10 @@ export interface ButtonProps extends PressableProps {
    * If true, fit button width to content.
    */
   fitToContent?: boolean;
+  /**
+   * If true, ignore text and display spinner.
+   */
+  isLoading?: boolean;
   /**
    * Text which is looked up via i18n.
    */
@@ -80,6 +87,7 @@ export interface ButtonProps extends PressableProps {
 export function Button(props: ButtonProps) {
   const {
     fitToContent = false,
+    isLoading,
     tx,
     text,
     txOptions,
@@ -90,6 +98,7 @@ export function Button(props: ButtonProps) {
     children,
     RightAccessory,
     LeftAccessory,
+    onPress,
     ...rest
   } = props;
 
@@ -111,27 +120,47 @@ export function Button(props: ButtonProps) {
   }
 
   return (
-    <Pressable style={$viewStyle} accessibilityRole="button" {...rest}>
+    <Pressable
+      style={$viewStyle}
+      onPress={(event: GestureResponderEvent) => {
+        Keyboard.dismiss();
+        onPress(event);
+      }}
+      accessibilityRole="button"
+      {...rest}
+    >
       {(state) => (
         <>
-          {!!LeftAccessory && (
-            <LeftAccessory style={$leftAccessoryStyle} pressableState={state} />
-          )}
-
-          <Text
-            tx={tx}
-            text={text}
-            txOptions={txOptions}
-            style={$textStyle(state)}
-          >
-            {children}
-          </Text>
-
-          {!!RightAccessory && (
-            <RightAccessory
-              style={$rightAccessoryStyle}
-              pressableState={state}
+          {isLoading ? (
+            <Chase
+              size={22}
+              color={preset === 'default' ? colors.primary : colors.filledText}
             />
+          ) : (
+            <>
+              {!!LeftAccessory && (
+                <LeftAccessory
+                  style={$leftAccessoryStyle}
+                  pressableState={state}
+                />
+              )}
+
+              <Text
+                tx={tx}
+                text={text}
+                txOptions={txOptions}
+                style={$textStyle(state)}
+              >
+                {children}
+              </Text>
+
+              {!!RightAccessory && (
+                <RightAccessory
+                  style={$rightAccessoryStyle}
+                  pressableState={state}
+                />
+              )}
+            </>
           )}
         </>
       )}
@@ -162,7 +191,7 @@ const $baseTextStyle: TextStyle = {
   flexShrink: 1,
   flexGrow: 0,
   zIndex: 2,
-  color: colors.primaryDark,
+  color: colors.primary,
 };
 
 const $rightAccessoryStyle: ViewStyle = {

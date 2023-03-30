@@ -27,6 +27,9 @@ export const AuthenticationStoreModel = types
     async requestActivation() {
       return await api.requestActivation();
     },
+    async requestPasswordReset(email: string, password: string) {
+      return await api.requestPasswordReset(email, password);
+    },
     async me() {
       const response = await api.me();
       if (response.kind === 'ok') {

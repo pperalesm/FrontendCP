@@ -26,17 +26,36 @@ const es = {
     signUp: 'Crear cuenta',
     signIn: 'Inicia sesión aquí',
     accountCreated: 'Cuenta creada con éxito',
+    accountCreatedHint:
+      'En breves momentos recibirás un correo electrónico de activación. Únicamente deberás hacer click en el enlace proporcionado.',
   },
-  ActivationScreen: {
+  ActivateScreen: {
     procedure: 'Esta cuenta aún no ha sido activada.',
     procedureHint:
-      'Por favor, comprueba que el correo de activación haya llegado correctamente y sigue las instrucciones descritas en dicho correo.',
-    activationRequested: 'Correo reenviado con éxito',
+      'Por favor, comprueba que no hayas recibido el correo de activación en la bandeja de Spam. Cuando lo encuentres, únicamente deberás hacer click en el enlace proporcionado.',
     requestActivation: 'Reenviar correo de activación',
+    activationRequested: 'Correo reenviado con éxito',
     signOut: 'Prueba con otra cuenta',
   },
   ActivatedScreen: {
     accountActivated: 'Cuenta activada con éxito',
+  },
+  ResetPasswordScreen: {
+    emailFieldLabel: 'Correo electrónico',
+    emailFieldInvalid: 'El correo electrónico debe ser válido',
+    passwordFieldLabel: 'Nueva contraseña',
+    passwordFieldInvalid:
+      'La contraseña debe tener un mínimo de 8 caracteres, entre los cuales:\n- Una mayúscula\n- Una minúscula\n- Un número\n- Un signo',
+    repeatedPasswordFieldLabel: 'Repetir nueva contraseña',
+    notSamePassword: 'Las contraseñas deben coincidir',
+    requestPasswordReset: 'Enviar correo de confirmación',
+    signIn: 'Inicia sesión aquí',
+    passwordResetRequested: 'Correo enviado con éxito',
+    passwordResetRequestedHint:
+      'En breves momentos recibirás un correo electrónico de confirmación. Únicamente deberás hacer click en el enlace proporcionado.',
+  },
+  PasswordResetScreen: {
+    passwordReset: 'Contraseña restablecida con éxito',
   },
   welcomeScreen: {
     postscript:

@@ -52,6 +52,7 @@ const config = {
       path: '',
     },
     Activated: { path: 'activated' },
+    PasswordReset: { path: 'password-reset' },
     Demo: {
       screens: {
         DemoShowroom: {

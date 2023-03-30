@@ -6,6 +6,7 @@ import {
   ImageStyle,
   TextInput,
   TextStyle,
+  View,
   ViewStyle,
   Image,
 } from 'react-native';
@@ -17,60 +18,80 @@ import {
   TextFieldAccessoryProps,
   Text,
 } from '../components';
-import { Divider } from '../components/Divider';
 import { TxKeyPath } from '../i18n';
 import { useStores } from '../models';
 import { AppStackParamList, AppStackScreenProps } from '../navigators';
 import { colors, spacing } from '../theme';
+import { Feather } from '@expo/vector-icons';
 import { isEmailValid } from '../utils/isEmailValid';
+import { isPasswordValid } from '../utils/isPasswordValid';
 
 const logoUrl = require('../../assets/images/cp-logo.png');
 
-interface SignInScreenProps extends AppStackScreenProps<'SignIn'> {}
+interface ResetPasswordScreenProps
+  extends AppStackScreenProps<'ResetPassword'> {}
 
-type SignInScreenNavigationProp = NativeStackNavigationProp<
+type ResetPasswordScreenNavigationProp = NativeStackNavigationProp<
   AppStackParamList,
-  'SignIn'
+  'ResetPassword'
 >;
 
-export const SignInScreen: FC<SignInScreenProps> = observer(
-  function SignInScreen(_props) {
+export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = observer(
+  function ResetPasswordScreen(_props) {
     const passwordInput = useRef<TextInput>();
+    const repeatedPasswordInput = useRef<TextInput>();
 
-    const navigation = useNavigation<SignInScreenNavigationProp>();
+    const navigation = useNavigation<ResetPasswordScreenNavigationProp>();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [repeatedPassword, setRepeatedPassword] = useState('');
     const [hasEmailBeenTouched, setHasEmailBeenTouched] = useState(false);
     const [hasPasswordBeenTouched, setHasPasswordBeenTouched] = useState(false);
+    const [hasRepeatedPasswordBeenTouched, setHasRepeatedPasswordBeenTouched] =
+      useState(false);
     const [hasTriedSubmitting, setHasTriedSubmitting] = useState(false);
-    const [areCredentialsInvalid, setAreCredentialsInvalid] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [hasSubmitted, setHasSubmitted] = useState(false);
     const [ispasswordHidden, setIspasswordHidden] = useState(true);
     const rootStore = useStores();
 
-    function emailValidationError(): TxKeyPath {
+    function emailValidationError() {
       if (email.length === 0) return 'common.fieldRequired';
-      if (!isEmailValid(email)) return 'SignInScreen.emailFieldInvalid';
+      if (!isEmailValid(email)) return 'ResetPasswordScreen.emailFieldInvalid';
       return undefined;
     }
 
     function passwordValidationError(): TxKeyPath {
       if (password.length === 0) return 'common.fieldRequired';
+      if (!isPasswordValid(password))
+        return 'ResetPasswordScreen.passwordFieldInvalid';
       return undefined;
     }
 
-    async function signIn() {
+    function repeatedPasswordValidationError(): TxKeyPath {
+      if (repeatedPassword.length === 0) return 'common.fieldRequired';
+      if (repeatedPassword !== password)
+        return 'ResetPasswordScreen.notSamePassword';
+      return undefined;
+    }
+
+    async function requestPasswordReset() {
       setHasTriedSubmitting(true);
-      if (emailValidationError() || passwordValidationError() || isLoading)
+      if (
+        emailValidationError() ||
+        passwordValidationError() ||
+        repeatedPasswordValidationError() ||
+        isLoading
+      )
         return;
       setIsLoading(true);
-      const response = await rootStore.authenticationStore.signIn(
+      const response = await rootStore.authenticationStore.requestPasswordReset(
         email,
         password,
       );
       setIsLoading(false);
-      if (response.kind === 'unauthorized') setAreCredentialsInvalid(true);
+      if (response.kind === 'ok') setHasSubmitted(true);
     }
 
     const PasswordRightAccessory = useMemo(
@@ -106,7 +127,7 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           autoComplete="email"
           autoCorrect={false}
           keyboardType="email-address"
-          labelTx="SignInScreen.emailFieldLabel"
+          labelTx="ResetPasswordScreen.emailFieldLabel"
           helperTx={
             (hasEmailBeenTouched || hasTriedSubmitting) &&
             emailValidationError()
@@ -132,7 +153,7 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           autoComplete="password"
           autoCorrect={false}
           secureTextEntry={ispasswordHidden}
-          labelTx="SignInScreen.passwordFieldLabel"
+          labelTx="ResetPasswordScreen.passwordFieldLabel"
           helperTx={
             (hasPasswordBeenTouched || hasTriedSubmitting) &&
             passwordValidationError()
@@ -145,39 +166,68 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
               ? 'error'
               : undefined
           }
-          onSubmitEditing={signIn}
+          onSubmitEditing={() => repeatedPasswordInput.current?.focus()}
           RightAccessory={PasswordRightAccessory}
         />
 
-        <Button
-          tx={'SignInScreen.signIn'}
-          preset={'filled'}
-          style={$signInButton}
-          onPress={signIn}
-          isLoading={isLoading}
+        <TextField
+          ref={repeatedPasswordInput}
+          value={repeatedPassword}
+          onChangeText={setRepeatedPassword}
+          onBlur={() => setHasRepeatedPasswordBeenTouched(true)}
+          containerStyle={$textField}
+          autoCapitalize="none"
+          autoComplete="password"
+          autoCorrect={false}
+          secureTextEntry={ispasswordHidden}
+          labelTx="ResetPasswordScreen.repeatedPasswordFieldLabel"
+          helperTx={
+            (hasRepeatedPasswordBeenTouched || hasTriedSubmitting) &&
+            repeatedPasswordValidationError()
+              ? repeatedPasswordValidationError()
+              : undefined
+          }
+          status={
+            (hasRepeatedPasswordBeenTouched || hasTriedSubmitting) &&
+            repeatedPasswordValidationError()
+              ? 'error'
+              : undefined
+          }
+          onSubmitEditing={requestPasswordReset}
+          RightAccessory={PasswordRightAccessory}
         />
 
-        {areCredentialsInvalid && (
-          <Text
-            tx="SignInScreen.invalidCredentials"
-            preset="hint"
-            style={$invalidCredentialsText}
+        {hasSubmitted ? (
+          <>
+            <View style={$passwordResetRequestedView}>
+              <Feather name="check-circle" size={24} color={colors.success} />
+              <Text
+                tx="ResetPasswordScreen.passwordResetRequested"
+                preset="bold"
+                style={$passwordResetRequestedText}
+              />
+            </View>
+            <Text
+              tx="ResetPasswordScreen.passwordResetRequestedHint"
+              preset="hint"
+              style={$passwordResetRequestedHintText}
+            />
+          </>
+        ) : (
+          <Button
+            tx={'ResetPasswordScreen.requestPasswordReset'}
+            style={$requestPasswordResetButton}
+            preset={'filled'}
+            onPress={requestPasswordReset}
+            isLoading={isLoading}
           />
         )}
 
         <Text
-          tx="SignInScreen.forgotPassword"
+          tx="ResetPasswordScreen.signIn"
           preset="hint"
-          style={$forgotPasswordText}
-          onPress={() => navigation.push('ResetPassword')}
-        />
-
-        <Divider size={spacing.extraLarge} />
-
-        <Button
-          tx="SignInScreen.signUp"
-          fitToContent
-          onPress={() => navigation.push('SignUp')}
+          style={$signInText}
+          onPress={() => navigation.pop()}
         />
       </Screen>
     );
@@ -199,17 +249,29 @@ const $textField: ViewStyle = {
   marginBottom: spacing.large,
 };
 
-const $signInButton: ViewStyle = {
+const $requestPasswordResetButton: ViewStyle = {
   marginTop: spacing.medium,
 };
 
-const $invalidCredentialsText: TextStyle = {
-  marginTop: spacing.small,
-  textAlign: 'center',
-  color: colors.error,
+const $passwordResetRequestedView: ViewStyle = {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: spacing.medium,
 };
 
-const $forgotPasswordText: TextStyle = {
+const $passwordResetRequestedText: TextStyle = {
+  color: colors.success,
+  marginLeft: spacing.small,
+};
+
+const $passwordResetRequestedHintText: TextStyle = {
+  color: colors.success,
+  textAlign: 'center',
+  marginTop: spacing.small,
+};
+
+const $signInText: TextStyle = {
   marginTop: spacing.medium,
   textAlign: 'center',
   color: colors.primary,

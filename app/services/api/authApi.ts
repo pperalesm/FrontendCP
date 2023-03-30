@@ -124,6 +124,27 @@ export async function requestActivation(
   return problem;
 }
 
+export async function requestPasswordReset(
+  this: Api,
+  email: string,
+  password: string,
+): Promise<{ kind: 'ok' } | GeneralApiProblem> {
+  const response: ApiResponse<null> = await this.apisauce.post(
+    `auth/request-password-reset`,
+    { email, password },
+  );
+
+  let problem: GeneralApiProblem;
+
+  if (response.ok) {
+    return { kind: 'ok' };
+  } else {
+    problem = getGeneralApiProblem(response);
+  }
+
+  return problem;
+}
+
 export async function me(
   this: Api,
 ): Promise<{ kind: 'ok'; user: UserSnapshotIn } | GeneralApiProblem> {

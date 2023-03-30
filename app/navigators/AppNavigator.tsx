@@ -14,8 +14,10 @@ import { useStores } from '../models';
 import {
   SignInScreen,
   SignUpScreen,
-  ActivationScreen,
+  ActivateScreen,
   ActivatedScreen,
+  PasswordResetScreen,
+  ResetPasswordScreen,
 } from '../screens';
 import { MainNavigator, MainTabParamList } from './MainNavigator';
 import { navigationRef, useBackButtonHandler } from './navigationUtilities';
@@ -23,8 +25,10 @@ import { navigationRef, useBackButtonHandler } from './navigationUtilities';
 export type AppStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
-  Activation: undefined;
+  Activate: undefined;
   Activated: undefined;
+  ResetPassword: undefined;
+  PasswordReset: undefined;
   Main: NavigatorScreenParams<MainTabParamList>;
 };
 
@@ -43,24 +47,25 @@ const AppStack = observer(function AppStack() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={user ? (user.active ? 'Main' : 'Activation') : 'SignIn'}
+      initialRouteName={user ? (user.active ? 'Main' : 'Activate') : 'SignIn'}
     >
       {!user ? (
         <>
           <Stack.Screen name="SignIn" component={SignInScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="Activated" component={ActivatedScreen} />
+          <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         </>
       ) : !user.active ? (
         <>
-          <Stack.Screen name="Activation" component={ActivationScreen} />
-          <Stack.Screen name="Activated" component={ActivatedScreen} />
+          <Stack.Screen name="Activate" component={ActivateScreen} />
         </>
       ) : (
         <>
           <Stack.Screen name="Main" component={MainNavigator} />
         </>
       )}
+      <Stack.Screen name="Activated" component={ActivatedScreen} />
+      <Stack.Screen name="PasswordReset" component={PasswordResetScreen} />
     </Stack.Navigator>
   );
 });

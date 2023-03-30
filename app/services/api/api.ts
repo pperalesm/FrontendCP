@@ -11,6 +11,7 @@ import {
   ApiTokenResponse,
   me,
   requestActivation,
+  requestPasswordReset,
   signIn,
   signOut,
   signUp,
@@ -31,6 +32,7 @@ export class Api {
   signUp = signUp;
   signOut = signOut;
   requestActivation = requestActivation;
+  requestPasswordReset = requestPasswordReset;
   me = me;
 
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
