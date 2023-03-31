@@ -4,23 +4,23 @@ import {
 } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps } from '@react-navigation/native';
 import React from 'react';
-import { TextStyle, ViewStyle } from 'react-native';
+import { ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Icon } from '../components';
 import {
-  DemoCommunityScreen,
   DemoShowroomScreen,
   DemoDebugScreen,
+  NotebooksScreen,
 } from '../screens';
 import { DemoPodcastListScreen } from '../screens/DemoPodcastListScreen';
-import { colors, spacing, typography } from '../theme';
+import { colors } from '../theme';
 import { AppStackParamList, AppStackScreenProps } from './AppNavigator';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export type MainTabParamList = {
-  DemoCommunity: undefined;
   DemoShowroom: { queryIndex?: string; itemIndex?: string };
-  DemoDebug: undefined;
   DemoPodcastList: undefined;
+  Notebooks: undefined;
+  DemoDebug: undefined;
 };
 
 export type MainTabScreenProps<T extends keyof MainTabParamList> =
@@ -43,9 +43,6 @@ export function MainNavigator() {
         tabBarStyle: [$tabBar, { height: bottom + 60 }],
         tabBarActiveTintColor: colors.primaryText,
         tabBarInactiveTintColor: colors.primaryText,
-        tabBarLabelStyle: $tabBarLabel,
-        tabBarItemStyle: $tabBarItem,
-        tabBarIconStyle: $tabBarIcon,
       }}
     >
       <Tab.Screen
@@ -53,22 +50,8 @@ export function MainNavigator() {
         component={DemoShowroomScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon
-              icon="components"
-              color={focused && colors.primary}
-              size={30}
-            />
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="DemoCommunity"
-        component={DemoCommunityScreen}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              icon="components"
+            <MaterialCommunityIcons
+              name="home"
               color={focused && colors.primary}
               size={30}
             />
@@ -81,8 +64,22 @@ export function MainNavigator() {
         component={DemoPodcastListScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon
-              icon="components"
+            <MaterialCommunityIcons
+              name="format-list-bulleted-square"
+              color={focused && colors.primary}
+              size={30}
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Notebooks"
+        component={NotebooksScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <MaterialCommunityIcons
+              name="notebook-edit-outline"
               color={focused && colors.primary}
               size={30}
             />
@@ -95,8 +92,8 @@ export function MainNavigator() {
         component={DemoDebugScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon
-              icon="components"
+            <MaterialCommunityIcons
+              name="chart-line"
               color={focused && colors.primary}
               size={30}
             />
@@ -110,19 +107,4 @@ export function MainNavigator() {
 const $tabBar: ViewStyle = {
   backgroundColor: colors.secondarySurface,
   borderTopColor: colors.transparent,
-};
-
-const $tabBarItem: ViewStyle = {
-  paddingTop: spacing.medium,
-};
-
-const $tabBarLabel: TextStyle = {
-  fontSize: 12,
-  fontFamily: typography.primary.medium,
-  lineHeight: 16,
-  flex: 1,
-};
-
-const $tabBarIcon: ViewStyle = {
-  paddingBottom: spacing.medium,
 };

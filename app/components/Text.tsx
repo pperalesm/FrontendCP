@@ -117,6 +117,7 @@ const $presets = {
     $baseStyle,
     $sizeStyles.xxl,
     $fontWeightStyles.bold,
+    { textAlign: 'center' },
   ] as StyleProp<TextStyle>,
 
   subheading: [

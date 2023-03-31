@@ -1,5 +1,6 @@
 import React, { ComponentType } from 'react';
 import {
+  ActivityIndicator,
   GestureResponderEvent,
   Keyboard,
   Pressable,
@@ -9,7 +10,6 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import { Chase } from 'react-native-animated-spinkit';
 import { colors, spacing, typography } from '../theme';
 import { Text, TextProps } from './Text';
 
@@ -132,8 +132,8 @@ export function Button(props: ButtonProps) {
       {(state) => (
         <>
           {isLoading ? (
-            <Chase
-              size={22}
+            <ActivityIndicator
+              style={$spinner}
               color={preset === 'default' ? colors.primary : colors.filledText}
             />
           ) : (
@@ -233,3 +233,5 @@ const $pressedTextPresets: Record<Presets, StyleProp<TextStyle>> = {
   default: { opacity: 0.9 },
   filled: { opacity: 0.9 },
 };
+
+const $spinner: ViewStyle = { height: 22, width: 22 };

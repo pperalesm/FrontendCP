@@ -1,4 +1,3 @@
-export * from './DemoCommunityScreen';
 export * from './DemoDebugScreen';
 export * from './DemoShowroomScreen/DemoShowroomScreen';
 export * from './ErrorScreen/ErrorBoundary';
@@ -8,3 +7,4 @@ export * from './ActivateScreen';
 export * from './ActivatedScreen';
 export * from './ResetPasswordScreen';
 export * from './PasswordResetScreen';
+export * from './NotebooksScreen';

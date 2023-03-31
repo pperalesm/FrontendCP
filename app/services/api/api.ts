@@ -8,7 +8,7 @@ import { RootStore } from '../../models';
 import Toast from 'react-native-root-toast';
 import { colors } from '../../theme';
 import {
-  ApiTokenResponse,
+  TokenResponseDto,
   me,
   requestActivation,
   requestPasswordReset,
@@ -16,6 +16,7 @@ import {
   signOut,
   signUp,
 } from './authApi';
+import { readAllNotebooks } from './notebooksApi';
 
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
@@ -27,13 +28,16 @@ export class Api {
   config: ApiConfig;
   rootStore: RootStore;
 
-  // Auth api
+  // Auth API
   signIn = signIn;
   signUp = signUp;
   signOut = signOut;
   requestActivation = requestActivation;
   requestPasswordReset = requestPasswordReset;
   me = me;
+
+  // Notebooks API
+  readAllNotebooks = readAllNotebooks;
 
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config;
@@ -50,7 +54,7 @@ export class Api {
       if (response.status === 401 && this.rootStore.authenticationStore.user) {
         const refreshToken = await SecureStore.getItemAsync('refreshToken');
 
-        const refreshResponse: ApiResponse<ApiTokenResponse> =
+        const refreshResponse: ApiResponse<TokenResponseDto> =
           await this.apisauce.post(`auth/refresh-tokens`, {
             refreshToken,
           });

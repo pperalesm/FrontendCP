@@ -1,7 +1,7 @@
 import { Instance, SnapshotIn, SnapshotOut, types } from 'mobx-state-tree';
 import { withSetPropAction } from './helpers/withSetPropAction';
 
-enum RoleEnum {
+export enum RoleEnum {
   USER = 'USER',
   ADMIN = 'ADMIN',
 }

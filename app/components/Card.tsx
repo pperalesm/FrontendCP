@@ -166,7 +166,11 @@ export function Card(props: CardProps) {
   const HeaderContentWrapper =
     verticalAlignment === 'force-footer-bottom' ? View : Fragment;
 
-  const $containerStyle = [$containerPresets[preset], $containerStyleOverride];
+  const $containerStyle = [
+    $containerPresets[preset],
+    isPressable && { elevation: 4 },
+    $containerStyleOverride,
+  ];
   const $headingStyle = [
     $headingPresets[preset],
     (isFooterPresent || isContentPresent) && { marginBottom: spacing.micro },
@@ -207,7 +211,7 @@ export function Card(props: CardProps) {
           {HeadingComponent ||
             (isHeadingPresent && (
               <Text
-                weight="bold"
+                preset="bold"
                 text={heading}
                 tx={headingTx}
                 txOptions={headingTxOptions}
@@ -219,7 +223,7 @@ export function Card(props: CardProps) {
           {ContentComponent ||
             (isContentPresent && (
               <Text
-                weight="normal"
+                preset="hint"
                 text={content}
                 tx={contentTx}
                 txOptions={contentTxOptions}
@@ -254,14 +258,15 @@ const $containerBase: ViewStyle = {
   shadowColor: colors.shadow,
   shadowOffset: { width: 0, height: 12 },
   shadowOpacity: 0.08,
-  shadowRadius: 12.81,
-  elevation: 16,
+  shadowRadius: 12,
+  elevation: 2,
   flexDirection: 'row',
+  alignItems: 'center',
 };
 
 const $alignmentWrapper: ViewStyle = {
-  flex: 1,
   alignSelf: 'stretch',
+  flex: 1,
 };
 
 const $alignmentWrapperFlexOptions = {
@@ -286,12 +291,12 @@ const $containerPresets = {
 };
 
 const $headingPresets: Record<Presets, TextStyle> = {
-  default: {},
+  default: { color: colors.primaryText },
   filled: { color: colors.filledText },
 };
 
 const $contentPresets: Record<Presets, TextStyle> = {
-  default: {},
+  default: { color: colors.primaryText },
   filled: { color: colors.filledText },
 };
 

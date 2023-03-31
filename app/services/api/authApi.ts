@@ -1,13 +1,22 @@
 import { ApiResponse } from 'apisauce';
-import { UserSnapshotIn } from '../../models/User';
+import { RoleEnum, UserSnapshotIn } from '../../models/User';
 import { Api } from './api';
 import { GeneralApiProblem, getGeneralApiProblem } from './apiProblem';
 import * as SecureStore from 'expo-secure-store';
 
-export interface ApiTokenResponse {
+export interface TokenResponseDto {
   accessToken: string;
   refreshToken: string;
-  user: UserSnapshotIn;
+  user: PrivateUserDto;
+}
+
+export interface PrivateUserDto {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  email: string;
+  role: string;
+  active: boolean;
 }
 
 export async function signIn(
@@ -21,7 +30,7 @@ export async function signIn(
     }
   | GeneralApiProblem
 > {
-  const response: ApiResponse<ApiTokenResponse> = await this.apisauce.post(
+  const response: ApiResponse<TokenResponseDto> = await this.apisauce.post(
     `auth/sign-in`,
     {
       email,
@@ -35,6 +44,7 @@ export async function signIn(
     try {
       const user: UserSnapshotIn = {
         ...response.data.user,
+        role: RoleEnum[response.data.user.role],
         createdAt: new Date(response.data.user.createdAt),
         updatedAt: new Date(response.data.user.updatedAt),
       };
