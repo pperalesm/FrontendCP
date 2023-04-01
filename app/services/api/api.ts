@@ -1,14 +1,13 @@
 import { ApiResponse, ApisauceInstance, create } from 'apisauce';
 import Config from '../../config';
 import { GeneralApiProblem, getGeneralApiProblem } from './apiProblem';
-import type { ApiConfig, ApiFeedResponse } from './api.types';
+import type { ApiConfig, ApiFeedResponse, TokenResponseDto } from './api.types';
 import type { EpisodeSnapshotIn } from '../../models/Episode';
 import * as SecureStore from 'expo-secure-store';
 import { RootStore } from '../../models';
 import Toast from 'react-native-root-toast';
 import { colors } from '../../theme';
 import {
-  TokenResponseDto,
   me,
   requestActivation,
   requestPasswordReset,
@@ -16,7 +15,7 @@ import {
   signOut,
   signUp,
 } from './authApi';
-import { readAllNotebooks } from './notebooksApi';
+import { readAllNotebooks, readManyEntriesPaginated } from './notebooksApi';
 
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
@@ -38,6 +37,7 @@ export class Api {
 
   // Notebooks API
   readAllNotebooks = readAllNotebooks;
+  readManyEntriesPaginated = readManyEntriesPaginated;
 
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config;

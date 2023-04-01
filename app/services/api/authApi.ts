@@ -3,21 +3,7 @@ import { RoleEnum, UserSnapshotIn } from '../../models/User';
 import { Api } from './api';
 import { GeneralApiProblem, getGeneralApiProblem } from './apiProblem';
 import * as SecureStore from 'expo-secure-store';
-
-export interface TokenResponseDto {
-  accessToken: string;
-  refreshToken: string;
-  user: PrivateUserDto;
-}
-
-export interface PrivateUserDto {
-  id: number;
-  createdAt: string;
-  updatedAt: string;
-  email: string;
-  role: string;
-  active: boolean;
-}
+import { TokenResponseDto } from './api.types';
 
 export async function signIn(
   this: Api,

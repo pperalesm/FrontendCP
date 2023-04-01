@@ -8,3 +8,4 @@ export * from './ActivatedScreen';
 export * from './ResetPasswordScreen';
 export * from './PasswordResetScreen';
 export * from './NotebooksScreen';
+export * from './EntriesScreen';

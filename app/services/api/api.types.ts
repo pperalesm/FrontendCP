@@ -48,3 +48,47 @@ export interface ApiConfig {
    */
   timeout: number;
 }
+
+export interface PageMetaDto {
+  page: number;
+  take: number;
+  itemCount: number;
+  pageCount: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
+export interface PageDto<T> {
+  data: T[];
+  meta: PageMetaDto;
+}
+
+export interface TokenResponseDto {
+  accessToken: string;
+  refreshToken: string;
+  user: PrivateUserDto;
+}
+
+export interface PrivateUserDto {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  email: string;
+  role: string;
+  active: boolean;
+}
+
+export interface PublicNotebookDto {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+}
+
+export interface PrivateEntryDto {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  text: string;
+  isFavorite: boolean;
+}

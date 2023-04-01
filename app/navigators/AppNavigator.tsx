@@ -29,7 +29,7 @@ export type AppStackParamList = {
   Activated: undefined;
   ResetPassword: undefined;
   PasswordReset: undefined;
-  Main: NavigatorScreenParams<MainTabParamList>;
+  MainNavigator: NavigatorScreenParams<MainTabParamList>;
 };
 
 const exitRoutes = Config.exitRoutes;
@@ -47,7 +47,9 @@ const AppStack = observer(function AppStack() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={user ? (user.active ? 'Main' : 'Activate') : 'SignIn'}
+      initialRouteName={
+        user ? (user.active ? 'MainNavigator' : 'Activate') : 'SignIn'
+      }
     >
       {!user ? (
         <>
@@ -61,7 +63,7 @@ const AppStack = observer(function AppStack() {
         </>
       ) : (
         <>
-          <Stack.Screen name="Main" component={MainNavigator} />
+          <Stack.Screen name="MainNavigator" component={MainNavigator} />
         </>
       )}
       <Stack.Screen name="Activated" component={ActivatedScreen} />

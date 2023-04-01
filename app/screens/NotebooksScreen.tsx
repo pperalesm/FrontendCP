@@ -11,15 +11,25 @@ import {
 import { Card, EmptyState, Icon, Screen, Text } from '../components';
 import { useStores } from '../models';
 import { Notebook } from '../models/Notebook';
-import { MainTabScreenProps } from '../navigators/MainNavigator';
 import { spacing } from '../theme';
+import {
+  NotebooksParamList,
+  NotebooksScreenProps,
+} from '../navigators/NotebooksNavigator';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const rnrImage1 = require('../../assets/images/rnr-image-1.png');
 const rnrImage2 = require('../../assets/images/rnr-image-2.png');
 const rnrImage3 = require('../../assets/images/rnr-image-3.png');
 const rnrImages = [rnrImage1, rnrImage2, rnrImage3];
 
-export const NotebooksScreen: FC<MainTabScreenProps<'Notebooks'>> = observer(
+type NotebooksScreenNavigationProp = NativeStackNavigationProp<
+  NotebooksParamList,
+  'Notebooks'
+>;
+
+export const NotebooksScreen: FC<NotebooksScreenProps<'Notebooks'>> = observer(
   function NotebooksScreen(_props) {
     const rootStore = useStores();
 
@@ -81,12 +91,14 @@ const NotebookCard = observer(function NotebookCard({
 }: {
   notebook: Notebook;
 }) {
+  const navigation = useNavigation<NotebooksScreenNavigationProp>();
+
   const imageUri = useMemo(() => {
     return rnrImages[Math.floor(Math.random() * rnrImages.length)];
   }, []);
 
   const handlePressCard = () => {
-    // TODO:
+    navigation.navigate('Entries', { notebookId: notebook.id });
   };
 
   return (

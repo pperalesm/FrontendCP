@@ -2,24 +2,24 @@ import {
   BottomTabScreenProps,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
-import { CompositeScreenProps } from '@react-navigation/native';
+import {
+  CompositeScreenProps,
+  NavigatorScreenParams,
+} from '@react-navigation/native';
 import React from 'react';
 import { ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  DemoShowroomScreen,
-  DemoDebugScreen,
-  NotebooksScreen,
-} from '../screens';
+import { DemoShowroomScreen, DemoDebugScreen } from '../screens';
 import { DemoPodcastListScreen } from '../screens/DemoPodcastListScreen';
 import { colors } from '../theme';
 import { AppStackParamList, AppStackScreenProps } from './AppNavigator';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { NotebooksNavigator, NotebooksParamList } from './NotebooksNavigator';
 
 export type MainTabParamList = {
   DemoShowroom: { queryIndex?: string; itemIndex?: string };
   DemoPodcastList: undefined;
-  Notebooks: undefined;
+  NotebooksNavigator: NavigatorScreenParams<NotebooksParamList>;
   DemoDebug: undefined;
 };
 
@@ -74,8 +74,8 @@ export function MainNavigator() {
       />
 
       <Tab.Screen
-        name="Notebooks"
-        component={NotebooksScreen}
+        name="NotebooksNavigator"
+        component={NotebooksNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
