@@ -1,16 +1,10 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect, useState } from 'react';
-import {
-  FlatList,
-  ViewStyle,
-  Image,
-  ImageStyle,
-  ActivityIndicator,
-} from 'react-native';
+import { FlatList, ViewStyle, Image, ImageStyle, View } from 'react-native';
 import { Card, EmptyState, Screen, Text } from '../components';
 import { useStores } from '../models';
 import { Notebook } from '../models/Notebook';
-import { colors, spacing } from '../theme';
+import { spacing } from '../theme';
 import {
   NotebooksParamList,
   NotebooksScreenProps,
@@ -27,7 +21,6 @@ export const NotebooksScreen: FC<NotebooksScreenProps<'Notebooks'>> = observer(
   function NotebooksScreen(_props) {
     const rootStore = useStores();
 
-    const [isRefreshing, setIsRefreshing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -40,12 +33,6 @@ export const NotebooksScreen: FC<NotebooksScreenProps<'Notebooks'>> = observer(
       setIsLoading(false);
     }
 
-    async function refresh() {
-      setIsRefreshing(true);
-      await rootStore.notebooksStore.readAllNotebooks();
-      setIsRefreshing(false);
-    }
-
     return (
       <Screen preset="fixed" safeAreaEdges={['top']}>
         <FlatList<Notebook>
@@ -55,15 +42,12 @@ export const NotebooksScreen: FC<NotebooksScreenProps<'Notebooks'>> = observer(
           }
           ListHeaderComponentStyle={$heading}
           contentContainerStyle={$flatListContentContainer}
-          refreshing={isRefreshing}
-          onRefresh={refresh}
+          progressViewOffset={spacing.massive * 2}
+          refreshing={isLoading}
+          onRefresh={reload}
           ListEmptyComponent={
             isLoading ? (
-              <ActivityIndicator
-                style={$emptyList}
-                size={50}
-                color={colors.primary}
-              />
+              <View style={$emptyList} />
             ) : (
               <EmptyState
                 style={$emptyList}
@@ -122,4 +106,4 @@ const $item: ViewStyle = {
 
 const $image: ImageStyle = { width: 75, height: 75 };
 
-const $emptyList: ViewStyle = { marginTop: spacing.huge };
+const $emptyList: ViewStyle = { marginTop: spacing.huge * 4 };
