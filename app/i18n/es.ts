@@ -1,10 +1,17 @@
 const es = {
   common: {
     fieldRequired: 'Este campo es obligatorio',
-    ok: 'OK!',
-    cancel: 'Cancel',
-    back: 'Back',
-    signOut: 'Log Out',
+    ok: 'OK!', // @demo remove-current-line
+    cancel: 'Cancel', // @demo remove-current-line
+    back: 'Back', // @demo remove-current-line
+    signOut: 'Log Out', // @demo remove-current-line
+  },
+  emptyStateComponent: {
+    generic: {
+      heading: 'Ha habido un error inesperado',
+      content: 'Por favor, inténtalo de nuevo más tarde.',
+      button: 'Reintentar',
+    },
   },
   SignInScreen: {
     emailFieldLabel: 'Correo electrónico',
@@ -57,6 +64,9 @@ const es = {
   PasswordResetScreen: {
     passwordReset: 'Contraseña restablecida con éxito',
   },
+  NotebooksScreen: {
+    title: 'Libretas',
+  },
   welcomeScreen: {
     postscript:
       "psst  — This probably isn't what your app looks like. (Unless your designer handed you these screens, and in that case, ship it!)",
@@ -70,14 +80,6 @@ const es = {
       "This is the screen that your users will see in production when an error is thrown. You'll want to customize this message (located in `app/i18n/en.ts`) and probably the layout as well (`app/screens/ErrorScreen`). If you want to remove this entirely, check `app/app.tsx` for the <ErrorBoundary> component.",
     reset: 'RESET APP',
     traceTitle: 'Error from %{name} stack', // @demo remove-current-line
-  },
-  emptyStateComponent: {
-    generic: {
-      heading: 'So empty... so sad',
-      content:
-        'No data found yet. Try clicking the button to refresh or reload the app.',
-      button: "Let's try this again",
-    },
   },
   // @demo remove-block-start
   errors: {

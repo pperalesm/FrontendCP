@@ -207,7 +207,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
             </View>
             <Text
               tx="SignUpScreen.accountCreatedHint"
-              preset="hint"
+              preset="helper"
               style={$accountCreatedHintText}
             />
           </>

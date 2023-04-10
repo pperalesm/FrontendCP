@@ -101,7 +101,7 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           value={email}
           onChangeText={setEmail}
           onBlur={() => setHasEmailBeenTouched(true)}
-          containerStyle={$textField}
+          containerStyle={$emailTextField}
           autoCapitalize="none"
           autoComplete="email"
           autoCorrect={false}
@@ -127,7 +127,7 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           value={password}
           onChangeText={setPassword}
           onBlur={() => setHasPasswordBeenTouched(true)}
-          containerStyle={$textField}
+          containerStyle={$passwordTextField}
           autoCapitalize="none"
           autoComplete="password"
           autoCorrect={false}
@@ -149,6 +149,14 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           RightAccessory={PasswordRightAccessory}
         />
 
+        {areCredentialsInvalid && (
+          <Text
+            tx="SignInScreen.invalidCredentials"
+            preset="helper"
+            style={$invalidCredentialsText}
+          />
+        )}
+
         <Button
           tx={'SignInScreen.signIn'}
           preset={'filled'}
@@ -156,14 +164,6 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           onPress={signIn}
           isLoading={isLoading}
         />
-
-        {areCredentialsInvalid && (
-          <Text
-            tx="SignInScreen.invalidCredentials"
-            preset="hint"
-            style={$invalidCredentialsText}
-          />
-        )}
 
         <Text
           tx="SignInScreen.forgotPassword"
@@ -195,19 +195,21 @@ const $screenContentContainer: ViewStyle = {
   padding: spacing.large,
 };
 
-const $textField: ViewStyle = {
+const $emailTextField: ViewStyle = {
   marginBottom: spacing.large,
 };
 
-const $signInButton: ViewStyle = {
-  marginTop: spacing.medium,
+const $passwordTextField: ViewStyle = {
+  marginBottom: spacing.huge,
 };
 
 const $invalidCredentialsText: TextStyle = {
-  marginTop: spacing.small,
+  marginBottom: spacing.medium,
   textAlign: 'center',
   color: colors.error,
 };
+
+const $signInButton: ViewStyle = {};
 
 const $forgotPasswordText: TextStyle = {
   marginTop: spacing.medium,

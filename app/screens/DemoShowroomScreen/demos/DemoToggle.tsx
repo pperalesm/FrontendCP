@@ -81,7 +81,7 @@ export const DemoToggle: Demo = {
         value
         containerStyle={$centeredOneThirdCol}
       />
-      <Text preset="formHelper" style={$centeredText}>
+      <Text preset="helper" style={$centeredText}>
         No status - this is the default
       </Text>
 
@@ -121,7 +121,7 @@ export const DemoToggle: Demo = {
         status="error"
         containerStyle={$centeredOneThirdCol}
       />
-      <Text preset="formHelper" style={$centeredText}>
+      <Text preset="helper" style={$centeredText}>
         Error status - use when there is an error
       </Text>
 
@@ -161,7 +161,7 @@ export const DemoToggle: Demo = {
         status="disabled"
         containerStyle={$centeredOneThirdCol}
       />
-      <Text preset="formHelper" style={$centeredText}>
+      <Text preset="helper" style={$centeredText}>
         Disabled status - disables the editability and mutes input
       </Text>
     </DemoUseCase>,
@@ -257,7 +257,7 @@ export const DemoToggle: Demo = {
           borderRadius: 25,
         }}
       />
-      <Text preset="formHelper" style={$centeredText}>
+      <Text preset="helper" style={$centeredText}>
         1 - style the input outer wrapper
       </Text>
 
@@ -298,7 +298,7 @@ export const DemoToggle: Demo = {
           paddingRight: 10,
         }}
       />
-      <Text preset="formHelper" style={$centeredText}>
+      <Text preset="helper" style={$centeredText}>
         2 - style the input inner wrapper
       </Text>
 
@@ -357,7 +357,7 @@ export const DemoToggle: Demo = {
         switchAccessibilityMode="icon"
       />
 
-      <Text preset="formHelper" style={$centeredText}>
+      <Text preset="helper" style={$centeredText}>
         3 - style the input detail
       </Text>
 

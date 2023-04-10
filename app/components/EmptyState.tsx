@@ -13,8 +13,6 @@ import { spacing } from '../theme';
 import { Button, ButtonProps } from './Button';
 import { Text, TextProps } from './Text';
 
-const sadFace = require('../../assets/images/sad-face.png');
-
 interface EmptyStateProps {
   /**
    * An optional prop that specifies the text/image set to use for the empty state.
@@ -111,7 +109,7 @@ interface EmptyStateProps {
 
 const EmptyStatePresets = {
   generic: {
-    imageSource: sadFace,
+    imageSource: undefined,
     heading: translate('emptyStateComponent.generic.heading'),
     content: translate('emptyStateComponent.generic.content'),
     button: translate('emptyStateComponent.generic.button'),
@@ -175,8 +173,8 @@ export function EmptyState(props: EmptyStateProps) {
   ];
   const $contentStyles = [
     $content,
-    (isImagePresent || isHeadingPresent) && { marginTop: spacing.micro },
-    isButtonPresent && { marginBottom: spacing.micro },
+    (isImagePresent || isHeadingPresent) && { marginTop: spacing.small },
+    isButtonPresent && { marginBottom: spacing.small },
     $contentStyleOverride,
     ContentTextProps?.style,
   ];
@@ -196,7 +194,7 @@ export function EmptyState(props: EmptyStateProps) {
 
       {isHeadingPresent && (
         <Text
-          preset="subheading"
+          preset="bold"
           text={heading}
           tx={headingTx}
           txOptions={headingTxOptions}
@@ -207,6 +205,7 @@ export function EmptyState(props: EmptyStateProps) {
 
       {isContentPresent && (
         <Text
+          preset="helper"
           text={content}
           tx={contentTx}
           txOptions={contentTxOptions}
@@ -224,6 +223,7 @@ export function EmptyState(props: EmptyStateProps) {
           textStyle={$buttonTextStyleOverride}
           {...ButtonProps}
           style={$buttonStyles}
+          fitToContent
         />
       )}
     </View>
@@ -231,11 +231,11 @@ export function EmptyState(props: EmptyStateProps) {
 }
 
 const $image: ImageStyle = { alignSelf: 'center' };
+
 const $heading: TextStyle = {
   textAlign: 'center',
-  paddingHorizontal: spacing.large,
 };
+
 const $content: TextStyle = {
   textAlign: 'center',
-  paddingHorizontal: spacing.large,
 };

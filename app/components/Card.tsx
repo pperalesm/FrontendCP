@@ -193,8 +193,8 @@ export function Card(props: CardProps) {
   const $alignmentWrapperStyle = [
     $alignmentWrapper,
     { justifyContent: $alignmentWrapperFlexOptions[verticalAlignment] },
-    LeftComponent && { marginStart: spacing.medium },
-    RightComponent && { marginEnd: spacing.medium },
+    LeftComponent && { marginStart: spacing.small },
+    RightComponent && { marginEnd: spacing.small },
   ];
 
   return (
@@ -236,8 +236,7 @@ export function Card(props: CardProps) {
         {FooterComponent ||
           (isFooterPresent && (
             <Text
-              weight="normal"
-              size="xs"
+              preset="hint"
               text={footer}
               tx={footerTx}
               txOptions={footerTxOptions}

@@ -8,6 +8,8 @@ export const NotebookModel = types
     createdAt: types.Date,
     updatedAt: types.Date,
     name: types.string,
+    description: types.string,
+    imageUrl: types.string,
   })
   .actions(withSetPropAction);
 

@@ -5,8 +5,6 @@ import type { ApiConfig, ApiFeedResponse, TokenResponseDto } from './api.types';
 import type { EpisodeSnapshotIn } from '../../models/Episode';
 import * as SecureStore from 'expo-secure-store';
 import { RootStore } from '../../models';
-import Toast from 'react-native-root-toast';
-import { colors } from '../../theme';
 import {
   me,
   requestActivation,
@@ -89,13 +87,13 @@ export class Api {
         } else {
           this.rootStore.authenticationStore.clearUser();
         }
-      } else if (
+      } /* else if (
         response.problem === 'SERVER_ERROR' ||
         response.problem === 'CONNECTION_ERROR' ||
         response.problem === 'TIMEOUT_ERROR'
       ) {
         Toast.show(
-          'El servidor no se encuentra disponible en estos momentos. Por favor, inténtelo de nuevo más tarde.',
+          'El servidor no se encuentra disponible en estos momentos. Por favor, inténtalo de nuevo más tarde.',
           {
             backgroundColor: colors.errorBackground,
             textColor: colors.error,
@@ -113,14 +111,14 @@ export class Api {
         );
       } else if (response.problem === 'UNKNOWN_ERROR') {
         Toast.show(
-          'Error desconocido. Por favor, inténtelo de nuevo más tarde.',
+          'Error desconocido. Por favor, inténtalo de nuevo más tarde.',
           {
             backgroundColor: colors.errorBackground,
             textColor: colors.error,
             duration: Toast.durations.LONG,
           },
         );
-      }
+      } */
     });
   }
 

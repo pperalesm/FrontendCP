@@ -28,7 +28,7 @@ export const ActivatedScreen: FC<ActivatedScreenProps> = observer(
           await rootStore.authenticationStore.me();
           navigation.reset({
             index: 0,
-            routes: [{ name: 'Main' }],
+            routes: [{ name: 'MainNavigator' }],
           });
         } else {
           navigation.reset({

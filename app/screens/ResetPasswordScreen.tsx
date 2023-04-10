@@ -209,7 +209,7 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = observer(
             </View>
             <Text
               tx="ResetPasswordScreen.passwordResetRequestedHint"
-              preset="hint"
+              preset="helper"
               style={$passwordResetRequestedHintText}
             />
           </>

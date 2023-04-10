@@ -51,7 +51,7 @@ export function MainNavigator() {
         options={{
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
-              name="home"
+              name="home-outline"
               color={focused && colors.primary}
               size={30}
             />

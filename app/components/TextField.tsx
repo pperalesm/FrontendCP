@@ -232,7 +232,7 @@ export const TextField = forwardRef(function TextField(
 
       {!!(helper || helperTx) && (
         <Text
-          preset="formHelper"
+          preset="helper"
           text={helper}
           tx={helperTx}
           txOptions={helperTxOptions}
