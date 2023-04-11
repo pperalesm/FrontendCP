@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
-import React, { FC, useMemo, useRef, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ImageStyle,
   TextInput,
@@ -35,12 +35,16 @@ type SignInScreenNavigationProp = NativeStackNavigationProp<
 
 export const SignInScreen: FC<SignInScreenProps> = observer(
   function SignInScreen(_props) {
-    const passwordInput = useRef<TextInput>();
+    const passwordRef = useRef<TextInput>();
 
     const navigation = useNavigation<SignInScreenNavigationProp>();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [emailValidationError, setEmailValidationError] =
+      useState<TxKeyPath>();
+    const [passwordValidationError, setPasswordValidationError] =
+      useState<TxKeyPath>();
     const [hasEmailBeenTouched, setHasEmailBeenTouched] = useState(false);
     const [hasPasswordBeenTouched, setHasPasswordBeenTouched] = useState(false);
     const [hasTriedSubmitting, setHasTriedSubmitting] = useState(false);
@@ -49,20 +53,31 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
     const [ispasswordHidden, setIspasswordHidden] = useState(true);
     const rootStore = useStores();
 
-    function emailValidationError(): TxKeyPath {
-      if (email.length === 0) return 'common.fieldRequired';
-      if (!isEmailValid(email)) return 'SignInScreen.emailFieldInvalid';
-      return undefined;
-    }
+    useEffect(() => {
+      if (!hasEmailBeenTouched && !hasTriedSubmitting) return;
+      if (email.length === 0) {
+        setEmailValidationError('common.fieldRequired');
+        return;
+      }
+      if (!isEmailValid(email)) {
+        setEmailValidationError('SignInScreen.emailFieldInvalid');
+        return;
+      }
+      setEmailValidationError(undefined);
+    }, [email, hasEmailBeenTouched, hasTriedSubmitting]);
 
-    function passwordValidationError(): TxKeyPath {
-      if (password.length === 0) return 'common.fieldRequired';
-      return undefined;
-    }
+    useEffect(() => {
+      if (!hasPasswordBeenTouched && !hasTriedSubmitting) return;
+      if (password.length === 0) {
+        setPasswordValidationError('common.fieldRequired');
+        return;
+      }
+      setPasswordValidationError(undefined);
+    }, [password, hasPasswordBeenTouched, hasTriedSubmitting]);
 
     async function signIn() {
       setHasTriedSubmitting(true);
-      if (emailValidationError() || passwordValidationError()) return;
+      if (emailValidationError || passwordValidationError) return;
       setIsLoading(true);
       const response = await rootStore.authenticationStore.signIn(
         email,
@@ -106,23 +121,13 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           autoCorrect={false}
           keyboardType="email-address"
           labelTx="SignInScreen.emailFieldLabel"
-          helperTx={
-            (hasEmailBeenTouched || hasTriedSubmitting) &&
-            emailValidationError()
-              ? emailValidationError()
-              : undefined
-          }
-          status={
-            (hasEmailBeenTouched || hasTriedSubmitting) &&
-            emailValidationError()
-              ? 'error'
-              : undefined
-          }
-          onSubmitEditing={() => passwordInput.current?.focus()}
+          helperTx={emailValidationError}
+          status={emailValidationError ? 'error' : undefined}
+          onSubmitEditing={() => passwordRef.current?.focus()}
         />
 
         <TextField
-          ref={passwordInput}
+          ref={passwordRef}
           value={password}
           onChangeText={setPassword}
           onBlur={() => setHasPasswordBeenTouched(true)}
@@ -132,18 +137,8 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
           autoCorrect={false}
           secureTextEntry={ispasswordHidden}
           labelTx="SignInScreen.passwordFieldLabel"
-          helperTx={
-            (hasPasswordBeenTouched || hasTriedSubmitting) &&
-            passwordValidationError()
-              ? passwordValidationError()
-              : undefined
-          }
-          status={
-            (hasPasswordBeenTouched || hasTriedSubmitting) &&
-            passwordValidationError()
-              ? 'error'
-              : undefined
-          }
+          helperTx={passwordValidationError}
+          status={passwordValidationError ? 'error' : undefined}
           onSubmitEditing={signIn}
           RightAccessory={PasswordRightAccessory}
         />

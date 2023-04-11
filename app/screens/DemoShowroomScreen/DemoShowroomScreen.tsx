@@ -133,7 +133,7 @@ export const DemoShowroomScreen: FC<MainTabScreenProps<'DemoShowroom'>> =
       }
     }, [route]);
 
-    const toggleDrawer = () => {
+    async function toggleDrawer() {
       if (!open) {
         setOpen(true);
         drawerRef.current?.openDrawer({ speed: 2 });
@@ -141,7 +141,7 @@ export const DemoShowroomScreen: FC<MainTabScreenProps<'DemoShowroom'>> =
         setOpen(false);
         drawerRef.current?.closeDrawer({ speed: 2 });
       }
-    };
+    }
 
     const handleScroll = (sectionIndex: number, itemIndex = 0) => {
       listRef.current.scrollToLocation({

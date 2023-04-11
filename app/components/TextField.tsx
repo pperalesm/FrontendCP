@@ -155,7 +155,6 @@ export const TextField = forwardRef(function TextField(
       borderColor: colors.disabled,
       backgroundColor: colors.primarySurface,
     },
-    TextInputProps.multiline && { minHeight: 112 },
     LeftAccessory && { paddingStart: 0 },
     RightAccessory && { paddingEnd: 0 },
     $inputWrapperStyleOverride,

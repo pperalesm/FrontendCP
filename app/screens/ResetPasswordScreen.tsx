@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { observer } from 'mobx-react-lite';
-import React, { FC, useMemo, useRef, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ImageStyle,
   TextInput,
@@ -38,14 +38,22 @@ type ResetPasswordScreenNavigationProp = NativeStackNavigationProp<
 
 export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = observer(
   function ResetPasswordScreen(_props) {
-    const passwordInput = useRef<TextInput>();
-    const repeatedPasswordInput = useRef<TextInput>();
+    const passwordRef = useRef<TextInput>();
+    const repeatedPasswordRef = useRef<TextInput>();
 
     const navigation = useNavigation<ResetPasswordScreenNavigationProp>();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatedPassword, setRepeatedPassword] = useState('');
+    const [emailValidationError, setEmailValidationError] =
+      useState<TxKeyPath>();
+    const [passwordValidationError, setPasswordValidationError] =
+      useState<TxKeyPath>();
+    const [
+      repeatedPasswordValidationError,
+      setRepeatedPasswordValidationError,
+    ] = useState<TxKeyPath>();
     const [hasEmailBeenTouched, setHasEmailBeenTouched] = useState(false);
     const [hasPasswordBeenTouched, setHasPasswordBeenTouched] = useState(false);
     const [hasRepeatedPasswordBeenTouched, setHasRepeatedPasswordBeenTouched] =
@@ -56,32 +64,58 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = observer(
     const [ispasswordHidden, setIspasswordHidden] = useState(true);
     const rootStore = useStores();
 
-    function emailValidationError() {
-      if (email.length === 0) return 'common.fieldRequired';
-      if (!isEmailValid(email)) return 'ResetPasswordScreen.emailFieldInvalid';
-      return undefined;
-    }
+    useEffect(() => {
+      if (!hasEmailBeenTouched && !hasTriedSubmitting) return;
+      if (email.length === 0) {
+        setEmailValidationError('common.fieldRequired');
+        return;
+      }
+      if (!isEmailValid(email)) {
+        setEmailValidationError('ResetPasswordScreen.emailFieldInvalid');
+        return;
+      }
+      setEmailValidationError(undefined);
+    }, [email, hasEmailBeenTouched, hasTriedSubmitting]);
 
-    function passwordValidationError(): TxKeyPath {
-      if (password.length === 0) return 'common.fieldRequired';
-      if (!isPasswordValid(password))
-        return 'ResetPasswordScreen.passwordFieldInvalid';
-      return undefined;
-    }
+    useEffect(() => {
+      if (!hasPasswordBeenTouched && !hasTriedSubmitting) return;
+      if (password.length === 0) {
+        setPasswordValidationError('common.fieldRequired');
+        return;
+      }
+      if (!isPasswordValid(password)) {
+        setPasswordValidationError('ResetPasswordScreen.passwordFieldInvalid');
+        return;
+      }
+      setPasswordValidationError(undefined);
+    }, [password, hasPasswordBeenTouched, hasTriedSubmitting]);
 
-    function repeatedPasswordValidationError(): TxKeyPath {
-      if (repeatedPassword.length === 0) return 'common.fieldRequired';
-      if (repeatedPassword !== password)
-        return 'ResetPasswordScreen.notSamePassword';
-      return undefined;
-    }
+    useEffect(() => {
+      if (!hasRepeatedPasswordBeenTouched && !hasTriedSubmitting) return;
+      if (repeatedPassword.length === 0) {
+        setRepeatedPasswordValidationError('common.fieldRequired');
+        return;
+      }
+      if (repeatedPassword !== password) {
+        setRepeatedPasswordValidationError(
+          'ResetPasswordScreen.notSamePassword',
+        );
+        return;
+      }
+      setRepeatedPasswordValidationError(undefined);
+    }, [
+      repeatedPassword,
+      password,
+      hasRepeatedPasswordBeenTouched,
+      hasTriedSubmitting,
+    ]);
 
     async function requestPasswordReset() {
       setHasTriedSubmitting(true);
       if (
-        emailValidationError() ||
-        passwordValidationError() ||
-        repeatedPasswordValidationError()
+        emailValidationError ||
+        passwordValidationError ||
+        repeatedPasswordValidationError
       )
         return;
       setIsLoading(true);
@@ -127,23 +161,13 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = observer(
           autoCorrect={false}
           keyboardType="email-address"
           labelTx="ResetPasswordScreen.emailFieldLabel"
-          helperTx={
-            (hasEmailBeenTouched || hasTriedSubmitting) &&
-            emailValidationError()
-              ? emailValidationError()
-              : undefined
-          }
-          status={
-            (hasEmailBeenTouched || hasTriedSubmitting) &&
-            emailValidationError()
-              ? 'error'
-              : undefined
-          }
-          onSubmitEditing={() => passwordInput.current?.focus()}
+          helperTx={emailValidationError}
+          status={emailValidationError ? 'error' : undefined}
+          onSubmitEditing={() => passwordRef.current?.focus()}
         />
 
         <TextField
-          ref={passwordInput}
+          ref={passwordRef}
           value={password}
           onChangeText={setPassword}
           onBlur={() => setHasPasswordBeenTouched(true)}
@@ -153,24 +177,14 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = observer(
           autoCorrect={false}
           secureTextEntry={ispasswordHidden}
           labelTx="ResetPasswordScreen.passwordFieldLabel"
-          helperTx={
-            (hasPasswordBeenTouched || hasTriedSubmitting) &&
-            passwordValidationError()
-              ? passwordValidationError()
-              : undefined
-          }
-          status={
-            (hasPasswordBeenTouched || hasTriedSubmitting) &&
-            passwordValidationError()
-              ? 'error'
-              : undefined
-          }
-          onSubmitEditing={() => repeatedPasswordInput.current?.focus()}
+          helperTx={passwordValidationError}
+          status={passwordValidationError ? 'error' : undefined}
+          onSubmitEditing={() => repeatedPasswordRef.current?.focus()}
           RightAccessory={PasswordRightAccessory}
         />
 
         <TextField
-          ref={repeatedPasswordInput}
+          ref={repeatedPasswordRef}
           value={repeatedPassword}
           onChangeText={setRepeatedPassword}
           onBlur={() => setHasRepeatedPasswordBeenTouched(true)}
@@ -180,18 +194,8 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = observer(
           autoCorrect={false}
           secureTextEntry={ispasswordHidden}
           labelTx="ResetPasswordScreen.repeatedPasswordFieldLabel"
-          helperTx={
-            (hasRepeatedPasswordBeenTouched || hasTriedSubmitting) &&
-            repeatedPasswordValidationError()
-              ? repeatedPasswordValidationError()
-              : undefined
-          }
-          status={
-            (hasRepeatedPasswordBeenTouched || hasTriedSubmitting) &&
-            repeatedPasswordValidationError()
-              ? 'error'
-              : undefined
-          }
+          helperTx={repeatedPasswordValidationError}
+          status={repeatedPasswordValidationError ? 'error' : undefined}
           onSubmitEditing={requestPasswordReset}
           RightAccessory={PasswordRightAccessory}
         />

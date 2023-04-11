@@ -95,42 +95,46 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isDoneLoading, setIsDoneLoading] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
 
-  const isSelected = () =>
-    entry.id === rootStore.notebooksStore.selectedNotebook.selectedEntry?.id;
+  useEffect(() => {
+    setIsSelected(
+      entry.id === rootStore.notebooksStore.selectedNotebook.selectedEntry?.id,
+    );
+  }, [rootStore.notebooksStore.selectedNotebook.selectedEntry]);
 
-  const handlePressFavorite = () => {
+  async function handlePressFavorite() {
     setIsFavoriteLoading(true);
     rootStore.notebooksStore.selectedNotebook.updateOneEntry(entry.id, {
       isFavorite: !entry.isFavorite,
     });
     setIsFavoriteLoading(false);
-  };
+  }
 
-  const handlePressEdit = () => {
-    if (!isSelected()) {
+  async function handlePressEdit() {
+    if (!isSelected) {
       rootStore.notebooksStore.selectedNotebook.select(entry);
     }
-  };
+  }
 
-  const handlePressDelete = () => {
+  async function handlePressDelete() {
     setIsDeleteLoading(true);
     setIsDeleteLoading(false);
-  };
+  }
 
-  const handlePressCancel = () => {
+  async function handlePressCancel() {
     setUpdatedText(entry.text);
     rootStore.notebooksStore.selectedNotebook.select();
-  };
+  }
 
-  const handlePressDone = () => {
+  async function handlePressDone() {
     setIsDoneLoading(true);
     rootStore.notebooksStore.selectedNotebook.updateOneEntry(entry.id, {
       text: updatedText,
     });
     setIsDoneLoading(false);
     rootStore.notebooksStore.selectedNotebook.select();
-  };
+  }
 
   return (
     <View style={$item}>
@@ -158,16 +162,17 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
         </View>
       </View>
       <TextField
+        autoFocus
         multiline
         maxLength={280}
         scrollEnabled={false}
         textAlignVertical="top"
         onSubmitEditing={handlePressDone}
-        value={isSelected() ? updatedText : entry.text}
+        value={isSelected ? updatedText : entry.text}
         onChangeText={setUpdatedText}
-        status={isSelected() ? undefined : 'disabled'}
+        status={isSelected ? undefined : 'disabled'}
       />
-      {isSelected() && (
+      {(isSelected || isDeleteLoading || isDoneLoading) && (
         <View style={$itemFooter}>
           <Button
             onPress={handlePressDelete}

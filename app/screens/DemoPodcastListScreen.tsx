@@ -219,14 +219,14 @@ const EpisodeCard = observer(function EpisodeCard({
     [episode, isFavorite],
   );
 
-  const handlePressFavorite = () => {
+  async function handlePressFavorite() {
     onPressFavorite();
     liked.value = withSpring(liked.value ? 0 : 1);
-  };
+  }
 
-  const handlePressCard = () => {
+  async function handlePressCard() {
     openLinkInBrowser(episode.enclosure.link);
-  };
+  }
 
   const ButtonLeftAccessory = useMemo(
     () =>
