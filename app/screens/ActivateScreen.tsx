@@ -19,7 +19,6 @@ export const ActivateScreen: FC<ActivateScreenProps> = observer(
     const rootStore = useStores();
 
     async function requestActivation() {
-      if (isLoading) return;
       setIsLoading(true);
       const response = await rootStore.authenticationStore.requestActivation();
       setIsLoading(false);

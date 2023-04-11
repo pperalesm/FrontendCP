@@ -13,7 +13,11 @@ import {
   signOut,
   signUp,
 } from './authApi';
-import { readAllNotebooks, readManyEntriesPaginated } from './notebooksApi';
+import {
+  readAllNotebooks,
+  readManyEntries,
+  updateOneEntry,
+} from './notebooksApi';
 
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
@@ -35,7 +39,8 @@ export class Api {
 
   // Notebooks API
   readAllNotebooks = readAllNotebooks;
-  readManyEntriesPaginated = readManyEntriesPaginated;
+  readManyEntries = readManyEntries;
+  updateOneEntry = updateOneEntry;
 
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config;

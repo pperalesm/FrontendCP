@@ -70,10 +70,12 @@ const NotebookCard = observer(function NotebookCard({
 }: {
   notebook: Notebook;
 }) {
+  const rootStore = useStores();
   const navigation = useNavigation<NotebooksScreenNavigationProp>();
 
   const handlePressCard = () => {
-    navigation.navigate('Entries', { notebookId: notebook.id });
+    rootStore.notebooksStore.select(notebook);
+    navigation.navigate('Entries');
   };
 
   return (

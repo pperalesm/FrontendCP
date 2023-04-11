@@ -1,15 +1,19 @@
 import { Instance, SnapshotOut, types } from 'mobx-state-tree';
 import { api } from '../services/api';
-import { NotebookModel } from './Notebook';
+import { Notebook, NotebookModel } from './Notebook';
 import { withSetPropAction } from './helpers/withSetPropAction';
 
 export const NotebooksStoreModel = types
   .model('NotebooksStore')
   .props({
     notebooks: types.array(NotebookModel),
+    selectedNotebook: types.maybe(types.reference(NotebookModel)),
   })
   .actions(withSetPropAction)
   .actions((store) => ({
+    select(notebook: Notebook) {
+      store.selectedNotebook = notebook;
+    },
     async readAllNotebooks() {
       const response = await api.readAllNotebooks();
       if (response.kind === 'ok') {

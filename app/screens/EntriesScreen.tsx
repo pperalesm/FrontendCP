@@ -1,347 +1,271 @@
 import { observer } from 'mobx-react-lite';
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  ImageStyle,
-  StyleSheet,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native';
-import Animated, {
-  Extrapolate,
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
+import React, { FC, useEffect, useState } from 'react';
+import { FlatList, TextStyle, View, ViewStyle } from 'react-native';
 import {
   Button,
-  Card,
   EmptyState,
-  Icon,
   Screen,
   Text,
+  TextField,
   Toggle,
 } from '../components';
-import { translate } from '../i18n';
 import { useStores } from '../models';
 import { colors, spacing } from '../theme';
-import { delay } from '../utils/delay';
-import {
-  NotebooksParamList,
-  NotebooksScreenProps,
-} from '../navigators/NotebooksNavigator';
+import { NotebooksScreenProps } from '../navigators/NotebooksNavigator';
 import { Entry } from '../models/Entry';
-import { RouteProp, useRoute } from '@react-navigation/native';
-
-const ICON_SIZE = 14;
-
-const rnrImage1 = require('../../assets/images/rnr-image-1.png');
-const rnrImage2 = require('../../assets/images/rnr-image-2.png');
-const rnrImage3 = require('../../assets/images/rnr-image-3.png');
-const rnrImages = [rnrImage1, rnrImage2, rnrImage3];
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
   function EntriesScreen(_props) {
-    const route = useRoute<RouteProp<NotebooksParamList, 'Entries'>>();
     const rootStore = useStores();
-    const notebookId = route.params.notebookId;
 
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-    const [refreshing, setRefreshing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    // initially, kick off a background refresh without the refreshing UI
     useEffect(() => {
-      (async function load() {
-        setIsLoading(true);
-        await rootStore.entriesStore.readManyEntriesPaginated(notebookId);
-        setIsLoading(false);
-      })();
-    }, [rootStore.entriesStore]);
+      reload();
+    }, [rootStore.notebooksStore.selectedNotebook.entries]);
 
-    // simulate a longer refresh, if the refresh is too fast for UX
-    async function manualRefresh() {
-      setRefreshing(true);
-      await Promise.all([
-        rootStore.entriesStore.readManyEntriesPaginated(notebookId),
-        delay(750),
-      ]);
-      setRefreshing(false);
+    async function reload() {
+      setIsLoading(true);
+      await rootStore.notebooksStore.selectedNotebook.readFirstEntries(
+        rootStore.notebooksStore.selectedNotebook.id,
+      );
+      setIsLoading(false);
     }
 
     return (
-      <Screen
-        preset="fixed"
-        safeAreaEdges={['top']}
-        contentContainerStyle={$screenContentContainer}
-      >
+      <Screen preset="fixed" safeAreaEdges={['top']}>
         <FlatList<Entry>
+          keyboardShouldPersistTaps="handled"
           data={
             showFavoritesOnly
-              ? rootStore.entriesStore.favorites
-              : rootStore.entriesStore.entries
+              ? rootStore.notebooksStore.selectedNotebook.favorites
+              : rootStore.notebooksStore.selectedNotebook.entries
           }
           extraData={
-            rootStore.entriesStore.favorites.length +
-            rootStore.entriesStore.entries.length
+            rootStore.notebooksStore.selectedNotebook.favorites.length +
+            rootStore.notebooksStore.selectedNotebook.entries.length
           }
+          ListHeaderComponent={
+            <View>
+              <Text
+                preset="heading"
+                text={rootStore.notebooksStore.selectedNotebook.name}
+              />
+              <View style={$toggle}>
+                <Toggle
+                  value={showFavoritesOnly}
+                  onValueChange={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                  variant="switch"
+                  labelTx="demoPodcastListScreen.onlyFavorites"
+                  labelPosition="left"
+                  labelStyle={$toggleLabel}
+                />
+              </View>
+            </View>
+          }
+          ListHeaderComponentStyle={$heading}
           contentContainerStyle={$flatListContentContainer}
-          refreshing={refreshing}
-          onRefresh={manualRefresh}
+          progressViewOffset={spacing.massive * 3}
+          refreshing={isLoading}
+          onRefresh={reload}
           ListEmptyComponent={
             isLoading ? (
-              <ActivityIndicator />
+              <View style={$emptyList} />
             ) : (
               <EmptyState
+                style={$emptyList}
                 preset="generic"
-                style={$emptyState}
-                headingTx={
-                  showFavoritesOnly
-                    ? 'demoPodcastListScreen.noFavoritesEmptyState.heading'
-                    : undefined
-                }
-                contentTx={
-                  showFavoritesOnly
-                    ? 'demoPodcastListScreen.noFavoritesEmptyState.content'
-                    : undefined
-                }
-                button={showFavoritesOnly ? null : undefined}
-                buttonOnPress={manualRefresh}
-                ImageProps={{ resizeMode: 'contain' }}
+                buttonOnPress={reload}
               />
             )
           }
-          ListHeaderComponent={
-            <View style={$heading}>
-              <Text preset="heading" tx="demoPodcastListScreen.title" />
-              {(showFavoritesOnly ||
-                rootStore.entriesStore.entries.length > 0) && (
-                <View style={$toggle}>
-                  <Toggle
-                    value={showFavoritesOnly}
-                    onValueChange={() =>
-                      setShowFavoritesOnly(!showFavoritesOnly)
-                    }
-                    variant="switch"
-                    labelTx="demoPodcastListScreen.onlyFavorites"
-                    labelPosition="left"
-                    labelStyle={$labelStyle}
-                    accessibilityLabel={translate(
-                      'demoPodcastListScreen.accessibility.switch',
-                    )}
-                  />
-                </View>
-              )}
-            </View>
-          }
-          renderItem={({ item }) => (
-            <EntryCard
-              key={item.id}
-              entry={item}
-              onPressFavorite={() =>
-                rootStore.entriesStore.toggleFavorite(item)
-              }
-            />
-          )}
+          renderItem={({ item }) => <EntryItem key={item.id} entry={item} />}
         />
       </Screen>
     );
   },
 );
 
-const EntryCard = observer(function EpisodeCard({
-  entry,
-  onPressFavorite,
-}: {
-  entry: Entry;
-  onPressFavorite: () => void;
-}) {
-  const liked = useSharedValue(entry.isFavorite ? 1 : 0);
+const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
+  const rootStore = useStores();
 
-  const imageUri = useMemo(() => {
-    return rnrImages[Math.floor(Math.random() * rnrImages.length)];
-  }, []);
+  const [updatedText, setUpdatedText] = useState(entry.text);
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [isDoneLoading, setIsDoneLoading] = useState(false);
 
-  // Grey heart
-  const animatedLikeButtonStyles = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          scale: interpolate(liked.value, [0, 1], [1, 0], Extrapolate.EXTEND),
-        },
-      ],
-      opacity: interpolate(liked.value, [0, 1], [1, 0], Extrapolate.CLAMP),
-    };
-  });
-
-  // Pink heart
-  const animatedUnlikeButtonStyles = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          scale: liked.value,
-        },
-      ],
-      opacity: liked.value,
-    };
-  });
+  const isSelected = () =>
+    entry.id === rootStore.notebooksStore.selectedNotebook.selectedEntry?.id;
 
   const handlePressFavorite = () => {
-    onPressFavorite();
-    liked.value = withSpring(liked.value ? 0 : 1);
+    setIsFavoriteLoading(true);
+    rootStore.notebooksStore.selectedNotebook.updateOneEntry(entry.id, {
+      isFavorite: !entry.isFavorite,
+    });
+    setIsFavoriteLoading(false);
   };
 
-  const ButtonLeftAccessory = useMemo(
-    () =>
-      function ButtonLeftAccessory() {
-        return (
-          <View>
-            <Animated.View
-              style={[
-                $iconContainer,
-                StyleSheet.absoluteFill,
-                animatedLikeButtonStyles,
-              ]}
-            >
-              <Icon
-                icon="heart"
-                size={ICON_SIZE}
-                color={colors.primaryDark} // dark grey
-              />
-            </Animated.View>
-            <Animated.View style={[$iconContainer, animatedUnlikeButtonStyles]}>
-              <Icon
-                icon="heart"
-                size={ICON_SIZE}
-                color={colors.primary} // pink
-              />
-            </Animated.View>
-          </View>
-        );
-      },
-    [],
-  );
+  const handlePressEdit = () => {
+    if (!isSelected()) {
+      rootStore.notebooksStore.selectedNotebook.select(entry);
+    }
+  };
+
+  const handlePressDelete = () => {
+    setIsDeleteLoading(true);
+    setIsDeleteLoading(false);
+  };
+
+  const handlePressCancel = () => {
+    setUpdatedText(entry.text);
+    rootStore.notebooksStore.selectedNotebook.select();
+  };
+
+  const handlePressDone = () => {
+    setIsDoneLoading(true);
+    rootStore.notebooksStore.selectedNotebook.updateOneEntry(entry.id, {
+      text: updatedText,
+    });
+    setIsDoneLoading(false);
+    rootStore.notebooksStore.selectedNotebook.select();
+  };
 
   return (
-    <Card
-      style={$item}
-      verticalAlignment="force-footer-bottom"
-      onLongPress={handlePressFavorite}
-      HeadingComponent={
-        <View style={$metadata}>
-          <Text
-            style={$metadataText}
-            size="xxs"
-            accessibilityLabel={entry.createdAt.toISOString()}
-          >
-            {entry.createdAt.toISOString()}
-          </Text>
+    <View style={$item}>
+      <View style={$itemHeader}>
+        <View style={$itemHeaderSection}>
+          <Text preset="hint" text={entry.createdAt.toLocaleString()} />
         </View>
-      }
-      content={`${entry.text}`}
-      RightComponent={<Image source={imageUri} style={$itemThumbnail} />}
-      FooterComponent={
-        <Button
-          onPress={handlePressFavorite}
-          onLongPress={handlePressFavorite}
-          style={[$favoriteButton, entry.isFavorite && $unFavoriteButton]}
-          accessibilityLabel={
-            entry.isFavorite
-              ? translate('demoPodcastListScreen.accessibility.unfavoriteIcon')
-              : translate('demoPodcastListScreen.accessibility.favoriteIcon')
-          }
-          LeftAccessory={ButtonLeftAccessory}
-        >
-          <Text
-            size="xxs"
-            weight="medium"
-            text={
-              entry.isFavorite
-                ? translate('demoPodcastListScreen.unfavoriteButton')
-                : translate('demoPodcastListScreen.favoriteButton')
-            }
-          />
-        </Button>
-      }
-    />
+        <View style={$itemHeaderSection}>
+          <Button
+            onPress={handlePressFavorite}
+            fitToContent
+            style={$favoriteButton}
+            isLoading={isFavoriteLoading}
+            spinnerColor={colors.warning}
+          >
+            <MaterialCommunityIcons
+              name={entry.isFavorite ? 'star' : 'star-outline'}
+              size={16}
+              color={colors.warning}
+            />
+          </Button>
+          <Button onPress={handlePressEdit} fitToContent style={$baseButton}>
+            <MaterialCommunityIcons name="pencil-outline" size={16} />
+          </Button>
+        </View>
+      </View>
+      <TextField
+        multiline
+        maxLength={280}
+        scrollEnabled={false}
+        textAlignVertical="top"
+        onSubmitEditing={handlePressDone}
+        value={isSelected() ? updatedText : entry.text}
+        onChangeText={setUpdatedText}
+        status={isSelected() ? undefined : 'disabled'}
+      />
+      {isSelected() && (
+        <View style={$itemFooter}>
+          <Button
+            onPress={handlePressDelete}
+            fitToContent
+            style={$deleteButton}
+            isLoading={isDeleteLoading}
+            spinnerColor={colors.error}
+          >
+            <MaterialCommunityIcons
+              name="trash-can-outline"
+              size={16}
+              color={colors.error}
+            />
+          </Button>
+          <Button onPress={handlePressCancel} fitToContent style={$baseButton}>
+            <MaterialCommunityIcons name="close" size={16} />
+          </Button>
+          <Button
+            onPress={handlePressDone}
+            fitToContent
+            style={$successButton}
+            isLoading={isDoneLoading}
+            spinnerColor={colors.success}
+          >
+            <MaterialCommunityIcons
+              name="check"
+              size={16}
+              color={colors.success}
+            />
+          </Button>
+        </View>
+      )}
+    </View>
   );
 });
 
-const $screenContentContainer: ViewStyle = {
-  flex: 1,
-};
-
 const $flatListContentContainer: ViewStyle = {
-  paddingHorizontal: spacing.large,
-  paddingTop: spacing.large + spacing.extraLarge,
-  paddingBottom: spacing.large,
+  paddingHorizontal: spacing.medium,
 };
 
 const $heading: ViewStyle = {
-  marginBottom: spacing.medium,
-};
-
-const $item: ViewStyle = {
-  padding: spacing.medium,
-  marginTop: spacing.medium,
-  minHeight: 120,
-};
-
-const $itemThumbnail: ImageStyle = {
-  marginTop: spacing.small,
-  borderRadius: 50,
-  alignSelf: 'flex-start',
+  marginVertical: spacing.extraLarge,
 };
 
 const $toggle: ViewStyle = {
-  marginTop: spacing.medium,
+  marginTop: spacing.extraLarge,
 };
 
-const $labelStyle: TextStyle = {
-  textAlign: 'left',
+const $toggleLabel: TextStyle = {
+  textAlign: 'right',
 };
 
-const $iconContainer: ViewStyle = {
-  height: ICON_SIZE,
-  width: ICON_SIZE,
+const $item: ViewStyle = {
+  marginBottom: spacing.extraLarge,
+};
+
+const $itemHeader: ViewStyle = {
   flexDirection: 'row',
-  marginEnd: spacing.small,
+  justifyContent: 'space-between',
+  alignItems: 'flex-end',
+  marginBottom: spacing.tiny,
 };
 
-const $metadata: TextStyle = {
-  color: colors.secondaryText,
-  marginTop: spacing.extraSmall,
+const $itemHeaderSection: ViewStyle = {
   flexDirection: 'row',
 };
 
-const $metadataText: TextStyle = {
-  color: colors.secondaryText,
-  marginEnd: spacing.medium,
-  marginBottom: spacing.extraSmall,
+const $itemFooter: ViewStyle = {
+  flexDirection: 'row',
+  justifyContent: 'flex-end',
+  alignItems: 'flex-start',
+  marginTop: spacing.tiny,
+};
+
+const $baseButton: ViewStyle = {
+  marginLeft: spacing.tiny,
+  borderRadius: 4,
+  height: 28,
+  width: 28,
+  paddingHorizontal: 0,
+  paddingVertical: 0,
+  elevation: 1,
 };
 
 const $favoriteButton: ViewStyle = {
-  borderRadius: 17,
-  marginTop: spacing.medium,
-  justifyContent: 'flex-start',
-  backgroundColor: colors.secondarySurface,
-  borderColor: colors.border,
-  paddingHorizontal: spacing.medium,
-  paddingTop: spacing.micro,
-  paddingBottom: 0,
-  minHeight: 32,
-  alignSelf: 'flex-start',
+  ...$baseButton,
+  borderColor: colors.warning,
 };
 
-const $unFavoriteButton: ViewStyle = {
-  borderColor: colors.border,
-  backgroundColor: colors.secondarySurface,
+const $deleteButton: ViewStyle = {
+  ...$baseButton,
+  borderColor: colors.error,
+  marginRight: spacing.medium,
 };
 
-const $emptyState: ViewStyle = {
-  marginTop: spacing.huge,
+const $successButton: ViewStyle = {
+  ...$baseButton,
+  borderColor: colors.success,
 };
+
+const $emptyList: ViewStyle = { marginTop: spacing.huge * 3 };

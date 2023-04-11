@@ -81,8 +81,7 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = observer(
       if (
         emailValidationError() ||
         passwordValidationError() ||
-        repeatedPasswordValidationError() ||
-        isLoading
+        repeatedPasswordValidationError()
       )
         return;
       setIsLoading(true);

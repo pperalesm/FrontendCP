@@ -151,7 +151,10 @@ export const TextField = forwardRef(function TextField(
     $inputWrapperStyle,
     hasFocus && { borderColor: colors.primary },
     status === 'error' && { borderColor: colors.error },
-    disabled && { borderColor: colors.disabled },
+    disabled && {
+      borderColor: colors.disabled,
+      backgroundColor: colors.primarySurface,
+    },
     TextInputProps.multiline && { minHeight: 112 },
     LeftAccessory && { paddingStart: 0 },
     RightAccessory && { paddingEnd: 0 },
@@ -160,7 +163,7 @@ export const TextField = forwardRef(function TextField(
 
   const $inputStyles = [
     $inputStyle,
-    disabled && { color: colors.disabled },
+    disabled && { color: colors.secondaryText },
     TextInputProps.multiline && { height: 'auto' },
     $inputStyleOverride,
   ];

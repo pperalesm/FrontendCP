@@ -9,7 +9,7 @@ export enum RoleEnum {
 export const UserModel = types
   .model('User')
   .props({
-    id: types.number,
+    id: types.identifierNumber,
     createdAt: types.Date,
     updatedAt: types.Date,
     email: types.string,

@@ -4,7 +4,7 @@ import { withSetPropAction } from './helpers/withSetPropAction';
 export const EntryModel = types
   .model('Entry')
   .props({
-    id: types.number,
+    id: types.identifierNumber,
     createdAt: types.Date,
     updatedAt: types.Date,
     text: types.string,

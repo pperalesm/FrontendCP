@@ -79,8 +79,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
       if (
         emailValidationError() ||
         passwordValidationError() ||
-        repeatedPasswordValidationError() ||
-        isLoading
+        repeatedPasswordValidationError()
       )
         return;
       setIsLoading(true);

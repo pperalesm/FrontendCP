@@ -30,6 +30,10 @@ export interface ButtonProps extends PressableProps {
    */
   isLoading?: boolean;
   /**
+   * Loading spinner color.
+   */
+  spinnerColor?: string;
+  /**
    * Text which is looked up via i18n.
    */
   tx?: TextProps['tx'];
@@ -88,6 +92,7 @@ export function Button(props: ButtonProps) {
   const {
     fitToContent = false,
     isLoading,
+    spinnerColor,
     tx,
     text,
     txOptions,
@@ -124,7 +129,9 @@ export function Button(props: ButtonProps) {
       style={$viewStyle}
       onPress={(event: GestureResponderEvent) => {
         Keyboard.dismiss();
-        onPress(event);
+        if (!isLoading) {
+          onPress(event);
+        }
       }}
       accessibilityRole="button"
       {...rest}
@@ -134,7 +141,10 @@ export function Button(props: ButtonProps) {
           {isLoading ? (
             <ActivityIndicator
               style={$spinner}
-              color={preset === 'default' ? colors.primary : colors.filledText}
+              color={
+                spinnerColor ||
+                (preset === 'default' ? colors.primary : colors.filledText)
+              }
             />
           ) : (
             <>

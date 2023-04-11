@@ -5,7 +5,7 @@ import { EntriesScreen, NotebooksScreen } from '../screens';
 
 export type NotebooksParamList = {
   Notebooks: undefined;
-  Entries: { notebookId: number };
+  Entries: undefined;
 };
 
 export type NotebooksScreenProps<T extends keyof NotebooksParamList> =

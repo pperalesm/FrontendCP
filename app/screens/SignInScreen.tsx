@@ -62,8 +62,7 @@ export const SignInScreen: FC<SignInScreenProps> = observer(
 
     async function signIn() {
       setHasTriedSubmitting(true);
-      if (emailValidationError() || passwordValidationError() || isLoading)
-        return;
+      if (emailValidationError() || passwordValidationError()) return;
       setIsLoading(true);
       const response = await rootStore.authenticationStore.signIn(
         email,
