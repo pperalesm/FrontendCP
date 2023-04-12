@@ -104,6 +104,7 @@ export function Button(props: ButtonProps) {
     RightAccessory,
     LeftAccessory,
     onPress,
+    disabled,
     ...rest
   } = props;
 
@@ -111,9 +112,10 @@ export function Button(props: ButtonProps) {
   function $viewStyle({ pressed }) {
     return [
       $viewPresets[preset],
+      disabled && [$disabledView],
+      fitToContent && $fitToContent,
       $viewStyleOverride,
       !!pressed && [$pressedViewPresets[preset], $pressedViewStyleOverride],
-      fitToContent && $fitToContent,
     ];
   }
   function $textStyle({ pressed }) {
@@ -127,9 +129,10 @@ export function Button(props: ButtonProps) {
   return (
     <Pressable
       style={$viewStyle}
+      disabled={disabled}
       onPress={(event: GestureResponderEvent) => {
-        Keyboard.dismiss();
         if (!isLoading) {
+          Keyboard.dismiss();
           onPress(event);
         }
       }}
@@ -187,6 +190,10 @@ const $baseViewStyle: ViewStyle = {
   paddingHorizontal: spacing.medium,
   overflow: 'hidden',
   elevation: 4,
+};
+
+const $disabledView: ViewStyle = {
+  borderColor: colors.disabled,
 };
 
 const $fitToContent: ViewStyle = {

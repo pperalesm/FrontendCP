@@ -1,8 +1,13 @@
-import { Instance, SnapshotIn, SnapshotOut, types } from 'mobx-state-tree';
-import { withSetPropAction } from './helpers/withSetPropAction';
+import {
+  Instance,
+  SnapshotIn,
+  SnapshotOut,
+  applySnapshot,
+  flow,
+  types,
+} from 'mobx-state-tree';
 import { Entry, EntryModel } from './Entry';
 import { api } from '../services/api';
-import { getRootStore } from './helpers/getRootStore';
 
 export const NotebookModel = types
   .model('Notebook')
@@ -15,49 +20,79 @@ export const NotebookModel = types
     imageUrl: types.string,
     entries: types.array(EntryModel),
     selectedEntry: types.maybe(types.reference(EntryModel)),
+    entryToAdd: types.maybe(EntryModel),
   })
-  .views((store) => ({
+  .views((self) => ({
     get favorites() {
-      return store.entries.filter((entry) => entry.isFavorite);
+      return self.entries.filter((entry) => entry.isFavorite);
+    },
+    get isEntryToAddSelected() {
+      return self.selectedEntry?.id === -self.id;
     },
   }))
-  .actions(withSetPropAction)
-  .actions((store) => ({
+  .actions((self) => ({
+    prepareEntryToAdd() {
+      const entryToAdd = {
+        id: -self.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isFavorite: false,
+        text: '',
+      };
+      if (self.entryToAdd) applySnapshot(self.entryToAdd, entryToAdd);
+      else self.entryToAdd = EntryModel.create(entryToAdd);
+      self.selectedEntry = self.entryToAdd;
+    },
     select(entry?: Entry) {
-      store.selectedEntry = entry;
+      self.selectedEntry = entry;
     },
-    async readFirstEntries(notebookId: number) {
-      const response = await api.readManyEntries(notebookId, undefined, 10);
+    readFirstEntries: flow(function* () {
+      const response = yield api.readManyEntries(self.id, undefined, 10);
       if (response.kind === 'ok') {
-        store.setProp('entries', response.entries);
+        self.entries = response.entries;
       }
-    },
-    async readMoreEntries(notebookId: number) {
-      const response = await api.readManyEntries(
-        notebookId,
-        store.entries[store.entries.length - 1].createdAt,
+      return response;
+    }),
+    readMoreEntries: flow(function* () {
+      const response = yield api.readManyEntries(
+        self.id,
+        self.entries[self.entries.length - 1].createdAt,
         10,
       );
       if (response.kind === 'ok') {
-        store.setProp('entries', response.entries);
+        self.entries.push(response.entries);
       }
-    },
-    async updateOneEntry(entryId: number, entry: Partial<Entry>) {
-      const rootStore = getRootStore(store);
-      const response = await api.updateOneEntry(
-        rootStore.notebooksStore.selectedNotebook.id,
-        entryId,
-        { ...entry },
-      );
+      return response;
+    }),
+    createOneEntry: flow(function* (entry: Entry) {
+      const response = yield api.createOneEntry(self.id, entry);
       if (response.kind === 'ok') {
-        store.setProp(
-          'entries',
-          store.entries.map((item) =>
-            item.id === response.entry.id ? response.entry : item,
-          ),
+        self.entries.splice(0, 0, response.entry);
+      }
+      return response;
+    }),
+    updateOneEntry: flow(function* (entryId: number, entry: Partial<Entry>) {
+      const response = yield api.updateOneEntry(self.id, entryId, entry);
+      if (response.kind === 'ok') {
+        self.entries.splice(
+          self.entries.findIndex((item) => item.id === entryId),
+          1,
+          response.entry,
         );
       }
-    },
+      return response;
+    }),
+    deleteOneEntry: flow(function* (entryId: number) {
+      const response = yield api.deleteOneEntry(self.id, entryId);
+      if (response.kind === 'ok') {
+        self.selectedEntry = undefined;
+        self.entries.splice(
+          self.entries.findIndex((item) => item.id === entryId),
+          1,
+        );
+      }
+      return response;
+    }),
   }));
 
 export interface Notebook extends Instance<typeof NotebookModel> {}

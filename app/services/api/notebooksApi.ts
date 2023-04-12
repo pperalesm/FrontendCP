@@ -125,3 +125,69 @@ export async function updateOneEntry(
 
   return problem;
 }
+
+export async function createOneEntry(
+  this: Api,
+  notebookId: number,
+  entry: Partial<Entry>,
+): Promise<
+  | {
+      kind: 'ok';
+      entry: EntrySnapshotIn;
+    }
+  | GeneralApiProblem
+> {
+  const response: ApiResponse<PrivateEntryDto> = await this.apisauce.post(
+    `notebooks/${notebookId}/entries`,
+    entry,
+  );
+
+  let problem: GeneralApiProblem;
+
+  if (response.ok) {
+    try {
+      const entry: EntrySnapshotIn = {
+        ...response.data,
+        createdAt: new Date(response.data.createdAt),
+        updatedAt: new Date(response.data.updatedAt),
+      };
+
+      return { kind: 'ok', entry };
+    } catch (e) {
+      if (__DEV__) {
+        console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack);
+      }
+
+      return { kind: 'bad-data' };
+    }
+  } else {
+    problem = getGeneralApiProblem(response);
+  }
+
+  return problem;
+}
+
+export async function deleteOneEntry(
+  this: Api,
+  notebookId: number,
+  entryId: number,
+): Promise<
+  | {
+      kind: 'ok';
+    }
+  | GeneralApiProblem
+> {
+  const response: ApiResponse<null> = await this.apisauce.delete(
+    `notebooks/${notebookId}/entries/${entryId}`,
+  );
+
+  let problem: GeneralApiProblem;
+
+  if (response.ok) {
+    return { kind: 'ok' };
+  } else {
+    problem = getGeneralApiProblem(response);
+  }
+
+  return problem;
+}

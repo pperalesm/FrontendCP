@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { FlatList, TextStyle, View, ViewStyle } from 'react-native';
 import {
   Button,
@@ -17,176 +17,232 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
   function EntriesScreen(_props) {
-    const rootStore = useStores();
+    const {
+      notebooksStore: {
+        selectedNotebook: {
+          name,
+          readFirstEntries,
+          prepareEntryToAdd,
+          isEntryToAddSelected,
+          favorites,
+          entries,
+          selectedEntry,
+          select,
+          entryToAdd,
+        },
+      },
+    } = useStores();
+
+    const listRef = useRef<FlatList>();
 
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
+      select();
       reload();
-    }, [rootStore.notebooksStore.selectedNotebook.entries]);
+    }, []);
 
     async function reload() {
       setIsLoading(true);
-      await rootStore.notebooksStore.selectedNotebook.readFirstEntries(
-        rootStore.notebooksStore.selectedNotebook.id,
-      );
+      await readFirstEntries();
       setIsLoading(false);
     }
 
+    function handlePressAdd() {
+      prepareEntryToAdd();
+      listRef.current?.scrollToIndex({ index: 0, viewPosition: 1 });
+    }
+
     return (
-      <Screen preset="fixed" safeAreaEdges={['top']}>
-        <FlatList<Entry>
-          keyboardShouldPersistTaps="handled"
-          data={
-            showFavoritesOnly
-              ? rootStore.notebooksStore.selectedNotebook.favorites
-              : rootStore.notebooksStore.selectedNotebook.entries
-          }
-          extraData={
-            rootStore.notebooksStore.selectedNotebook.favorites.length +
-            rootStore.notebooksStore.selectedNotebook.entries.length
-          }
-          ListHeaderComponent={
-            <View>
-              <Text
-                preset="heading"
-                text={rootStore.notebooksStore.selectedNotebook.name}
-              />
-              <View style={$toggle}>
-                <Toggle
-                  value={showFavoritesOnly}
-                  onValueChange={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                  variant="switch"
-                  labelTx="demoPodcastListScreen.onlyFavorites"
-                  labelPosition="left"
-                  labelStyle={$toggleLabel}
-                />
+      <>
+        <Screen preset="fixed" safeAreaEdges={['top']}>
+          <FlatList<Entry>
+            ref={listRef}
+            keyboardShouldPersistTaps="handled"
+            data={(isEntryToAddSelected ? [entryToAdd] : []).concat(
+              showFavoritesOnly ? favorites : entries,
+            )}
+            ListHeaderComponent={
+              <View>
+                <Text preset="heading" text={name} />
+                <View style={$toggle}>
+                  <Toggle
+                    value={showFavoritesOnly}
+                    onValueChange={() =>
+                      setShowFavoritesOnly(!showFavoritesOnly)
+                    }
+                    variant="switch"
+                    labelTx="demoPodcastListScreen.onlyFavorites"
+                    labelPosition="left"
+                    labelStyle={$toggleLabel}
+                  />
+                </View>
               </View>
-            </View>
-          }
-          ListHeaderComponentStyle={$heading}
-          contentContainerStyle={$flatListContentContainer}
-          progressViewOffset={spacing.massive * 3}
-          refreshing={isLoading}
-          onRefresh={reload}
-          ListEmptyComponent={
-            isLoading ? (
-              <View style={$emptyList} />
-            ) : (
-              <EmptyState
-                style={$emptyList}
-                preset="generic"
-                buttonOnPress={reload}
-              />
-            )
-          }
-          renderItem={({ item }) => <EntryItem key={item.id} entry={item} />}
-        />
-      </Screen>
+            }
+            ListHeaderComponentStyle={$heading}
+            contentContainerStyle={$flatListContentContainer}
+            progressViewOffset={spacing.massive * 3}
+            refreshing={isLoading}
+            onRefresh={reload}
+            ListEmptyComponent={
+              isLoading ? (
+                <View style={$emptyList} />
+              ) : (
+                <EmptyState
+                  style={$emptyList}
+                  preset="generic"
+                  buttonOnPress={reload}
+                />
+              )
+            }
+            renderItem={({ item }) => <EntryItem key={item.id} entry={item} />}
+          />
+        </Screen>
+        {selectedEntry?.id === undefined && (
+          <Button
+            preset="filled"
+            onPress={handlePressAdd}
+            fitToContent
+            style={$addButton}
+          >
+            <MaterialCommunityIcons name="plus" size={20} />
+          </Button>
+        )}
+      </>
     );
   },
 );
 
 const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
-  const rootStore = useStores();
+  const {
+    notebooksStore: {
+      selectedNotebook: {
+        selectedEntry,
+        updateOneEntry,
+        createOneEntry,
+        deleteOneEntry,
+        select,
+      },
+    },
+  } = useStores();
 
   const [updatedText, setUpdatedText] = useState(entry.text);
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isDoneLoading, setIsDoneLoading] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
-
-  useEffect(() => {
-    setIsSelected(
-      entry.id === rootStore.notebooksStore.selectedNotebook.selectedEntry?.id,
-    );
-  }, [rootStore.notebooksStore.selectedNotebook.selectedEntry]);
 
   async function handlePressFavorite() {
-    setIsFavoriteLoading(true);
-    rootStore.notebooksStore.selectedNotebook.updateOneEntry(entry.id, {
-      isFavorite: !entry.isFavorite,
-    });
-    setIsFavoriteLoading(false);
+    if (entry.id < 0) entry.setIsFavorite(!entry.isFavorite);
+    else {
+      setIsFavoriteLoading(true);
+      await updateOneEntry(entry.id, { isFavorite: !entry.isFavorite });
+      setIsFavoriteLoading(false);
+    }
   }
 
-  async function handlePressEdit() {
-    if (!isSelected) {
-      rootStore.notebooksStore.selectedNotebook.select(entry);
-    }
+  function handlePressEdit() {
+    select(entry);
   }
 
   async function handlePressDelete() {
     setIsDeleteLoading(true);
+    await deleteOneEntry(entry.id);
     setIsDeleteLoading(false);
   }
 
-  async function handlePressCancel() {
-    setUpdatedText(entry.text);
-    rootStore.notebooksStore.selectedNotebook.select();
+  function handlePressCancel() {
+    select();
   }
 
   async function handlePressDone() {
     setIsDoneLoading(true);
-    rootStore.notebooksStore.selectedNotebook.updateOneEntry(entry.id, {
-      text: updatedText,
-    });
+    const response =
+      entry.id < 0
+        ? await createOneEntry(entry)
+        : await updateOneEntry(entry.id, { text: updatedText });
+    if (response.kind === 'ok') {
+      select();
+      setUpdatedText(entry.text);
+    }
     setIsDoneLoading(false);
-    rootStore.notebooksStore.selectedNotebook.select();
   }
 
   return (
     <View style={$item}>
       <View style={$itemHeader}>
         <View style={$itemHeaderSection}>
-          <Text preset="hint" text={entry.createdAt.toLocaleString()} />
+          <Text
+            preset="hint"
+            text={entry.createdAt.toLocaleString()}
+            style={$dateText}
+          />
         </View>
         <View style={$itemHeaderSection}>
           <Button
             onPress={handlePressFavorite}
             fitToContent
-            style={$favoriteButton}
+            style={$topButton}
             isLoading={isFavoriteLoading}
             spinnerColor={colors.warning}
           >
             <MaterialCommunityIcons
               name={entry.isFavorite ? 'star' : 'star-outline'}
-              size={16}
+              size={20}
               color={colors.warning}
             />
           </Button>
-          <Button onPress={handlePressEdit} fitToContent style={$baseButton}>
-            <MaterialCommunityIcons name="pencil-outline" size={16} />
+          <Button
+            onPress={handlePressEdit}
+            fitToContent
+            style={$topButton}
+            disabled={!!selectedEntry}
+          >
+            <MaterialCommunityIcons
+              name="pencil-outline"
+              size={20}
+              color={selectedEntry ? colors.disabled : undefined}
+            />
           </Button>
         </View>
       </View>
       <TextField
-        autoFocus
         multiline
         maxLength={280}
         scrollEnabled={false}
         textAlignVertical="top"
-        onSubmitEditing={handlePressDone}
-        value={isSelected ? updatedText : entry.text}
-        onChangeText={setUpdatedText}
-        status={isSelected ? undefined : 'disabled'}
+        value={
+          entry.id === selectedEntry?.id && entry.id > 0
+            ? updatedText
+            : entry.text
+        }
+        onChangeText={
+          entry.id === selectedEntry?.id && entry.id > 0
+            ? setUpdatedText
+            : entry.setText
+        }
+        status={entry.id === selectedEntry?.id ? undefined : 'disabled'}
+        inputWrapperStyle={
+          entry.id === selectedEntry?.id ? undefined : $disabledTextField
+        }
       />
-      {(isSelected || isDeleteLoading || isDoneLoading) && (
+      {(entry.id === selectedEntry?.id || isDeleteLoading || isDoneLoading) && (
         <View style={$itemFooter}>
-          <Button
-            onPress={handlePressDelete}
-            fitToContent
-            style={$deleteButton}
-            isLoading={isDeleteLoading}
-            spinnerColor={colors.error}
-          >
-            <MaterialCommunityIcons
-              name="trash-can-outline"
-              size={16}
-              color={colors.error}
-            />
-          </Button>
+          {entry.id > 0 && (
+            <Button
+              onPress={handlePressDelete}
+              fitToContent
+              style={$deleteButton}
+              isLoading={isDeleteLoading}
+              spinnerColor={colors.error}
+            >
+              <MaterialCommunityIcons
+                name="trash-can-outline"
+                size={16}
+                color={colors.error}
+              />
+            </Button>
+          )}
           <Button onPress={handlePressCancel} fitToContent style={$baseButton}>
             <MaterialCommunityIcons name="close" size={16} />
           </Button>
@@ -211,6 +267,7 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
 
 const $flatListContentContainer: ViewStyle = {
   paddingHorizontal: spacing.medium,
+  paddingBottom: spacing.massive,
 };
 
 const $heading: ViewStyle = {
@@ -223,6 +280,17 @@ const $toggle: ViewStyle = {
 
 const $toggleLabel: TextStyle = {
   textAlign: 'right',
+};
+
+const $addButton: ViewStyle = {
+  position: 'absolute',
+  bottom: 25,
+  right: 25,
+  borderRadius: 50,
+  height: 60,
+  width: 60,
+  paddingHorizontal: 0,
+  paddingVertical: 0,
 };
 
 const $item: ViewStyle = {
@@ -240,11 +308,18 @@ const $itemHeaderSection: ViewStyle = {
   flexDirection: 'row',
 };
 
+const $dateText: TextStyle = { color: colors.secondaryText };
+
 const $itemFooter: ViewStyle = {
   flexDirection: 'row',
   justifyContent: 'flex-end',
   alignItems: 'flex-start',
   marginTop: spacing.tiny,
+};
+
+const $disabledTextField: ViewStyle = {
+  backgroundColor: colors.transparent,
+  borderColor: colors.transparent,
 };
 
 const $baseButton: ViewStyle = {
@@ -257,9 +332,11 @@ const $baseButton: ViewStyle = {
   elevation: 1,
 };
 
-const $favoriteButton: ViewStyle = {
+const $topButton: ViewStyle = {
   ...$baseButton,
-  borderColor: colors.warning,
+  borderWidth: 0,
+  backgroundColor: colors.transparent,
+  elevation: 0,
 };
 
 const $deleteButton: ViewStyle = {

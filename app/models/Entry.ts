@@ -1,5 +1,4 @@
 import { Instance, SnapshotIn, SnapshotOut, types } from 'mobx-state-tree';
-import { withSetPropAction } from './helpers/withSetPropAction';
 
 export const EntryModel = types
   .model('Entry')
@@ -7,10 +6,17 @@ export const EntryModel = types
     id: types.identifierNumber,
     createdAt: types.Date,
     updatedAt: types.Date,
-    text: types.string,
     isFavorite: types.boolean,
+    text: types.string,
   })
-  .actions(withSetPropAction);
+  .actions((self) => ({
+    setIsFavorite(isFavorite: boolean) {
+      self.isFavorite = isFavorite;
+    },
+    setText(text: string) {
+      self.text = text;
+    },
+  }));
 
 export interface Entry extends Instance<typeof EntryModel> {}
 export interface EntrySnapshotOut extends SnapshotOut<typeof EntryModel> {}

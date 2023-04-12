@@ -1,7 +1,6 @@
-import { Instance, SnapshotOut, types } from 'mobx-state-tree';
+import { Instance, SnapshotOut, flow, types } from 'mobx-state-tree';
 import { api } from '../services/api';
 import { Notebook, NotebookModel } from './Notebook';
-import { withSetPropAction } from './helpers/withSetPropAction';
 
 export const NotebooksStoreModel = types
   .model('NotebooksStore')
@@ -9,17 +8,17 @@ export const NotebooksStoreModel = types
     notebooks: types.array(NotebookModel),
     selectedNotebook: types.maybe(types.reference(NotebookModel)),
   })
-  .actions(withSetPropAction)
-  .actions((store) => ({
+  .actions((self) => ({
     select(notebook: Notebook) {
-      store.selectedNotebook = notebook;
+      self.selectedNotebook = notebook;
     },
-    async readAllNotebooks() {
-      const response = await api.readAllNotebooks();
+    readAllNotebooks: flow(function* () {
+      const response = yield api.readAllNotebooks();
       if (response.kind === 'ok') {
-        store.setProp('notebooks', response.notebooks);
+        self.notebooks = response.notebooks;
       }
-    },
+      return response;
+    }),
   }));
 
 export interface NotebookStore extends Instance<typeof NotebooksStoreModel> {}

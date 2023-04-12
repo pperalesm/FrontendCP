@@ -14,6 +14,8 @@ import {
   signUp,
 } from './authApi';
 import {
+  createOneEntry,
+  deleteOneEntry,
   readAllNotebooks,
   readManyEntries,
   updateOneEntry,
@@ -41,6 +43,8 @@ export class Api {
   readAllNotebooks = readAllNotebooks;
   readManyEntries = readManyEntries;
   updateOneEntry = updateOneEntry;
+  createOneEntry = createOneEntry;
+  deleteOneEntry = deleteOneEntry;
 
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config;
