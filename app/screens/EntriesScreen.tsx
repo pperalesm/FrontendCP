@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { FlatList, TextStyle, View, ViewStyle } from 'react-native';
+import { TextInput, TextStyle, View, ViewStyle } from 'react-native';
 import {
   Button,
   EmptyState,
@@ -14,6 +14,7 @@ import { colors, spacing } from '../theme';
 import { NotebooksScreenProps } from '../navigators/NotebooksNavigator';
 import { Entry } from '../models/Entry';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 
 export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
   function EntriesScreen(_props) {
@@ -33,7 +34,7 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
       },
     } = useStores();
 
-    const listRef = useRef<FlatList>();
+    const listRef = useRef<FlashList<Entry>>();
 
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -56,10 +57,15 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
 
     return (
       <>
-        <Screen preset="fixed" safeAreaEdges={['top']}>
-          <FlatList<Entry>
+        <Screen
+          preset="fixed"
+          safeAreaEdges={['top']}
+          contentContainerStyle={$screenContentContainer}
+        >
+          <FlashList<Entry>
             ref={listRef}
-            keyboardShouldPersistTaps="handled"
+            estimatedItemSize={100}
+            keyboardShouldPersistTaps="always"
             data={(isEntryToAddSelected ? [entryToAdd] : []).concat(
               showFavoritesOnly ? favorites : entries,
             )}
@@ -127,6 +133,8 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
     },
   } = useStores();
 
+  const textFieldRef = useRef<TextInput>();
+
   const [updatedText, setUpdatedText] = useState(entry.text);
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
@@ -142,7 +150,9 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
   }
 
   function handlePressEdit() {
+    setUpdatedText(entry.text);
     select(entry);
+    setTimeout(() => textFieldRef.current?.focus(), 1);
   }
 
   async function handlePressDelete() {
@@ -208,9 +218,10 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
       </View>
       <TextField
         multiline
+        ref={textFieldRef}
+        autoFocus
         maxLength={280}
         scrollEnabled={false}
-        textAlignVertical="top"
         value={
           entry.id === selectedEntry?.id && entry.id > 0
             ? updatedText
@@ -265,8 +276,11 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
   );
 });
 
+const $screenContentContainer: ViewStyle = {
+  flex: 1,
+};
+
 const $flatListContentContainer: ViewStyle = {
-  paddingHorizontal: spacing.medium,
   paddingBottom: spacing.massive,
 };
 
@@ -294,6 +308,7 @@ const $addButton: ViewStyle = {
 };
 
 const $item: ViewStyle = {
+  paddingHorizontal: spacing.medium,
   marginBottom: spacing.extraLarge,
 };
 
