@@ -56,16 +56,16 @@ export const NotebookModel = types
     readMoreEntries: flow(function* () {
       const response = yield api.readManyEntries(
         self.id,
-        self.entries[self.entries.length - 1].createdAt,
+        self.entries[self.entries.length - 1]?.createdAt,
         10,
       );
       if (response.kind === 'ok') {
-        self.entries.push(response.entries);
+        self.entries.push(...response.entries);
       }
       return response;
     }),
-    createOneEntry: flow(function* (entry: Entry) {
-      const response = yield api.createOneEntry(self.id, entry);
+    createOneEntry: flow(function* () {
+      const response = yield api.createOneEntry(self.id, self.entryToAdd);
       if (response.kind === 'ok') {
         self.entries.splice(0, 0, response.entry);
       }
@@ -82,12 +82,13 @@ export const NotebookModel = types
       }
       return response;
     }),
-    deleteOneEntry: flow(function* (entryId: number) {
-      const response = yield api.deleteOneEntry(self.id, entryId);
+    deleteOneEntry: flow(function* () {
+      const response = yield api.deleteOneEntry(self.id, self.selectedEntry.id);
       if (response.kind === 'ok') {
+        const selectedEntryId = self.selectedEntry.id;
         self.selectedEntry = undefined;
         self.entries.splice(
-          self.entries.findIndex((item) => item.id === entryId),
+          self.entries.findIndex((item) => item.id === selectedEntryId),
           1,
         );
       }

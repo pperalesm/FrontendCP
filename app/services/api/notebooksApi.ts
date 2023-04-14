@@ -46,6 +46,7 @@ export async function readManyEntries(
   notebookId: number,
   from?: Date,
   take?: number,
+  isFavorite?: boolean,
 ): Promise<
   | {
       kind: 'ok';
@@ -54,9 +55,9 @@ export async function readManyEntries(
   | GeneralApiProblem
 > {
   const response: ApiResponse<PrivateEntryDto[]> = await this.apisauce.get(
-    `notebooks/${notebookId}/entries?${from ? `from=${from}&` : ''}${
-      take ? `take=${take}` : ''
-    }`,
+    `notebooks/${notebookId}/entries?${
+      from ? `from=${from.toISOString()}&` : ''
+    }${take ? `take=${take}&` : ''}${isFavorite ? `isFavorite=true` : ''}`,
   );
 
   let problem: GeneralApiProblem;

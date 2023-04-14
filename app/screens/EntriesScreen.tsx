@@ -1,20 +1,26 @@
 import { observer } from 'mobx-react-lite';
-import React, { FC, useEffect, useRef, useState } from 'react';
-import { TextInput, TextStyle, View, ViewStyle } from 'react-native';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Button,
-  EmptyState,
-  Screen,
-  Text,
-  TextField,
-  Toggle,
-} from '../components';
+  TextInput,
+  TextStyle,
+  View,
+  ViewStyle,
+  StyleSheet,
+} from 'react-native';
+import { Button, EmptyState, Screen, Text, TextField } from '../components';
 import { useStores } from '../models';
 import { colors, spacing } from '../theme';
 import { NotebooksScreenProps } from '../navigators/NotebooksNavigator';
 import { Entry } from '../models/Entry';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
+import Animated, {
+  Extrapolate,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 
 export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
   function EntriesScreen(_props) {
@@ -23,6 +29,7 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
         selectedNotebook: {
           name,
           readFirstEntries,
+          readMoreEntries,
           prepareEntryToAdd,
           isEntryToAddSelected,
           favorites,
@@ -50,10 +57,75 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
       setIsLoading(false);
     }
 
+    async function loadMoreEntries() {
+      if (!isLoading) {
+        setIsLoading(true);
+        await readMoreEntries();
+        setIsLoading(false);
+      }
+    }
+
     function handlePressAdd() {
       prepareEntryToAdd();
       listRef.current?.scrollToIndex({ index: 0, viewPosition: 1 });
     }
+
+    const heart = useSharedValue(showFavoritesOnly ? 1 : 0);
+
+    const animatedHeartButtonStyles = useAnimatedStyle(() => {
+      return {
+        transform: [
+          {
+            scale: interpolate(heart.value, [0, 1], [1, 0], Extrapolate.EXTEND),
+          },
+        ],
+        opacity: interpolate(heart.value, [0, 1], [1, 0], Extrapolate.CLAMP),
+      };
+    });
+
+    const animatedUnheartButtonStyles = useAnimatedStyle(() => {
+      return {
+        transform: [
+          {
+            scale: heart.value,
+          },
+        ],
+        opacity: heart.value,
+      };
+    });
+
+    const ButtonHeartAccessory = useMemo(
+      () =>
+        function ButtonRightAccessory() {
+          return (
+            <View>
+              <Animated.View
+                style={[
+                  $iconContainer,
+                  StyleSheet.absoluteFill,
+                  animatedHeartButtonStyles,
+                ]}
+              >
+                <MaterialCommunityIcons
+                  name={'heart-outline'}
+                  size={20}
+                  color={colors.secondary}
+                />
+              </Animated.View>
+              <Animated.View
+                style={[$iconContainer, animatedUnheartButtonStyles]}
+              >
+                <MaterialCommunityIcons
+                  name={'heart'}
+                  size={20}
+                  color={colors.secondary}
+                />
+              </Animated.View>
+            </View>
+          );
+        },
+      [],
+    );
 
     return (
       <>
@@ -72,18 +144,19 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
             ListHeaderComponent={
               <View>
                 <Text preset="heading" text={name} />
-                <View style={$toggle}>
-                  <Toggle
-                    value={showFavoritesOnly}
-                    onValueChange={() =>
-                      setShowFavoritesOnly(!showFavoritesOnly)
-                    }
-                    variant="switch"
-                    labelTx="demoPodcastListScreen.onlyFavorites"
-                    labelPosition="left"
-                    labelStyle={$toggleLabel}
-                  />
-                </View>
+                <Button
+                  onPress={() => {
+                    setShowFavoritesOnly(!showFavoritesOnly);
+                    heart.value = withSpring(heart.value ? 0 : 1);
+                  }}
+                  style={[
+                    $unFavoriteButton,
+                    showFavoritesOnly && $favoriteButton,
+                  ]}
+                  RightAccessory={ButtonHeartAccessory}
+                >
+                  <Text preset="hint" tx={'EntriesScreen.favorites'} />
+                </Button>
               </View>
             }
             ListHeaderComponentStyle={$heading}
@@ -91,6 +164,7 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
             progressViewOffset={spacing.massive * 3}
             refreshing={isLoading}
             onRefresh={reload}
+            onEndReached={loadMoreEntries}
             ListEmptyComponent={
               isLoading ? (
                 <View style={$emptyList} />
@@ -157,7 +231,7 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
 
   async function handlePressDelete() {
     setIsDeleteLoading(true);
-    await deleteOneEntry(entry.id);
+    await deleteOneEntry();
     setIsDeleteLoading(false);
   }
 
@@ -169,7 +243,7 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
     setIsDoneLoading(true);
     const response =
       entry.id < 0
-        ? await createOneEntry(entry)
+        ? await createOneEntry()
         : await updateOneEntry(entry.id, { text: updatedText });
     if (response.kind === 'ok') {
       select();
@@ -194,12 +268,12 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
             fitToContent
             style={$topButton}
             isLoading={isFavoriteLoading}
-            spinnerColor={colors.warning}
+            spinnerColor={colors.secondary}
           >
             <MaterialCommunityIcons
-              name={entry.isFavorite ? 'star' : 'star-outline'}
+              name={entry.isFavorite ? 'heart' : 'heart-outline'}
               size={20}
-              color={colors.warning}
+              color={colors.secondary}
             />
           </Button>
           <Button
@@ -211,7 +285,7 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
             <MaterialCommunityIcons
               name="pencil-outline"
               size={20}
-              color={selectedEntry ? colors.disabled : undefined}
+              color={selectedEntry ? colors.disabled : colors.primary}
             />
           </Button>
         </View>
@@ -288,12 +362,26 @@ const $heading: ViewStyle = {
   marginVertical: spacing.extraLarge,
 };
 
-const $toggle: ViewStyle = {
-  marginTop: spacing.extraLarge,
+const $iconContainer: ViewStyle = {
+  height: 20,
+  width: 20,
+  flexDirection: 'row',
+  marginStart: spacing.small,
 };
 
-const $toggleLabel: TextStyle = {
-  textAlign: 'right',
+const $unFavoriteButton: ViewStyle = {
+  borderRadius: 16,
+  marginTop: spacing.large,
+  marginRight: spacing.large,
+  paddingHorizontal: spacing.medium,
+  paddingVertical: spacing.tiny,
+  borderColor: colors.transparent,
+  alignSelf: 'flex-end',
+  elevation: 2,
+};
+
+const $favoriteButton: ViewStyle = {
+  backgroundColor: colors.secondaryLight,
 };
 
 const $addButton: ViewStyle = {
