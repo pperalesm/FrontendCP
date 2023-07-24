@@ -7,7 +7,7 @@ import {
   types,
 } from 'mobx-state-tree';
 import { Entry, EntryModel } from './Entry';
-import { api } from '../services/api';
+import { api } from '../services/api/api';
 
 export const NotebookModel = types
   .model('Notebook')
@@ -39,8 +39,11 @@ export const NotebookModel = types
         isFavorite: false,
         text: '',
       };
-      if (self.entryToAdd) applySnapshot(self.entryToAdd, entryToAdd);
-      else self.entryToAdd = EntryModel.create(entryToAdd);
+      if (self.entryToAdd) {
+        applySnapshot(self.entryToAdd, entryToAdd);
+      } else {
+        self.entryToAdd = EntryModel.create(entryToAdd);
+      }
       self.selectedEntry = self.entryToAdd;
     },
     select(entry?: Entry) {

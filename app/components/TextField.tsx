@@ -15,9 +15,11 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { translate } from '../i18n';
-import { colors, spacing, typography } from '../theme';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
+import { typography } from '../theme/typography';
 import { Text, TextProps } from './Text';
+import { translate } from '../i18n/translate';
 
 export interface TextFieldAccessoryProps {
   style: StyleProp<any>;

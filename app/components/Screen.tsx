@@ -12,7 +12,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { colors } from '../theme';
+import { colors } from '../theme/colors';
 import {
   ExtendedEdge,
   useSafeAreaInsetsStyle,

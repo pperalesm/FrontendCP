@@ -1,11 +1,13 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
 import React from 'react';
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
-import { AutoImage, Text } from '../../../components';
-import { colors, spacing } from '../../../theme';
 import { Demo } from '../DemoShowroomScreen';
 import { DemoDivider } from '../DemoDivider';
 import { DemoUseCase } from '../DemoUseCase';
+import { spacing } from '../../../theme/spacing';
+import { AutoImage } from '../../../components/AutoImage';
+import { Text } from '../../../components/Text';
+import { colors } from '../../../theme/colors';
 
 const $imageContainer: ViewStyle = {
   alignItems: 'center',

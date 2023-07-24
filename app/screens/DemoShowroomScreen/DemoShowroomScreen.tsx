@@ -13,12 +13,16 @@ import {
 } from 'react-native';
 import { DrawerLayout, DrawerState } from 'react-native-gesture-handler';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
-import { ListItem, Screen, Text } from '../../components';
+import { Text } from '../../components/Text';
+import { ListItem } from '../../components/ListItem';
+import { Screen } from '../../components/Screen';
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
 import {
   MainTabParamList,
   MainTabScreenProps,
 } from '../../navigators/MainNavigator';
-import { colors, spacing, timing } from '../../theme';
+import { timing } from '../../theme/timing';
 import { useSafeAreaInsetsStyle } from '../../utils/useSafeAreaInsetsStyle';
 import * as Demos from './demos';
 import { DrawerIconButton } from './DrawerIconButton';

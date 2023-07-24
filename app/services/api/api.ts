@@ -1,10 +1,7 @@
 import { ApiResponse, ApisauceInstance, create } from 'apisauce';
 import Config from '../../config';
-import { GeneralApiProblem, getGeneralApiProblem } from './apiProblem';
-import type { ApiConfig, ApiFeedResponse, TokenResponseDto } from './api.types';
-import type { EpisodeSnapshotIn } from '../../models/Episode';
+import type { ApiConfig, TokenResponseDto } from './api.types';
 import * as SecureStore from 'expo-secure-store';
-import { RootStore } from '../../models';
 import {
   me,
   requestActivation,
@@ -20,6 +17,14 @@ import {
   readManyEntries,
   updateOneEntry,
 } from './notebooksApi';
+import {
+  createOneRoutine,
+  deleteOneRoutine,
+  readAllPlans,
+  readManyRoutines,
+  updateOneRoutine,
+} from './plansApi';
+import { RootStore } from '../../models/RootStore';
 
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
@@ -45,6 +50,13 @@ export class Api {
   updateOneEntry = updateOneEntry;
   createOneEntry = createOneEntry;
   deleteOneEntry = deleteOneEntry;
+
+  // Plans API
+  readAllPlans = readAllPlans;
+  readManyRoutines = readManyRoutines;
+  updateOneRoutine = updateOneRoutine;
+  createOneRoutine = createOneRoutine;
+  deleteOneRoutine = deleteOneRoutine;
 
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config;
@@ -133,43 +145,6 @@ export class Api {
 
   setRootStore(rootStore: RootStore) {
     this.rootStore = rootStore;
-  }
-
-  async getEpisodes(): Promise<
-    { kind: 'ok'; episodes: EpisodeSnapshotIn[] } | GeneralApiProblem
-  > {
-    const response: ApiResponse<ApiFeedResponse> = await this.apisauce.get(
-      `api.json?rss_url=https%3A%2F%2Ffeeds.simplecast.com%2FhEI_f9Dx`,
-    );
-
-    let problem: GeneralApiProblem;
-
-    if (response.ok) {
-      try {
-        const rawData = response.data;
-
-        const episodes: EpisodeSnapshotIn[] = rawData.items.map((raw) => ({
-          ...raw,
-        }));
-
-        return { kind: 'ok', episodes };
-      } catch (e) {
-        if (__DEV__) {
-          console.tron.error(
-            `Bad data: ${e.message}\n${response.data}`,
-            e.stack,
-          );
-        }
-        problem = { kind: 'bad-data' };
-      }
-    } else {
-      const error = getGeneralApiProblem(response);
-      if (error) {
-        problem = error;
-      }
-    }
-
-    return problem;
   }
 }
 

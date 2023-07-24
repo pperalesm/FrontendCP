@@ -1,8 +1,11 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 import { ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
-import { Button, Icon, Text } from '../../../components';
-import { colors, typography } from '../../../theme';
+import { Button } from '../../../components/Button';
+import { Icon } from '../../../components/Icon';
+import { Text } from '../../../components/Text';
+import { colors } from '../../../theme/colors';
+import { typography } from '../../../theme/typography';
 import { Demo } from '../DemoShowroomScreen';
 import { DemoDivider } from '../DemoDivider';
 import { DemoUseCase } from '../DemoUseCase';

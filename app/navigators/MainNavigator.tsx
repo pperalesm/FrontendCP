@@ -9,16 +9,17 @@ import {
 import React from 'react';
 import { ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { DemoShowroomScreen, DemoDebugScreen } from '../screens';
-import { DemoPodcastListScreen } from '../screens/DemoPodcastListScreen';
-import { colors } from '../theme';
 import { AppStackParamList, AppStackScreenProps } from './AppNavigator';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NotebooksNavigator, NotebooksParamList } from './NotebooksNavigator';
+import { colors } from '../theme/colors';
+import { DemoShowroomScreen } from '../screens/DemoShowroomScreen/DemoShowroomScreen';
+import { DemoDebugScreen } from '../screens/DemoDebugScreen';
+import { PlansNavigator, PlansParamList } from './PlansNavigator';
 
 export type MainTabParamList = {
   DemoShowroom: { queryIndex?: string; itemIndex?: string };
-  DemoPodcastList: undefined;
+  PlansNavigator: NavigatorScreenParams<PlansParamList>;
   NotebooksNavigator: NavigatorScreenParams<NotebooksParamList>;
   DemoDebug: undefined;
 };
@@ -60,8 +61,8 @@ export function MainNavigator() {
       />
 
       <Tab.Screen
-        name="DemoPodcastList"
-        component={DemoPodcastListScreen}
+        name="PlansNavigator"
+        component={PlansNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons

@@ -1,7 +1,9 @@
 import React, { ReactNode } from 'react';
 import { TextStyle, View, ViewStyle } from 'react-native';
-import { Text } from '../../components';
-import { colors, spacing, typography } from '../../theme';
+import { Text } from '../../components/Text';
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
+import { typography } from '../../theme/typography';
 
 interface DemoUseCaseProps {
   name: string;

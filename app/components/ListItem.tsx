@@ -7,7 +7,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { colors, spacing } from '../theme';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 import { Icon, IconTypes } from './Icon';
 import { Text, TextProps } from './Text';
 

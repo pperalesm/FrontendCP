@@ -9,7 +9,7 @@
  * The app navigation resides in ./app/navigators, so head over there
  * if you're interested in adding screens and navigators.
  */
-import './i18n';
+import './i18n/i18n';
 import './utils/ignoreWarnings';
 import { useFonts } from 'expo-font';
 import React from 'react';
@@ -18,14 +18,15 @@ import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
 import * as Linking from 'expo-linking';
-import { useInitialRootStore } from './models';
-import { AppNavigator, useNavigationPersistence } from './navigators';
 import { ErrorBoundary } from './screens/ErrorScreen/ErrorBoundary';
-import * as storage from './utils/storage';
-import { customFontsToLoad } from './theme';
-import { setupReactotron } from './services/reactotron';
+import * as storage from './utils/storage/storage';
 import Config from './config';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { setupReactotron } from './services/reactotron/reactotron';
+import { useNavigationPersistence } from './navigators/navigationUtilities';
+import { customFontsToLoad } from './theme/typography';
+import { useInitialRootStore } from './models/helpers/useStores';
+import { AppNavigator } from './navigators/AppNavigator';
 
 // Set up Reactotron, which is a free desktop app for inspecting and debugging
 // React Native apps. Learn more here: https://github.com/infinitered/reactotron

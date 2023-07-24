@@ -1,10 +1,13 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect, useState } from 'react';
 import { FlatList, ViewStyle, Image, ImageStyle, View } from 'react-native';
-import { Card, EmptyState, Screen, Text } from '../components';
-import { useStores } from '../models';
+import { Text } from '../components/Text';
+import { Card } from '../components/Card';
+import { EmptyState } from '../components/EmptyState';
+import { Screen } from '../components/Screen';
+import { spacing } from '../theme/spacing';
+import { useStores } from '../models/helpers/useStores';
 import { Notebook } from '../models/Notebook';
-import { spacing } from '../theme';
 import {
   NotebooksParamList,
   NotebooksScreenProps,

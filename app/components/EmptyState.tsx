@@ -8,10 +8,10 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { translate } from '../i18n';
-import { spacing } from '../theme';
+import { spacing } from '../theme/spacing';
 import { Button, ButtonProps } from './Button';
 import { Text, TextProps } from './Text';
+import { translate } from '../i18n/translate';
 
 interface EmptyStateProps {
   /**

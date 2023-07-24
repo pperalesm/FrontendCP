@@ -62,6 +62,23 @@ export interface PrivateEntryDto {
   isFavorite: boolean;
 }
 
+export interface PublicPlanDto {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+}
+
+export interface PrivateRoutineDto {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  text: string;
+  isFavorite: boolean;
+}
+
 export interface PageMetaDto {
   page: number;
   take: number;

@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-key */
 import React from 'react';
 import { ImageStyle, TextStyle, View, ViewStyle } from 'react-native';
-import { Icon, iconRegistry, IconTypes, Text } from '../../../components';
-import { spacing } from '../../../theme';
+import { Icon, IconTypes, iconRegistry } from '../../../components/Icon';
+import { Text } from '../../../components/Text';
+import { spacing } from '../../../theme/spacing';
 import { Demo } from '../DemoShowroomScreen';
 import { DemoUseCase } from '../DemoUseCase';
 

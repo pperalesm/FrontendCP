@@ -10,17 +10,15 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useColorScheme } from 'react-native';
 import Config from '../config';
-import { useStores } from '../models';
-import {
-  SignInScreen,
-  SignUpScreen,
-  ActivateScreen,
-  ActivatedScreen,
-  PasswordResetScreen,
-  ResetPasswordScreen,
-} from '../screens';
+import { useStores } from '../models/helpers/useStores';
 import { MainNavigator, MainTabParamList } from './MainNavigator';
 import { navigationRef, useBackButtonHandler } from './navigationUtilities';
+import { SignInScreen } from '../screens/SignInScreen';
+import { SignUpScreen } from '../screens/SignUpScreen';
+import { ResetPasswordScreen } from '../screens/ResetPasswordScreen';
+import { ActivateScreen } from '../screens/ActivateScreen';
+import { ActivatedScreen } from '../screens/ActivatedScreen';
+import { PasswordResetScreen } from '../screens/PasswordResetScreen';
 
 export type AppStackParamList = {
   SignIn: undefined;

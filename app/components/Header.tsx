@@ -7,14 +7,15 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { translate } from '../i18n';
-import { colors, spacing } from '../theme';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 import {
   ExtendedEdge,
   useSafeAreaInsetsStyle,
 } from '../utils/useSafeAreaInsetsStyle';
 import { Icon, IconTypes } from './Icon';
 import { Text, TextProps } from './Text';
+import { translate } from '../i18n/translate';
 
 export interface HeaderProps {
   /**

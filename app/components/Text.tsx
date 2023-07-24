@@ -6,8 +6,10 @@ import {
   TextProps as RNTextProps,
   TextStyle,
 } from 'react-native';
-import { translate, TxKeyPath } from '../i18n';
-import { colors, typography } from '../theme';
+import { colors } from '../theme/colors';
+import { typography } from '../theme/typography';
+import { TxKeyPath } from '../i18n/i18n';
+import { translate } from '../i18n/translate';
 
 type Sizes = keyof typeof $sizeStyles;
 type Weights = keyof typeof typography.primary;

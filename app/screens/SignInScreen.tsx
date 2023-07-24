@@ -9,20 +9,21 @@ import {
   ViewStyle,
   Image,
 } from 'react-native';
+import { Button } from '../components/Button';
+import { Icon } from '../components/Icon';
+import { Text } from '../components/Text';
+import { Screen } from '../components/Screen';
+import { TextField, TextFieldAccessoryProps } from '../components/TextField';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 import {
-  Button,
-  Icon,
-  Screen,
-  TextField,
-  TextFieldAccessoryProps,
-  Text,
-} from '../components';
-import { Divider } from '../components/Divider';
-import { TxKeyPath } from '../i18n';
-import { useStores } from '../models';
-import { AppStackParamList, AppStackScreenProps } from '../navigators';
-import { colors, spacing } from '../theme';
+  AppStackParamList,
+  AppStackScreenProps,
+} from '../navigators/AppNavigator';
+import { useStores } from '../models/helpers/useStores';
+import { TxKeyPath } from '../i18n/i18n';
 import { isEmailValid } from '../utils/isEmailValid';
+import { Divider } from '../components/Divider';
 
 const logoUrl = require('../../assets/images/cp-logo.png');
 

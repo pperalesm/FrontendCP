@@ -1,13 +1,18 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect } from 'react';
 import { TextStyle, View, ViewStyle } from 'react-native';
-import { Screen, Text } from '../components';
-import { useStores } from '../models';
-import { AppStackParamList, AppStackScreenProps } from '../navigators';
-import { colors, spacing } from '../theme';
+import { Text } from '../components/Text';
+import { Screen } from '../components/Screen';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {
+  AppStackParamList,
+  AppStackScreenProps,
+} from '../navigators/AppNavigator';
+import { useStores } from '../models/helpers/useStores';
 
 interface ActivatedScreenProps extends AppStackScreenProps<'Activated'> {}
 

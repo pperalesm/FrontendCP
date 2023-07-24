@@ -16,7 +16,8 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
-import { colors, spacing } from '../theme';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 import { iconRegistry, IconTypes } from './Icon';
 import { Text, TextProps } from './Text';
 

@@ -15,8 +15,7 @@ import { TextField } from '../components/TextField';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { useStores } from '../models/helpers/useStores';
-import { NotebooksScreenProps } from '../navigators/NotebooksNavigator';
-import { Entry } from '../models/Entry';
+import { Routine } from '../models/Routine';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import Animated, {
@@ -26,27 +25,28 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import { PlansScreenProps } from '../navigators/PlansNavigator';
 
-export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
-  function EntriesScreen(_props) {
+export const RoutinesScreen: FC<PlansScreenProps<'Routines'>> = observer(
+  function RoutinesScreen(_props) {
     const {
-      notebooksStore: {
-        selectedNotebook: {
+      plansStore: {
+        selectedPlan: {
           name,
-          readFirstEntries,
-          readMoreEntries,
-          prepareEntryToAdd,
-          isEntryToAddSelected,
+          readFirstRoutines,
+          readMoreRoutines,
+          prepareRoutineToAdd,
+          isRoutineToAddSelected,
           favorites,
-          entries,
-          selectedEntry,
+          routines,
+          selectedRoutine,
           select,
-          entryToAdd,
+          routineToAdd,
         },
       },
     } = useStores();
 
-    const listRef = useRef<FlashList<Entry>>();
+    const listRef = useRef<FlashList<Routine>>();
 
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -58,20 +58,20 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
 
     async function reload() {
       setIsLoading(true);
-      await readFirstEntries();
+      await readFirstRoutines();
       setIsLoading(false);
     }
 
-    async function loadMoreEntries() {
+    async function loadMoreRoutines() {
       if (!isLoading) {
         setIsLoading(true);
-        await readMoreEntries();
+        await readMoreRoutines();
         setIsLoading(false);
       }
     }
 
     function handlePressAdd() {
-      prepareEntryToAdd();
+      prepareRoutineToAdd();
       listRef.current?.scrollToIndex({ index: 0, viewPosition: 1 });
     }
 
@@ -139,12 +139,12 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
           safeAreaEdges={['top']}
           contentContainerStyle={$screenContentContainer}
         >
-          <FlashList<Entry>
+          <FlashList<Routine>
             ref={listRef}
             estimatedItemSize={100}
             keyboardShouldPersistTaps="always"
-            data={(isEntryToAddSelected ? [entryToAdd] : []).concat(
-              showFavoritesOnly ? favorites : entries,
+            data={(isRoutineToAddSelected ? [routineToAdd] : []).concat(
+              showFavoritesOnly ? favorites : routines,
             )}
             ListHeaderComponent={
               <View>
@@ -160,7 +160,7 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
                   ]}
                   RightAccessory={ButtonHeartAccessory}
                 >
-                  <Text preset="hint" tx={'EntriesScreen.favorites'} />
+                  <Text preset="hint" tx={'RoutinesScreen.favorites'} />
                 </Button>
               </View>
             }
@@ -169,7 +169,7 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
             progressViewOffset={spacing.massive * 3}
             refreshing={isLoading}
             onRefresh={reload}
-            onEndReached={loadMoreEntries}
+            onEndReached={loadMoreRoutines}
             ListEmptyComponent={
               isLoading ? (
                 <View style={$emptyList} />
@@ -181,10 +181,12 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
                 />
               )
             }
-            renderItem={({ item }) => <EntryItem key={item.id} entry={item} />}
+            renderItem={({ item }) => (
+              <RoutineItem key={item.id} routine={item} />
+            )}
           />
         </Screen>
-        {selectedEntry?.id === undefined && (
+        {selectedRoutine?.id === undefined && (
           <Button
             preset="filled"
             onPress={handlePressAdd}
@@ -199,14 +201,18 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
   },
 );
 
-const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
+const RoutineItem = observer(function RoutineItem({
+  routine,
+}: {
+  routine: Routine;
+}) {
   const {
-    notebooksStore: {
-      selectedNotebook: {
-        selectedEntry,
-        updateOneEntry,
-        createOneEntry,
-        deleteOneEntry,
+    plansStore: {
+      selectedPlan: {
+        selectedRoutine,
+        updateOneRoutine,
+        createOneRoutine,
+        deleteOneRoutine,
         select,
       },
     },
@@ -214,29 +220,29 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
 
   const textFieldRef = useRef<TextInput>();
 
-  const [updatedText, setUpdatedText] = useState(entry.text);
+  const [updatedText, setUpdatedText] = useState(routine.text);
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isDoneLoading, setIsDoneLoading] = useState(false);
 
   async function handlePressFavorite() {
-    if (entry.id < 0) entry.setIsFavorite(!entry.isFavorite);
+    if (routine.id < 0) routine.setIsFavorite(!routine.isFavorite);
     else {
       setIsFavoriteLoading(true);
-      await updateOneEntry(entry.id, { isFavorite: !entry.isFavorite });
+      await updateOneRoutine(routine.id, { isFavorite: !routine.isFavorite });
       setIsFavoriteLoading(false);
     }
   }
 
   function handlePressEdit() {
-    setUpdatedText(entry.text);
-    select(entry);
+    setUpdatedText(routine.text);
+    select(routine);
     setTimeout(() => textFieldRef.current?.focus(), 1);
   }
 
   async function handlePressDelete() {
     setIsDeleteLoading(true);
-    await deleteOneEntry();
+    await deleteOneRoutine();
     setIsDeleteLoading(false);
   }
 
@@ -247,12 +253,12 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
   async function handlePressDone() {
     setIsDoneLoading(true);
     const response =
-      entry.id < 0
-        ? await createOneEntry()
-        : await updateOneEntry(entry.id, { text: updatedText });
+      routine.id < 0
+        ? await createOneRoutine()
+        : await updateOneRoutine(routine.id, { text: updatedText });
     if (response.kind === 'ok') {
       select();
-      setUpdatedText(entry.text);
+      setUpdatedText(routine.text);
     }
     setIsDoneLoading(false);
   }
@@ -263,7 +269,7 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
         <View style={$itemHeaderSection}>
           <Text
             preset="hint"
-            text={entry.createdAt.toLocaleString()}
+            text={routine.createdAt.toLocaleString()}
             style={$dateText}
           />
         </View>
@@ -276,7 +282,7 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
             spinnerColor={colors.secondary}
           >
             <MaterialCommunityIcons
-              name={entry.isFavorite ? 'heart' : 'heart-outline'}
+              name={routine.isFavorite ? 'heart' : 'heart-outline'}
               size={20}
               color={colors.secondary}
             />
@@ -285,12 +291,12 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
             onPress={handlePressEdit}
             fitToContent
             style={$topButton}
-            disabled={!!selectedEntry}
+            disabled={!!selectedRoutine}
           >
             <MaterialCommunityIcons
               name="pencil-outline"
               size={20}
-              color={selectedEntry ? colors.disabled : colors.primary}
+              color={selectedRoutine ? colors.disabled : colors.primary}
             />
           </Button>
         </View>
@@ -302,23 +308,25 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
         maxLength={280}
         scrollEnabled={false}
         value={
-          entry.id === selectedEntry?.id && entry.id > 0
+          routine.id === selectedRoutine?.id && routine.id > 0
             ? updatedText
-            : entry.text
+            : routine.text
         }
         onChangeText={
-          entry.id === selectedEntry?.id && entry.id > 0
+          routine.id === selectedRoutine?.id && routine.id > 0
             ? setUpdatedText
-            : entry.setText
+            : routine.setText
         }
-        status={entry.id === selectedEntry?.id ? undefined : 'disabled'}
+        status={routine.id === selectedRoutine?.id ? undefined : 'disabled'}
         inputWrapperStyle={
-          entry.id === selectedEntry?.id ? undefined : $disabledTextField
+          routine.id === selectedRoutine?.id ? undefined : $disabledTextField
         }
       />
-      {(entry.id === selectedEntry?.id || isDeleteLoading || isDoneLoading) && (
+      {(routine.id === selectedRoutine?.id ||
+        isDeleteLoading ||
+        isDoneLoading) && (
         <View style={$itemFooter}>
-          {entry.id > 0 && (
+          {routine.id > 0 && (
             <Button
               onPress={handlePressDelete}
               fitToContent

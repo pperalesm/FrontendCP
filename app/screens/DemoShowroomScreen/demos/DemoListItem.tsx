@@ -2,8 +2,11 @@
 import React from 'react';
 import { TextStyle, View, ViewStyle } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { Icon, ListItem, Text } from '../../../components';
-import { colors, spacing } from '../../../theme';
+import { Icon } from '../../../components/Icon';
+import { Text } from '../../../components/Text';
+import { ListItem } from '../../../components/ListItem';
+import { colors } from '../../../theme/colors';
+import { spacing } from '../../../theme/spacing';
 import { Demo } from '../DemoShowroomScreen';
 import { DemoDivider } from '../DemoDivider';
 import { DemoUseCase } from '../DemoUseCase';

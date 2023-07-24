@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
-import { colors } from '../theme';
+import { colors } from '../theme/colors';
 
 interface DividerProps {
   type?: 'vertical' | 'horizontal';

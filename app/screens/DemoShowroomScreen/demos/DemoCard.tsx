@@ -1,7 +1,11 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
 import React from 'react';
-import { AutoImage, Button, Card, Icon } from '../../../components';
-import { colors, spacing } from '../../../theme';
+import { Button } from '../../../components/Button';
+import { Icon } from '../../../components/Icon';
+import { Card } from '../../../components/Card';
+import { AutoImage } from '../../../components/AutoImage';
+import { colors } from '../../../theme/colors';
+import { spacing } from '../../../theme/spacing';
 import { Demo } from '../DemoShowroomScreen';
 import { DemoDivider } from '../DemoDivider';
 import { DemoUseCase } from '../DemoUseCase';

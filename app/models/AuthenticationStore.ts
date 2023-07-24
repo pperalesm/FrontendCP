@@ -1,5 +1,5 @@
 import { Instance, SnapshotOut, flow, types } from 'mobx-state-tree';
-import { api } from '../services/api';
+import { api } from '../services/api/api';
 import { UserModel } from './User';
 
 export const AuthenticationStoreModel = types

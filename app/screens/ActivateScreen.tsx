@@ -1,10 +1,13 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC, useState } from 'react';
 import { ImageStyle, TextStyle, ViewStyle, Image, View } from 'react-native';
-import { Button, Screen, Text } from '../components';
-import { useStores } from '../models';
-import { AppStackScreenProps } from '../navigators';
-import { colors, spacing } from '../theme';
+import { Button } from '../components/Button';
+import { Text } from '../components/Text';
+import { Screen } from '../components/Screen';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
+import { AppStackScreenProps } from '../navigators/AppNavigator';
+import { useStores } from '../models/helpers/useStores';
 import { Feather } from '@expo/vector-icons';
 import { Divider } from '../components/Divider';
 

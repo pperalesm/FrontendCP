@@ -70,6 +70,12 @@ const es = {
   EntriesScreen: {
     favorites: 'Favoritos',
   },
+  PlansScreen: {
+    title: 'Libretas',
+  },
+  RoutinesScreen: {
+    favorites: 'Favoritos',
+  },
   welcomeScreen: {
     postscript:
       "psst  — This probably isn't what your app looks like. (Unless your designer handed you these screens, and in that case, ship it!)",
@@ -145,28 +151,6 @@ const es = {
       "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
     windowsReactotronHint:
       "If this doesn't work, ensure the Reactotron desktop app is running and reload app.",
-  },
-  demoPodcastListScreen: {
-    title: 'React Native Radio episodes',
-    onlyFavorites: 'Only Show Favorites',
-    favoriteButton: 'Favorite',
-    unfavoriteButton: 'Unfavorite',
-    accessibility: {
-      cardHint:
-        'Double tap to listen to the episode. Double tap and hold to {{action}} this episode.',
-      switch: 'Switch on to only show favorites',
-      favoriteAction: 'Toggle Favorite',
-      favoriteIcon: 'Episode not favorited',
-      unfavoriteIcon: 'Episode favorited',
-      publishLabel: 'Published {{date}}',
-      durationLabel:
-        'Duration: {{hours}} hours {{minutes}} minutes {{seconds}} seconds',
-    },
-    noFavoritesEmptyState: {
-      heading: 'This looks a bit empty',
-      content:
-        'No favorites have been added yet. Tap the heart on an episode to add it to your favorites!',
-    },
   },
   // @demo remove-block-end
 };

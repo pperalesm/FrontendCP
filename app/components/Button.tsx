@@ -10,8 +10,10 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import { colors, spacing, typography } from '../theme';
 import { Text, TextProps } from './Text';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
+import { typography } from '../theme/typography';
 
 type Presets = keyof typeof $viewPresets;
 

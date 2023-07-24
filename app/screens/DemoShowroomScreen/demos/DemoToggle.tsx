@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
 import React from 'react';
 import { TextStyle, View, ViewStyle } from 'react-native';
-import { Text, Toggle, ToggleProps } from '../../../components';
-import { colors, spacing } from '../../../theme';
+import { Text } from '../../../components/Text';
+import { Toggle, ToggleProps } from '../../../components/Toggle';
+import { colors } from '../../../theme/colors';
+import { spacing } from '../../../theme/spacing';
 import { Demo } from '../DemoShowroomScreen';
 import { DemoDivider } from '../DemoDivider';
 import { DemoUseCase } from '../DemoUseCase';

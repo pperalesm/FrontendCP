@@ -7,8 +7,9 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { colors, spacing } from '../theme';
 import { Text, TextProps } from './Text';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 
 type Presets = keyof typeof $containerPresets;
 

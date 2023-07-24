@@ -19,7 +19,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { onSnapshot } from 'mobx-state-tree';
 import { mst } from 'reactotron-mst';
 import { RootStore } from '../../models/RootStore';
-import { clear } from '../../utils/storage';
 import {
   ReactotronConfig,
   DEFAULT_REACTOTRON_CONFIG,
@@ -30,6 +29,7 @@ import {
   navigate,
 } from '../../navigators/navigationUtilities';
 import { fakeReactotron } from './reactotronFake';
+import { clear } from '../../utils/storage/storage';
 
 /**
  * We tell typescript we intend to hang Reactotron off of the console object.

@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { api } from '../../services/api';
-import { setReactotronRootStore } from '../../services/reactotron';
 import { RootStore, RootStoreModel } from '../RootStore';
 import { setupRootStore } from './setupRootStore';
+import { setReactotronRootStore } from '../../services/reactotron/reactotron';
+import { api } from '../../services/api/api';
 
 /**
  * Create the initial (empty) global RootStore instance here.
