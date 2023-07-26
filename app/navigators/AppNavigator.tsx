@@ -13,12 +13,12 @@ import Config from '../config';
 import { useStores } from '../models/helpers/useStores';
 import { MainNavigator, MainTabParamList } from './MainNavigator';
 import { navigationRef, useBackButtonHandler } from './navigationUtilities';
-import { SignInScreen } from '../screens/SignInScreen';
-import { SignUpScreen } from '../screens/SignUpScreen';
-import { ResetPasswordScreen } from '../screens/ResetPasswordScreen';
-import { ActivateScreen } from '../screens/ActivateScreen';
-import { ActivatedScreen } from '../screens/ActivatedScreen';
-import { PasswordResetScreen } from '../screens/PasswordResetScreen';
+import { SignInScreen } from '../screens/auth/SignInScreen';
+import { SignUpScreen } from '../screens/auth/SignUpScreen';
+import { ResetPasswordScreen } from '../screens/auth/ResetPasswordScreen';
+import { ActivateScreen } from '../screens/auth/ActivateScreen';
+import { ActivatedScreen } from '../screens/auth/ActivatedScreen';
+import { PasswordResetScreen } from '../screens/auth/PasswordResetScreen';
 
 export type AppStackParamList = {
   SignIn: undefined;

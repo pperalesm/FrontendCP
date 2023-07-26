@@ -17,14 +17,16 @@ import {
   readManyEntries,
   updateOneEntry,
 } from './notebooksApi';
-import {
-  createOneRoutine,
-  deleteOneRoutine,
-  readAllPlans,
-  readManyRoutines,
-  updateOneRoutine,
-} from './plansApi';
+import { readAllPlans, readAllRoutines, updateOnePlan } from './plansApi';
 import { RootStore } from '../../models/RootStore';
+import { GeneralApiProblem, getGeneralApiProblem } from './apiProblem';
+import {
+  createOrUpdateOneDailyRecord,
+  readManyDailyRecords,
+  readOneDailyRecord,
+} from './dailyRecordsApi';
+import { readAllTasks } from './tasksApi';
+import { readAllActivityCategories } from './activityCategoriesApi';
 
 export const DEFAULT_API_CONFIG: ApiConfig = {
   url: Config.API_URL,
@@ -53,10 +55,19 @@ export class Api {
 
   // Plans API
   readAllPlans = readAllPlans;
-  readManyRoutines = readManyRoutines;
-  updateOneRoutine = updateOneRoutine;
-  createOneRoutine = createOneRoutine;
-  deleteOneRoutine = deleteOneRoutine;
+  readAllRoutines = readAllRoutines;
+  updateOnePlan = updateOnePlan;
+
+  // DailyRecords API
+  readManyDailyRecords = readManyDailyRecords;
+  readOneDailyRecord = readOneDailyRecord;
+  createOrUpdateOneDailyRecord = createOrUpdateOneDailyRecord;
+
+  // Tasks API
+  readAllTasks = readAllTasks;
+
+  // ActivityCategories API
+  readAllActivityCategories = readAllActivityCategories;
 
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config;
@@ -147,5 +158,28 @@ export class Api {
     this.rootStore = rootStore;
   }
 }
+
+export const handleResponse = async <T, K>(
+  response: ApiResponse<T>,
+  callback: (response: ApiResponse<T>) => K,
+): Promise<K | GeneralApiProblem> => {
+  let problem: GeneralApiProblem;
+
+  if (response.ok) {
+    try {
+      return await callback(response);
+    } catch (e) {
+      if (__DEV__) {
+        console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack);
+      }
+
+      return { kind: 'bad-data' };
+    }
+  } else {
+    problem = getGeneralApiProblem(response);
+  }
+
+  return problem;
+};
 
 export const api = new Api();

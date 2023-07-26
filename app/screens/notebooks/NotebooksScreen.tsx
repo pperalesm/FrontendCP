@@ -1,43 +1,54 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC, useEffect, useState } from 'react';
 import { FlatList, ViewStyle, Image, ImageStyle, View } from 'react-native';
-import { Text } from '../components/Text';
-import { Card } from '../components/Card';
-import { EmptyState } from '../components/EmptyState';
-import { Screen } from '../components/Screen';
-import { spacing } from '../theme/spacing';
-import { useStores } from '../models/helpers/useStores';
-import { Plan } from '../models/Plan';
+import { Text } from '../../components/Text';
+import { Card } from '../../components/Card';
+import { EmptyState } from '../../components/EmptyState';
+import { Screen } from '../../components/Screen';
+import { spacing } from '../../theme/spacing';
+import { useStores } from '../../models/helpers/useStores';
+import { Notebook } from '../../models/Notebook';
+import {
+  NotebooksParamList,
+  NotebooksScreenProps,
+} from '../../navigators/NotebooksNavigator';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { PlansParamList, PlansScreenProps } from '../navigators/PlansNavigator';
 
-type PlansScreenNavigationProp = NativeStackNavigationProp<
-  PlansParamList,
-  'Plans'
+type NotebooksScreenNavigationProp = NativeStackNavigationProp<
+  NotebooksParamList,
+  'Notebooks'
 >;
 
-export const PlansScreen: FC<PlansScreenProps<'Plans'>> = observer(
-  function PlansScreen(_props) {
+export const NotebooksScreen: FC<NotebooksScreenProps<'Notebooks'>> = observer(
+  function NotebooksScreen(_props) {
     const rootStore = useStores();
 
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
       reload();
-    }, [rootStore.plansStore]);
+    }, [rootStore.notebooksStore]);
 
     async function reload() {
       setIsLoading(true);
-      await rootStore.plansStore.readAllPlans();
+
+      // TODO: REMOVE TESTING
+
+      await rootStore.activityCategoriesStore.readAllActivityCategories();
+      console.log(rootStore.activityCategoriesStore.activityCategories[0]);
+
+      await rootStore.notebooksStore.readAllNotebooks();
       setIsLoading(false);
     }
 
     return (
       <Screen preset="fixed" safeAreaEdges={['top']}>
-        <FlatList<Plan>
-          data={rootStore.plansStore.plans}
-          ListHeaderComponent={<Text preset="heading" tx="PlansScreen.title" />}
+        <FlatList<Notebook>
+          data={rootStore.notebooksStore.notebooks}
+          ListHeaderComponent={
+            <Text preset="heading" tx="NotebooksScreen.title" />
+          }
           ListHeaderComponentStyle={$heading}
           contentContainerStyle={$flatListContentContainer}
           progressViewOffset={spacing.massive * 2}
@@ -54,20 +65,26 @@ export const PlansScreen: FC<PlansScreenProps<'Plans'>> = observer(
               />
             )
           }
-          renderItem={({ item }) => <PlanCard key={item.id} plan={item} />}
+          renderItem={({ item }) => (
+            <NotebookCard key={item.id} notebook={item} />
+          )}
         />
       </Screen>
     );
   },
 );
 
-const PlanCard = observer(function PlanCard({ plan }: { plan: Plan }) {
+const NotebookCard = observer(function NotebookCard({
+  notebook,
+}: {
+  notebook: Notebook;
+}) {
   const rootStore = useStores();
-  const navigation = useNavigation<PlansScreenNavigationProp>();
+  const navigation = useNavigation<NotebooksScreenNavigationProp>();
 
   async function handlePressCard() {
-    rootStore.plansStore.select(plan);
-    navigation.navigate('Routines');
+    rootStore.notebooksStore.select(notebook);
+    navigation.navigate('Entries');
   }
 
   return (
@@ -75,10 +92,12 @@ const PlanCard = observer(function PlanCard({ plan }: { plan: Plan }) {
       style={$item}
       verticalAlignment="force-footer-bottom"
       onPress={handlePressCard}
-      heading={plan.name}
-      content={plan.description}
+      heading={notebook.name}
+      content={notebook.description}
       ContentTextProps={{ numberOfLines: 3 }}
-      LeftComponent={<Image style={$image} source={{ uri: plan.imageUrl }} />}
+      LeftComponent={
+        <Image style={$image} source={{ uri: notebook.imageUrl }} />
+      }
     />
   );
 });

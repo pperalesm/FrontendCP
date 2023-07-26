@@ -21,6 +21,6 @@ export const NotebooksStoreModel = types
     }),
   }));
 
-export interface NotebookStore extends Instance<typeof NotebooksStoreModel> {}
-export interface NotebookStoreSnapshot
+export interface NotebooksStore extends Instance<typeof NotebooksStoreModel> {}
+export interface NotebooksStoreSnapshot
   extends SnapshotOut<typeof NotebooksStoreModel> {}

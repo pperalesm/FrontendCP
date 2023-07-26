@@ -2,7 +2,6 @@ import {
   Instance,
   SnapshotIn,
   SnapshotOut,
-  applySnapshot,
   flow,
   types,
 } from 'mobx-state-tree';
@@ -39,9 +38,7 @@ export const NotebookModel = types
         isFavorite: false,
         text: '',
       };
-      if (self.entryToAdd) {
-        applySnapshot(self.entryToAdd, entryToAdd);
-      } else {
+      if (!self.entryToAdd) {
         self.entryToAdd = EntryModel.create(entryToAdd);
       }
       self.selectedEntry = self.entryToAdd;
@@ -74,8 +71,11 @@ export const NotebookModel = types
       }
       return response;
     }),
-    updateOneEntry: flow(function* (entryId: number, entry: Partial<Entry>) {
-      const response = yield api.updateOneEntry(self.id, entryId, entry);
+    updateOneEntry: flow(function* (
+      entryId: number,
+      updateData: { isFavorite?: boolean; text?: string },
+    ) {
+      const response = yield api.updateOneEntry(self.id, entryId, updateData);
       if (response.kind === 'ok') {
         self.entries.splice(
           self.entries.findIndex((item) => item.id === entryId),

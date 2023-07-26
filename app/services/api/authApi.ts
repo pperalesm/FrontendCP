@@ -1,21 +1,11 @@
 import { ApiResponse } from 'apisauce';
 import { RoleEnum, UserSnapshotIn } from '../../models/User';
-import { Api } from './api';
-import { GeneralApiProblem, getGeneralApiProblem } from './apiProblem';
+import { Api, handleResponse } from './api';
+import { GeneralApiProblem } from './apiProblem';
 import * as SecureStore from 'expo-secure-store';
 import { TokenResponseDto } from './api.types';
 
-export async function signIn(
-  this: Api,
-  email: string,
-  password: string,
-): Promise<
-  | {
-      kind: 'ok';
-      user: UserSnapshotIn;
-    }
-  | GeneralApiProblem
-> {
+export async function signIn(this: Api, email: string, password: string) {
   const response: ApiResponse<TokenResponseDto> = await this.apisauce.post(
     `auth/sign-in`,
     {
@@ -24,64 +14,35 @@ export async function signIn(
     },
   );
 
-  let problem: GeneralApiProblem;
+  return await handleResponse(response, async (res) => {
+    const user: UserSnapshotIn = {
+      ...res.data.user,
+      role: RoleEnum[res.data.user.role],
+      createdAt: new Date(res.data.user.createdAt),
+      updatedAt: new Date(res.data.user.updatedAt),
+    };
 
-  if (response.ok) {
-    try {
-      const user: UserSnapshotIn = {
-        ...response.data.user,
-        role: RoleEnum[response.data.user.role],
-        createdAt: new Date(response.data.user.createdAt),
-        updatedAt: new Date(response.data.user.updatedAt),
-      };
+    this.apisauce.setHeader('Authorization', `Bearer ${res.data.accessToken}`);
 
-      this.apisauce.setHeader(
-        'Authorization',
-        `Bearer ${response.data.accessToken}`,
-      );
+    await SecureStore.setItemAsync('refreshToken', res.data.refreshToken);
 
-      await SecureStore.setItemAsync(
-        'refreshToken',
-        response.data.refreshToken,
-      );
-
-      return { kind: 'ok', user };
-    } catch (e) {
-      if (__DEV__) {
-        console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack);
-      }
-      return { kind: 'bad-data' };
-    }
-  } else {
-    problem = getGeneralApiProblem(response);
-  }
-
-  return problem;
+    return { kind: 'ok', user };
+  });
 }
 
-export async function signUp(
-  this: Api,
-  email: string,
-  password: string,
-): Promise<{ kind: 'ok' } | GeneralApiProblem> {
+export async function signUp(this: Api, email: string, password: string) {
   const response: ApiResponse<null> = await this.apisauce.post(`auth/sign-up`, {
     email,
     password,
   });
 
-  let problem: GeneralApiProblem;
-
-  if (response.ok) {
+  return await handleResponse(response, async () => {
     this.apisauce.deleteHeader('Authorization');
 
     await SecureStore.deleteItemAsync('refreshToken');
 
     return { kind: 'ok' };
-  } else {
-    problem = getGeneralApiProblem(response);
-  }
-
-  return problem;
+  });
 }
 
 export async function signOut(
@@ -91,83 +52,48 @@ export async function signOut(
     `auth/sign-out`,
   );
 
-  let problem: GeneralApiProblem;
-
-  if (response.ok) {
+  return await handleResponse(response, () => {
     return { kind: 'ok' };
-  } else {
-    problem = getGeneralApiProblem(response);
-  }
-
-  return problem;
+  });
 }
 
-export async function requestActivation(
-  this: Api,
-): Promise<{ kind: 'ok' } | GeneralApiProblem> {
+export async function requestActivation(this: Api) {
   const response: ApiResponse<null> = await this.apisauce.post(
     `auth/request-activation`,
   );
 
-  let problem: GeneralApiProblem;
-
-  if (response.ok) {
+  return await handleResponse(response, () => {
     return { kind: 'ok' };
-  } else {
-    problem = getGeneralApiProblem(response);
-  }
-
-  return problem;
+  });
 }
 
 export async function requestPasswordReset(
   this: Api,
   email: string,
   password: string,
-): Promise<{ kind: 'ok' } | GeneralApiProblem> {
+) {
   const response: ApiResponse<null> = await this.apisauce.post(
     `auth/request-password-reset`,
     { email, password },
   );
 
-  let problem: GeneralApiProblem;
-
-  if (response.ok) {
+  return await handleResponse(response, () => {
     return { kind: 'ok' };
-  } else {
-    problem = getGeneralApiProblem(response);
-  }
-
-  return problem;
+  });
 }
 
-export async function me(
-  this: Api,
-): Promise<{ kind: 'ok'; user: UserSnapshotIn } | GeneralApiProblem> {
+export async function me(this: Api) {
   const response: ApiResponse<UserSnapshotIn> = await this.apisauce.get(
     `users/me`,
   );
 
-  let problem: GeneralApiProblem;
+  return await handleResponse(response, (res) => {
+    const user: UserSnapshotIn = {
+      ...res.data,
+      createdAt: new Date(res.data.createdAt),
+      updatedAt: new Date(res.data.updatedAt),
+    };
 
-  if (response.ok) {
-    try {
-      const user: UserSnapshotIn = {
-        ...response.data,
-        createdAt: new Date(response.data.createdAt),
-        updatedAt: new Date(response.data.updatedAt),
-      };
-
-      return { kind: 'ok', user };
-    } catch (e) {
-      if (__DEV__) {
-        console.tron.error(`Bad data: ${e.message}\n${response.data}`, e.stack);
-      }
-      return { kind: 'bad-data' };
-    }
-  } else {
-    problem = getGeneralApiProblem(response);
-  }
-
-  return problem;
+    return { kind: 'ok', user };
+  });
 }

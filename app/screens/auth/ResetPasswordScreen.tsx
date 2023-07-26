@@ -10,38 +10,39 @@ import {
   ViewStyle,
   Image,
 } from 'react-native';
-import { Button } from '../components/Button';
-import { Icon } from '../components/Icon';
-import { Text } from '../components/Text';
-import { Screen } from '../components/Screen';
-import { TextField, TextFieldAccessoryProps } from '../components/TextField';
-import { colors } from '../theme/colors';
-import { spacing } from '../theme/spacing';
+import { Button } from '../../components/Button';
+import { Icon } from '../../components/Icon';
+import { Text } from '../../components/Text';
+import { Screen } from '../../components/Screen';
+import { TextField, TextFieldAccessoryProps } from '../../components/TextField';
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
 import {
   AppStackParamList,
   AppStackScreenProps,
-} from '../navigators/AppNavigator';
-import { useStores } from '../models/helpers/useStores';
-import { TxKeyPath } from '../i18n/i18n';
+} from '../../navigators/AppNavigator';
+import { useStores } from '../../models/helpers/useStores';
+import { TxKeyPath } from '../../i18n/i18n';
 import { Feather } from '@expo/vector-icons';
-import { isEmailValid } from '../utils/isEmailValid';
-import { isPasswordValid } from '../utils/isPasswordValid';
+import { isEmailValid } from '../../utils/isEmailValid';
+import { isPasswordValid } from '../../utils/isPasswordValid';
 
-const logoUrl = require('../../assets/images/cp-logo.png');
+const logoUrl = require('../../../assets/images/cp-logo.png');
 
-interface SignUpScreenProps extends AppStackScreenProps<'SignUp'> {}
+interface ResetPasswordScreenProps
+  extends AppStackScreenProps<'ResetPassword'> {}
 
-type SignUpScreenNavigationProp = NativeStackNavigationProp<
+type ResetPasswordScreenNavigationProp = NativeStackNavigationProp<
   AppStackParamList,
-  'SignUp'
+  'ResetPassword'
 >;
 
-export const SignUpScreen: FC<SignUpScreenProps> = observer(
-  function SignUpScreen(_props) {
+export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = observer(
+  function ResetPasswordScreen(_props) {
     const passwordRef = useRef<TextInput>();
     const repeatedPasswordRef = useRef<TextInput>();
 
-    const navigation = useNavigation<SignUpScreenNavigationProp>();
+    const navigation = useNavigation<ResetPasswordScreenNavigationProp>();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -71,7 +72,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
         return;
       }
       if (!isEmailValid(email)) {
-        setEmailValidationError('SignUpScreen.emailFieldInvalid');
+        setEmailValidationError('ResetPasswordScreen.emailFieldInvalid');
         return;
       }
       setEmailValidationError(undefined);
@@ -84,7 +85,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
         return;
       }
       if (!isPasswordValid(password)) {
-        setPasswordValidationError('SignUpScreen.passwordFieldInvalid');
+        setPasswordValidationError('ResetPasswordScreen.passwordFieldInvalid');
         return;
       }
       setPasswordValidationError(undefined);
@@ -97,7 +98,9 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
         return;
       }
       if (repeatedPassword !== password) {
-        setRepeatedPasswordValidationError('SignUpScreen.notSamePassword');
+        setRepeatedPasswordValidationError(
+          'ResetPasswordScreen.notSamePassword',
+        );
         return;
       }
       setRepeatedPasswordValidationError(undefined);
@@ -108,7 +111,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
       hasTriedSubmitting,
     ]);
 
-    async function signUp() {
+    async function requestPasswordReset() {
       setHasTriedSubmitting(true);
       if (
         emailValidationError ||
@@ -117,7 +120,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
       )
         return;
       setIsLoading(true);
-      const response = await rootStore.authenticationStore.signUp(
+      const response = await rootStore.authenticationStore.requestPasswordReset(
         email,
         password,
       );
@@ -158,7 +161,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
           autoComplete="email"
           autoCorrect={false}
           keyboardType="email-address"
-          labelTx="SignUpScreen.emailFieldLabel"
+          labelTx="ResetPasswordScreen.emailFieldLabel"
           helperTx={emailValidationError}
           status={emailValidationError ? 'error' : undefined}
           onSubmitEditing={() => passwordRef.current?.focus()}
@@ -174,7 +177,7 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
           autoComplete="password"
           autoCorrect={false}
           secureTextEntry={ispasswordHidden}
-          labelTx="SignUpScreen.passwordFieldLabel"
+          labelTx="ResetPasswordScreen.passwordFieldLabel"
           helperTx={passwordValidationError}
           status={passwordValidationError ? 'error' : undefined}
           onSubmitEditing={() => repeatedPasswordRef.current?.focus()}
@@ -191,41 +194,41 @@ export const SignUpScreen: FC<SignUpScreenProps> = observer(
           autoComplete="password"
           autoCorrect={false}
           secureTextEntry={ispasswordHidden}
-          labelTx="SignUpScreen.repeatedPasswordFieldLabel"
+          labelTx="ResetPasswordScreen.repeatedPasswordFieldLabel"
           helperTx={repeatedPasswordValidationError}
           status={repeatedPasswordValidationError ? 'error' : undefined}
-          onSubmitEditing={signUp}
+          onSubmitEditing={requestPasswordReset}
           RightAccessory={PasswordRightAccessory}
         />
 
         {hasSubmitted ? (
           <>
-            <View style={$accountCreatedView}>
+            <View style={$passwordResetRequestedView}>
               <Feather name="check-circle" size={24} color={colors.success} />
               <Text
-                tx="SignUpScreen.accountCreated"
+                tx="ResetPasswordScreen.passwordResetRequested"
                 preset="bold"
-                style={$accountCreatedText}
+                style={$passwordResetRequestedText}
               />
             </View>
             <Text
-              tx="SignUpScreen.accountCreatedHint"
+              tx="ResetPasswordScreen.passwordResetRequestedHint"
               preset="helper"
-              style={$accountCreatedHintText}
+              style={$passwordResetRequestedHintText}
             />
           </>
         ) : (
           <Button
-            tx={'SignUpScreen.signUp'}
-            style={$signUpButton}
+            tx={'ResetPasswordScreen.requestPasswordReset'}
+            style={$requestPasswordResetButton}
             preset={'filled'}
-            onPress={signUp}
+            onPress={requestPasswordReset}
             isLoading={isLoading}
           />
         )}
 
         <Text
-          tx="SignUpScreen.signIn"
+          tx="ResetPasswordScreen.signIn"
           preset="hint"
           style={$signInText}
           onPress={() => navigation.pop()}
@@ -250,23 +253,23 @@ const $textField: ViewStyle = {
   marginBottom: spacing.large,
 };
 
-const $signUpButton: ViewStyle = {
+const $requestPasswordResetButton: ViewStyle = {
   marginTop: spacing.medium,
 };
 
-const $accountCreatedView: ViewStyle = {
+const $passwordResetRequestedView: ViewStyle = {
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'center',
   marginTop: spacing.medium,
 };
 
-const $accountCreatedText: TextStyle = {
+const $passwordResetRequestedText: TextStyle = {
   color: colors.success,
   marginLeft: spacing.small,
 };
 
-const $accountCreatedHintText: TextStyle = {
+const $passwordResetRequestedHintText: TextStyle = {
   color: colors.success,
   textAlign: 'center',
   marginTop: spacing.small,

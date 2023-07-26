@@ -7,15 +7,16 @@ import {
   ViewStyle,
   StyleSheet,
 } from 'react-native';
-import { Button } from '../components/Button';
-import { Text } from '../components/Text';
-import { EmptyState } from '../components/EmptyState';
-import { Screen } from '../components/Screen';
-import { TextField } from '../components/TextField';
-import { colors } from '../theme/colors';
-import { spacing } from '../theme/spacing';
-import { useStores } from '../models/helpers/useStores';
-import { Routine } from '../models/Routine';
+import { Button } from '../../components/Button';
+import { Text } from '../../components/Text';
+import { EmptyState } from '../../components/EmptyState';
+import { Screen } from '../../components/Screen';
+import { TextField } from '../../components/TextField';
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
+import { useStores } from '../../models/helpers/useStores';
+import { NotebooksScreenProps } from '../../navigators/NotebooksNavigator';
+import { Entry } from '../../models/Entry';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import Animated, {
@@ -25,28 +26,27 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { PlansScreenProps } from '../navigators/PlansNavigator';
 
-export const RoutinesScreen: FC<PlansScreenProps<'Routines'>> = observer(
-  function RoutinesScreen(_props) {
+export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
+  function EntriesScreen(_props) {
     const {
-      plansStore: {
-        selectedPlan: {
+      notebooksStore: {
+        selectedNotebook: {
           name,
-          readFirstRoutines,
-          readMoreRoutines,
-          prepareRoutineToAdd,
-          isRoutineToAddSelected,
+          readFirstEntries,
+          readMoreEntries,
+          prepareEntryToAdd,
+          isEntryToAddSelected,
           favorites,
-          routines,
-          selectedRoutine,
+          entries,
+          selectedEntry,
           select,
-          routineToAdd,
+          entryToAdd,
         },
       },
     } = useStores();
 
-    const listRef = useRef<FlashList<Routine>>();
+    const listRef = useRef<FlashList<Entry>>();
 
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -58,20 +58,20 @@ export const RoutinesScreen: FC<PlansScreenProps<'Routines'>> = observer(
 
     async function reload() {
       setIsLoading(true);
-      await readFirstRoutines();
+      await readFirstEntries();
       setIsLoading(false);
     }
 
-    async function loadMoreRoutines() {
+    async function loadMoreEntries() {
       if (!isLoading) {
         setIsLoading(true);
-        await readMoreRoutines();
+        await readMoreEntries();
         setIsLoading(false);
       }
     }
 
     function handlePressAdd() {
-      prepareRoutineToAdd();
+      prepareEntryToAdd();
       listRef.current?.scrollToIndex({ index: 0, viewPosition: 1 });
     }
 
@@ -139,12 +139,12 @@ export const RoutinesScreen: FC<PlansScreenProps<'Routines'>> = observer(
           safeAreaEdges={['top']}
           contentContainerStyle={$screenContentContainer}
         >
-          <FlashList<Routine>
+          <FlashList<Entry>
             ref={listRef}
             estimatedItemSize={100}
             keyboardShouldPersistTaps="always"
-            data={(isRoutineToAddSelected ? [routineToAdd] : []).concat(
-              showFavoritesOnly ? favorites : routines,
+            data={(isEntryToAddSelected ? [entryToAdd] : []).concat(
+              showFavoritesOnly ? favorites : entries,
             )}
             ListHeaderComponent={
               <View>
@@ -160,7 +160,7 @@ export const RoutinesScreen: FC<PlansScreenProps<'Routines'>> = observer(
                   ]}
                   RightAccessory={ButtonHeartAccessory}
                 >
-                  <Text preset="hint" tx={'RoutinesScreen.favorites'} />
+                  <Text preset="hint" tx={'EntriesScreen.favorites'} />
                 </Button>
               </View>
             }
@@ -169,7 +169,7 @@ export const RoutinesScreen: FC<PlansScreenProps<'Routines'>> = observer(
             progressViewOffset={spacing.massive * 3}
             refreshing={isLoading}
             onRefresh={reload}
-            onEndReached={loadMoreRoutines}
+            onEndReached={loadMoreEntries}
             ListEmptyComponent={
               isLoading ? (
                 <View style={$emptyList} />
@@ -181,12 +181,10 @@ export const RoutinesScreen: FC<PlansScreenProps<'Routines'>> = observer(
                 />
               )
             }
-            renderItem={({ item }) => (
-              <RoutineItem key={item.id} routine={item} />
-            )}
+            renderItem={({ item }) => <EntryItem key={item.id} entry={item} />}
           />
         </Screen>
-        {selectedRoutine?.id === undefined && (
+        {selectedEntry?.id === undefined && (
           <Button
             preset="filled"
             onPress={handlePressAdd}
@@ -201,18 +199,14 @@ export const RoutinesScreen: FC<PlansScreenProps<'Routines'>> = observer(
   },
 );
 
-const RoutineItem = observer(function RoutineItem({
-  routine,
-}: {
-  routine: Routine;
-}) {
+const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
   const {
-    plansStore: {
-      selectedPlan: {
-        selectedRoutine,
-        updateOneRoutine,
-        createOneRoutine,
-        deleteOneRoutine,
+    notebooksStore: {
+      selectedNotebook: {
+        selectedEntry,
+        updateOneEntry,
+        createOneEntry,
+        deleteOneEntry,
         select,
       },
     },
@@ -220,29 +214,29 @@ const RoutineItem = observer(function RoutineItem({
 
   const textFieldRef = useRef<TextInput>();
 
-  const [updatedText, setUpdatedText] = useState(routine.text);
+  const [updatedText, setUpdatedText] = useState(entry.text);
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
   const [isDoneLoading, setIsDoneLoading] = useState(false);
 
   async function handlePressFavorite() {
-    if (routine.id < 0) routine.setIsFavorite(!routine.isFavorite);
+    if (entry.id < 0) entry.setIsFavorite(!entry.isFavorite);
     else {
       setIsFavoriteLoading(true);
-      await updateOneRoutine(routine.id, { isFavorite: !routine.isFavorite });
+      await updateOneEntry(entry.id, { isFavorite: !entry.isFavorite });
       setIsFavoriteLoading(false);
     }
   }
 
   function handlePressEdit() {
-    setUpdatedText(routine.text);
-    select(routine);
+    setUpdatedText(entry.text);
+    select(entry);
     setTimeout(() => textFieldRef.current?.focus(), 1);
   }
 
   async function handlePressDelete() {
     setIsDeleteLoading(true);
-    await deleteOneRoutine();
+    await deleteOneEntry();
     setIsDeleteLoading(false);
   }
 
@@ -253,12 +247,12 @@ const RoutineItem = observer(function RoutineItem({
   async function handlePressDone() {
     setIsDoneLoading(true);
     const response =
-      routine.id < 0
-        ? await createOneRoutine()
-        : await updateOneRoutine(routine.id, { text: updatedText });
+      entry.id < 0
+        ? await createOneEntry()
+        : await updateOneEntry(entry.id, { text: updatedText });
     if (response.kind === 'ok') {
       select();
-      setUpdatedText(routine.text);
+      setUpdatedText(entry.text);
     }
     setIsDoneLoading(false);
   }
@@ -269,7 +263,7 @@ const RoutineItem = observer(function RoutineItem({
         <View style={$itemHeaderSection}>
           <Text
             preset="hint"
-            text={routine.createdAt.toLocaleString()}
+            text={entry.createdAt.toLocaleString()}
             style={$dateText}
           />
         </View>
@@ -282,7 +276,7 @@ const RoutineItem = observer(function RoutineItem({
             spinnerColor={colors.secondary}
           >
             <MaterialCommunityIcons
-              name={routine.isFavorite ? 'heart' : 'heart-outline'}
+              name={entry.isFavorite ? 'heart' : 'heart-outline'}
               size={20}
               color={colors.secondary}
             />
@@ -291,12 +285,12 @@ const RoutineItem = observer(function RoutineItem({
             onPress={handlePressEdit}
             fitToContent
             style={$topButton}
-            disabled={!!selectedRoutine}
+            disabled={!!selectedEntry}
           >
             <MaterialCommunityIcons
               name="pencil-outline"
               size={20}
-              color={selectedRoutine ? colors.disabled : colors.primary}
+              color={selectedEntry ? colors.disabled : colors.primary}
             />
           </Button>
         </View>
@@ -308,25 +302,23 @@ const RoutineItem = observer(function RoutineItem({
         maxLength={280}
         scrollEnabled={false}
         value={
-          routine.id === selectedRoutine?.id && routine.id > 0
+          entry.id === selectedEntry?.id && entry.id > 0
             ? updatedText
-            : routine.text
+            : entry.text
         }
         onChangeText={
-          routine.id === selectedRoutine?.id && routine.id > 0
+          entry.id === selectedEntry?.id && entry.id > 0
             ? setUpdatedText
-            : routine.setText
+            : entry.setText
         }
-        status={routine.id === selectedRoutine?.id ? undefined : 'disabled'}
+        status={entry.id === selectedEntry?.id ? undefined : 'disabled'}
         inputWrapperStyle={
-          routine.id === selectedRoutine?.id ? undefined : $disabledTextField
+          entry.id === selectedEntry?.id ? undefined : $disabledTextField
         }
       />
-      {(routine.id === selectedRoutine?.id ||
-        isDeleteLoading ||
-        isDoneLoading) && (
+      {(entry.id === selectedEntry?.id || isDeleteLoading || isDoneLoading) && (
         <View style={$itemFooter}>
-          {routine.id > 0 && (
+          {entry.id > 0 && (
             <Button
               onPress={handlePressDelete}
               fitToContent

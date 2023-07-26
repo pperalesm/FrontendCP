@@ -1,17 +1,17 @@
 import { observer } from 'mobx-react-lite';
 import React, { FC, useState } from 'react';
 import { ImageStyle, TextStyle, ViewStyle, Image, View } from 'react-native';
-import { Button } from '../components/Button';
-import { Text } from '../components/Text';
-import { Screen } from '../components/Screen';
-import { colors } from '../theme/colors';
-import { spacing } from '../theme/spacing';
-import { AppStackScreenProps } from '../navigators/AppNavigator';
-import { useStores } from '../models/helpers/useStores';
+import { Button } from '../../components/Button';
+import { Text } from '../../components/Text';
+import { Screen } from '../../components/Screen';
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
+import { AppStackScreenProps } from '../../navigators/AppNavigator';
+import { useStores } from '../../models/helpers/useStores';
 import { Feather } from '@expo/vector-icons';
-import { Divider } from '../components/Divider';
+import { Divider } from '../../components/Divider';
 
-const logoUrl = require('../../assets/images/cp-logo.png');
+const logoUrl = require('../../../assets/images/cp-logo.png');
 
 interface ActivateScreenProps extends AppStackScreenProps<'Activate'> {}
 

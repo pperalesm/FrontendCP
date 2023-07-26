@@ -1,35 +1,3 @@
-export interface EpisodeItem {
-  title: string;
-  pubDate: string;
-  link: string;
-  guid: string;
-  author: string;
-  thumbnail: string;
-  description: string;
-  content: string;
-  enclosure: {
-    link: string;
-    type: string;
-    length: number;
-    duration: number;
-    rating: { scheme: string; value: string };
-  };
-  categories: string[];
-}
-
-export interface ApiFeedResponse {
-  status: string;
-  feed: {
-    url: string;
-    title: string;
-    link: string;
-    author: string;
-    description: string;
-    image: string;
-  };
-  items: EpisodeItem[];
-}
-
 export interface TokenResponseDto {
   accessToken: string;
   refreshToken: string;
@@ -62,21 +30,48 @@ export interface PrivateEntryDto {
   isFavorite: boolean;
 }
 
-export interface PublicPlanDto {
+export interface PrivatePlanDto {
   id: number;
   createdAt: string;
   updatedAt: string;
   name: string;
   description: string;
   imageUrl: string;
+  numDays: number;
+  currentDay?: number;
 }
 
-export interface PrivateRoutineDto {
+export interface PublicRoutineDto {
+  day: number;
+  tasks: PublicTaskDto[];
+}
+
+export interface PublicTaskDto {
   id: number;
   createdAt: string;
   updatedAt: string;
-  text: string;
-  isFavorite: boolean;
+  name: string;
+  description: string;
+  notebookId: number | null;
+}
+
+export interface PublicActivityCategoryDto {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  imageUrl: string;
+}
+
+export interface PrivateDailyRecordDto {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  day: string;
+  mood?: number | null;
+  note?: string | null;
+  activityCategoryIds?: number[];
+  taskIds?: number[];
 }
 
 export interface PageMetaDto {

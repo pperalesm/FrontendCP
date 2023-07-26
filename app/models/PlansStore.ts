@@ -21,6 +21,6 @@ export const PlansStoreModel = types
     }),
   }));
 
-export interface PlanStore extends Instance<typeof PlansStoreModel> {}
-export interface PlanStoreSnapshot
+export interface PlansStore extends Instance<typeof PlansStoreModel> {}
+export interface PlansStoreSnapshot
   extends SnapshotOut<typeof PlansStoreModel> {}
