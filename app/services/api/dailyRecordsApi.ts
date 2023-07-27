@@ -56,7 +56,7 @@ export async function readOneDailyRecord(this: Api, day: Date) {
 
 export async function createOrUpdateOneDailyRecord(
   this: Api,
-  dailyRecord: Partial<DailyRecord>,
+  dailyRecord: DailyRecord,
 ) {
   const response: ApiResponse<PrivateDailyRecordDto> = await this.apisauce.put(
     `daily-records`,

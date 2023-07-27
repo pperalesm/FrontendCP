@@ -19,45 +19,47 @@ export const NotebookModel = types
     imageUrl: types.string,
     entries: types.array(EntryModel),
     selectedEntry: types.maybe(types.reference(EntryModel)),
-    entryToAdd: types.maybe(EntryModel),
+    entryToCreate: types.maybe(EntryModel),
   })
   .views((self) => ({
-    get favorites() {
-      return self.entries.filter((entry) => entry.isFavorite);
-    },
-    get isEntryToAddSelected() {
+    get isEntryToCreateSelected() {
       return self.selectedEntry?.id === -self.id;
     },
   }))
   .actions((self) => ({
-    prepareEntryToAdd() {
-      const entryToAdd = {
-        id: -self.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isFavorite: false,
-        text: '',
-      };
-      if (!self.entryToAdd) {
-        self.entryToAdd = EntryModel.create(entryToAdd);
+    prepareEntryToCreate() {
+      if (!self.entryToCreate) {
+        self.entryToCreate = EntryModel.create({
+          id: -self.id,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          isFavorite: false,
+          text: '',
+        });
       }
-      self.selectedEntry = self.entryToAdd;
+      self.selectedEntry = self.entryToCreate;
     },
     select(entry?: Entry) {
       self.selectedEntry = entry;
     },
-    readFirstEntries: flow(function* () {
-      const response = yield api.readManyEntries(self.id, undefined, 10);
+    readFirstEntries: flow(function* (showFavoritesOnly: boolean) {
+      const response = yield api.readManyEntries(
+        self.id,
+        undefined,
+        10,
+        showFavoritesOnly,
+      );
       if (response.kind === 'ok') {
         self.entries = response.entries;
       }
       return response;
     }),
-    readMoreEntries: flow(function* () {
+    readMoreEntries: flow(function* (showFavoritesOnly: boolean) {
       const response = yield api.readManyEntries(
         self.id,
         self.entries[self.entries.length - 1]?.createdAt,
         10,
+        showFavoritesOnly,
       );
       if (response.kind === 'ok') {
         self.entries.push(...response.entries);
@@ -65,7 +67,7 @@ export const NotebookModel = types
       return response;
     }),
     createOneEntry: flow(function* () {
-      const response = yield api.createOneEntry(self.id, self.entryToAdd);
+      const response = yield api.createOneEntry(self.id, self.entryToCreate);
       if (response.kind === 'ok') {
         self.entries.splice(0, 0, response.entry);
       }

@@ -69,7 +69,7 @@ export async function updateOneEntry(
 export async function createOneEntry(
   this: Api,
   notebookId: number,
-  entry: Partial<Entry>,
+  entry: Entry,
 ) {
   const response: ApiResponse<PrivateEntryDto> = await this.apisauce.post(
     `notebooks/${notebookId}/entries`,

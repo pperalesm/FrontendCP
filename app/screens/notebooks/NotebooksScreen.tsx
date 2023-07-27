@@ -32,12 +32,6 @@ export const NotebooksScreen: FC<NotebooksScreenProps<'Notebooks'>> = observer(
 
     async function reload() {
       setIsLoading(true);
-
-      // TODO: REMOVE TESTING
-
-      await rootStore.activityCategoriesStore.readAllActivityCategories();
-      console.log(rootStore.activityCategoriesStore.activityCategories[0]);
-
       await rootStore.notebooksStore.readAllNotebooks();
       setIsLoading(false);
     }

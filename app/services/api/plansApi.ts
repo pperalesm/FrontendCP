@@ -1,6 +1,6 @@
 import { ApiResponse } from 'apisauce';
 import { Api, handleResponse } from './api';
-import { Plan, PlanSnapshotIn } from '../../models/Plan';
+import { PlanSnapshotIn } from '../../models/Plan';
 import { RoutineSnapshotIn } from '../../models/Routine';
 import { PublicRoutineDto, PrivatePlanDto } from './api.types';
 
@@ -23,11 +23,11 @@ export async function readAllPlans(this: Api) {
 export async function updateOnePlan(
   this: Api,
   planId: number,
-  plan: Partial<Plan>,
+  updateData: { assigned?: boolean },
 ) {
   const response: ApiResponse<PrivatePlanDto> = await this.apisauce.patch(
     `plans/${planId}`,
-    plan,
+    updateData,
   );
 
   return await handleResponse(response, (res) => {

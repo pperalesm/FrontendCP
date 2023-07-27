@@ -35,13 +35,12 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
           name,
           readFirstEntries,
           readMoreEntries,
-          prepareEntryToAdd,
-          isEntryToAddSelected,
-          favorites,
+          prepareEntryToCreate,
+          isEntryToCreateSelected,
           entries,
           selectedEntry,
           select,
-          entryToAdd,
+          entryToCreate,
         },
       },
     } = useStores();
@@ -54,24 +53,24 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
     useEffect(() => {
       select();
       reload();
-    }, []);
+    }, [showFavoritesOnly]);
 
     async function reload() {
       setIsLoading(true);
-      await readFirstEntries();
+      await readFirstEntries(showFavoritesOnly);
       setIsLoading(false);
     }
 
     async function loadMoreEntries() {
       if (!isLoading) {
         setIsLoading(true);
-        await readMoreEntries();
+        await readMoreEntries(showFavoritesOnly);
         setIsLoading(false);
       }
     }
 
     function handlePressAdd() {
-      prepareEntryToAdd();
+      prepareEntryToCreate();
       listRef.current?.scrollToIndex({ index: 0, viewPosition: 1 });
     }
 
@@ -143,8 +142,8 @@ export const EntriesScreen: FC<NotebooksScreenProps<'Entries'>> = observer(
             ref={listRef}
             estimatedItemSize={100}
             keyboardShouldPersistTaps="always"
-            data={(isEntryToAddSelected ? [entryToAdd] : []).concat(
-              showFavoritesOnly ? favorites : entries,
+            data={(isEntryToCreateSelected ? [entryToCreate] : []).concat(
+              entries,
             )}
             ListHeaderComponent={
               <View>
