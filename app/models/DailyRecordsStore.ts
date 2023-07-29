@@ -73,10 +73,7 @@ export const DailyRecordsStoreModel = types
               self.dailyRecords[index].id === dailyRecord.id
             ) {
               for (const key of Object.keys(dailyRecord)) {
-                if (
-                  dailyRecord[key] !== undefined &&
-                  dailyRecord[key] !== null
-                ) {
+                if (dailyRecord[key] !== undefined) {
                   self.dailyRecords[index][key] = dailyRecord[key];
                 }
               }
