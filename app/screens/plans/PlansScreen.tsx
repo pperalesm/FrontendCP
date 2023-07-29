@@ -157,12 +157,12 @@ const $item: ViewStyle = {
 
 const $itemFooter: TextStyle = {
   alignSelf: 'flex-end',
-  color: colors.success,
+  color: colors.secondary,
 };
 
 const $activeItem: ViewStyle = {
   borderWidth: spacing.micro,
-  borderColor: colors.success,
+  borderColor: colors.secondary,
 };
 
 const $image: ImageStyle = { width: 75, height: 75 };
