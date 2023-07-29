@@ -155,7 +155,15 @@ function ScreenWithoutScrolling(props: ScreenProps) {
   const { style, contentContainerStyle, children } = props;
   return (
     <View style={[$outerStyle, style]}>
-      <View style={[$innerStyle, contentContainerStyle]}>{children}</View>
+      <View
+        style={[
+          $innerStyle,
+          $innerWithoutScrollingStyle,
+          contentContainerStyle,
+        ]}
+      >
+        {children}
+      </View>
     </View>
   );
 }
@@ -197,6 +205,7 @@ function ScreenWithScrolling(props: ScreenProps) {
         ScrollViewProps?.contentContainerStyle,
         contentContainerStyle,
       ]}
+      overScrollMode="never"
     >
       {children}
     </ScrollView>
@@ -255,3 +264,5 @@ const $innerStyle: ViewStyle = {
   justifyContent: 'flex-start',
   alignItems: 'stretch',
 };
+
+const $innerWithoutScrollingStyle: ViewStyle = {};

@@ -222,7 +222,7 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
     if (entry.id < 0) entry.setIsFavorite(!entry.isFavorite);
     else {
       setIsFavoriteLoading(true);
-      await updateOneEntry(entry.id, { isFavorite: !entry.isFavorite });
+      await updateOneEntry(entry, { isFavorite: !entry.isFavorite });
       setIsFavoriteLoading(false);
     }
   }
@@ -248,7 +248,7 @@ const EntryItem = observer(function EntryItem({ entry }: { entry: Entry }) {
     const response =
       entry.id < 0
         ? await createOneEntry()
-        : await updateOneEntry(entry.id, { text: updatedText });
+        : await updateOneEntry(entry, { text: updatedText });
     if (response.kind === 'ok') {
       select();
       setUpdatedText(entry.text);

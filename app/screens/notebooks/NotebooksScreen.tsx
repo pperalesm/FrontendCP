@@ -106,7 +106,7 @@ const $heading: ViewStyle = {
 
 const $item: ViewStyle = {
   marginBottom: spacing.medium,
-  height: 115,
+  minHeight: 115,
 };
 
 const $image: ImageStyle = { width: 75, height: 75 };

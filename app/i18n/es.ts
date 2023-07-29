@@ -71,10 +71,16 @@ const es = {
     favorites: 'Favoritos',
   },
   PlansScreen: {
-    title: 'Libretas',
+    title: 'Planes',
+    active: 'Activo',
+    days: 'días',
+    warning:
+      'Los planes de bienestar en ningún caso sustituyen la terapia. Si ves que los problemas se hacen cada vez más difíciles de afrontar, busca ayuda profesional.',
   },
   RoutinesScreen: {
-    favorites: 'Favoritos',
+    day: 'Día',
+    start: 'Empezar',
+    end: 'Terminar',
   },
   welcomeScreen: {
     postscript:

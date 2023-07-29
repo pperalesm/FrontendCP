@@ -15,11 +15,11 @@ import { NotebooksNavigator, NotebooksParamList } from './NotebooksNavigator';
 import { colors } from '../theme/colors';
 import { DemoShowroomScreen } from '../screens/DemoShowroomScreen/DemoShowroomScreen';
 import { DemoDebugScreen } from '../screens/DemoDebugScreen';
-// import { PlansNavigator, PlansParamList } from './PlansNavigator';
+import { PlansNavigator, PlansParamList } from './PlansNavigator';
 
 export type MainTabParamList = {
   DemoShowroom: { queryIndex?: string; itemIndex?: string };
-  // PlansNavigator: NavigatorScreenParams<PlansParamList>;
+  PlansNavigator: NavigatorScreenParams<PlansParamList>;
   NotebooksNavigator: NavigatorScreenParams<NotebooksParamList>;
   DemoDebug: undefined;
 };
@@ -60,7 +60,7 @@ export function MainNavigator() {
         }}
       />
 
-      {/* <Tab.Screen
+      <Tab.Screen
         name="PlansNavigator"
         component={PlansNavigator}
         options={{
@@ -72,7 +72,7 @@ export function MainNavigator() {
             />
           ),
         }}
-      /> */}
+      />
 
       <Tab.Screen
         name="NotebooksNavigator"

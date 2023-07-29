@@ -34,7 +34,7 @@ export const DailyRecordsStoreModel = types
             boundaryIndex,
             0,
             DailyRecordModel.create({
-              id: -1,
+              id: -day.getTime(),
               createdAt: new Date(),
               updatedAt: new Date(),
               day,

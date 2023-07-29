@@ -74,16 +74,14 @@ export const NotebookModel = types
       return response;
     }),
     updateOneEntry: flow(function* (
-      entryId: number,
+      entry: Entry,
       updateData: { isFavorite?: boolean; text?: string },
     ) {
-      const response = yield api.updateOneEntry(self.id, entryId, updateData);
+      const response = yield api.updateOneEntry(self.id, entry.id, updateData);
       if (response.kind === 'ok') {
-        self.entries.splice(
-          self.entries.findIndex((item) => item.id === entryId),
-          1,
-          response.entry,
-        );
+        entry.updatedAt = response.entry.updatedAt;
+        entry.isFavorite = response.entry.isFavorite;
+        entry.text = response.entry.text;
       }
       return response;
     }),

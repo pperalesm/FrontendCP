@@ -34,17 +34,14 @@ export const PlansStoreModel = types
         }
         return response;
       }),
-      updateOnePlan: flow(function* (
-        planId: number,
-        updateData: { assigned?: boolean },
-      ) {
-        const response = yield api.updateOnePlan(planId, updateData);
+      updateOnePlan: flow(function* (updateData: { assigned?: boolean }) {
+        const response = yield api.updateOnePlan(
+          self.selectedPlan.id,
+          updateData,
+        );
         if (response.kind === 'ok') {
-          self.plans.splice(
-            self.plans.findIndex((item) => item.id === planId),
-            1,
-            response.plan,
-          );
+          self.selectedPlan.updatedAt = response.plan.updatedAt;
+          self.selectedPlan.currentDay = response.plan.currentDay;
         }
         return response;
       }),

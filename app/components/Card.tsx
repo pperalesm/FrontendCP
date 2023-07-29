@@ -187,7 +187,7 @@ export function Card(props: CardProps) {
   ];
   const $footerStyle = [
     $footerPresets[preset],
-    (isHeadingPresent || isContentPresent) && { marginTop: spacing.micro },
+    (isHeadingPresent || isContentPresent) && { marginTop: spacing.extraSmall },
     $footerStyleOverride,
     FooterTextProps?.style,
   ];
