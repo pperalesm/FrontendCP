@@ -14,6 +14,7 @@ export const NotebooksStoreModel = types
   .props({
     notebooks: types.array(NotebookModel),
     selectedNotebook: types.maybe(types.reference(NotebookModel)),
+    areNotebooksLoading: types.optional(types.boolean, false),
   })
   .actions((self) => {
     let initialState = {};
@@ -24,16 +25,19 @@ export const NotebooksStoreModel = types
       reset: () => {
         applySnapshot(self, initialState);
       },
-      select(notebook: Notebook) {
-        self.selectedNotebook = notebook;
-      },
-      readAllNotebooks: flow(function* () {
+      reloadNotebooks: flow(function* () {
+        self.areNotebooksLoading = true;
+        self.selectedNotebook = undefined;
         const response = yield api.readAllNotebooks();
         if (response.kind === 'ok') {
           self.notebooks = response.notebooks;
         }
+        self.areNotebooksLoading = false;
         return response;
       }),
+      handlePressCard(notebook: Notebook) {
+        self.selectedNotebook = notebook;
+      },
     };
   });
 

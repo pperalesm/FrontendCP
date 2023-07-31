@@ -7,14 +7,26 @@ import {
   types,
 } from 'mobx-state-tree';
 import { api } from '../services/api/api';
-import { DailyRecordModel } from './DailyRecord';
+import { DailyRecord, DailyRecordModel } from './DailyRecord';
 import { DailyRecordSelectEnum } from '../utils/dailyRecordSelectEnum';
+import { getDateWithoutTime } from '../utils/getDateWithoutTime';
+import { copyDefinedValues } from '../utils/copyDefinedvalues';
 
 export const DailyRecordsStoreModel = types
   .model('DailyRecordsStore')
   .props({
     dailyRecords: types.array(DailyRecordModel),
     selectedDailyRecord: types.maybe(types.reference(DailyRecordModel)),
+    dummyDailyRecord: types.optional(DailyRecordModel, {
+      id: -1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      day: new Date(),
+      mood: null,
+      note: null,
+      activityCategories: [],
+      tasks: [],
+    }),
   })
   .actions((self) => {
     let initialState = {};
@@ -25,28 +37,79 @@ export const DailyRecordsStoreModel = types
       reset: () => {
         applySnapshot(self, initialState);
       },
-      select(day: Date) {
-        const boundaryIndex = self.dailyRecords.findIndex(
-          (item) => item.day.getTime() >= day.getTime(),
-        );
-        if (self.dailyRecords[boundaryIndex].day.getTime() !== day.getTime()) {
-          self.dailyRecords.splice(
-            boundaryIndex,
-            0,
-            DailyRecordModel.create({
-              id: -day.getTime(),
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              day,
-              mood: null,
-              note: null,
-              activityCategories: [],
-              tasks: [],
-            }),
-          );
+      getCorrespondingIndex(
+        day: Date,
+        startIndex = 0,
+        endIndex = self.dailyRecords.length,
+      ) {
+        const boundaryIndex =
+          startIndex + Math.floor((endIndex - startIndex) / 2);
+        const isSameDay =
+          self.dailyRecords[boundaryIndex] &&
+          day.getTime() === self.dailyRecords[boundaryIndex].day.getTime();
+        if (isSameDay || startIndex === endIndex) {
+          return {
+            index: boundaryIndex,
+            isSameDay,
+          };
         }
-        self.selectedDailyRecord = self.dailyRecords[boundaryIndex];
+        if (day.getTime() > self.dailyRecords[boundaryIndex].day.getTime()) {
+          return this.getCorrespondingIndex(day, boundaryIndex + 1, endIndex);
+        } else {
+          return this.getCorrespondingIndex(day, startIndex, boundaryIndex);
+        }
       },
+      select({
+        dailyRecord,
+        datetime,
+      }: {
+        dailyRecord?: DailyRecord;
+        datetime?: Date;
+      }) {
+        if (datetime) {
+          const day = getDateWithoutTime(datetime);
+          const { index, isSameDay } = this.getCorrespondingIndex(day);
+          if (isSameDay) {
+            self.selectedDailyRecord = self.dailyRecords[index];
+          } else {
+            self.dailyRecords.splice(
+              index,
+              0,
+              DailyRecordModel.create({
+                id: -day.getTime(),
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                day,
+                mood: null,
+                note: null,
+                activityCategories: [],
+                tasks: [],
+              }),
+            );
+            self.selectedDailyRecord = self.dailyRecords[index];
+          }
+        } else {
+          self.selectedDailyRecord = dailyRecord;
+        }
+      },
+      readOneDailyRecord: flow(function* () {
+        const response = yield api.readOneDailyRecord(
+          self.selectedDailyRecord?.day,
+        );
+        if (response.kind === 'ok') {
+          copyDefinedValues(self.selectedDailyRecord, response.dailyRecord);
+        }
+        return response;
+      }),
+      createOrUpdateOneDailyRecord: flow(function* () {
+        const response = yield api.createOrUpdateOneDailyRecord(
+          self.selectedDailyRecord,
+        );
+        if (response.kind === 'ok') {
+          copyDefinedValues(self.selectedDailyRecord, response.dailyRecord);
+        }
+        return response;
+      }),
       readManyDailyRecords: flow(function* (
         from: Date,
         to: Date,
@@ -72,49 +135,11 @@ export const DailyRecordsStoreModel = types
               index < self.dailyRecords.length &&
               self.dailyRecords[index].id === dailyRecord.id
             ) {
-              for (const key of Object.keys(dailyRecord)) {
-                if (dailyRecord[key] !== undefined) {
-                  self.dailyRecords[index][key] = dailyRecord[key];
-                }
-              }
+              copyDefinedValues(self.dailyRecords[index], dailyRecord);
             } else {
               self.dailyRecords.splice(index, 0, dailyRecord);
             }
           }
-        }
-        return response;
-      }),
-      readOneDailyRecord: flow(function* (day: Date) {
-        const response = yield api.readOneDailyRecord(day);
-        if (response.kind === 'ok') {
-          const boundaryIndex = self.dailyRecords.findIndex(
-            (item) => item.day.getTime() >= response.dailyRecord.day.getTime(),
-          );
-          self.dailyRecords.splice(
-            boundaryIndex,
-            self.dailyRecords[boundaryIndex].id === response.dailyRecord.id
-              ? 1
-              : 0,
-            response.dailyRecord,
-          );
-        }
-        return response;
-      }),
-      createOrUpdateOneDailyRecord: flow(function* () {
-        const response = yield api.createOrUpdateOneDailyRecord(
-          self.selectedDailyRecord,
-        );
-        if (response.kind === 'ok') {
-          const boundaryIndex = self.dailyRecords.findIndex(
-            (item) => item.day.getTime() >= response.dailyRecord.day.getTime(),
-          );
-          self.dailyRecords.splice(
-            boundaryIndex,
-            self.dailyRecords[boundaryIndex].id === response.dailyRecord.id
-              ? 1
-              : 0,
-            response.dailyRecord,
-          );
         }
         return response;
       }),

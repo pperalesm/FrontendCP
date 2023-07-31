@@ -64,10 +64,10 @@ const es = {
   PasswordResetScreen: {
     passwordReset: 'Contraseña restablecida con éxito',
   },
-  NotebooksScreen: {
+  NotebooksStoreScreen: {
     title: 'Libretas',
   },
-  EntriesScreen: {
+  NotebookScreen: {
     favorites: 'Favoritos',
   },
   PlansScreen: {

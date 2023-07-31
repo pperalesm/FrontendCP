@@ -31,24 +31,24 @@ type PlansScreenNavigationProp = NativeStackNavigationProp<
 
 export const PlansScreen: FC<PlansScreenProps<'Plans'>> = observer(
   function PlansScreen(_props) {
-    const rootStore = useStores();
+    const { plansStore } = useStores();
 
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
       reload();
-    }, [rootStore.plansStore]);
+    }, [plansStore]);
 
     async function reload() {
       setIsLoading(true);
-      await rootStore.plansStore.readAllPlans();
+      await plansStore.readAllPlans();
       setIsLoading(false);
     }
 
     return (
       <Screen preset="fixed" safeAreaEdges={['top']}>
         <FlatList<Plan>
-          data={rootStore.plansStore.plans}
+          data={plansStore.plans}
           ListHeaderComponent={
             <>
               <Text preset="heading" tx="PlansScreen.title" />

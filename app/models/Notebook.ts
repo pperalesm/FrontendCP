@@ -2,11 +2,14 @@ import {
   Instance,
   SnapshotIn,
   SnapshotOut,
+  destroy,
   flow,
+  getSnapshot,
   types,
 } from 'mobx-state-tree';
 import { Entry, EntryModel } from './Entry';
 import { api } from '../services/api/api';
+import { copyDefinedValues } from '../utils/copyDefinedvalues';
 
 export const NotebookModel = types
   .model('Notebook')
@@ -19,81 +22,126 @@ export const NotebookModel = types
     imageUrl: types.string,
     entries: types.array(EntryModel),
     selectedEntry: types.maybe(types.reference(EntryModel)),
-    entryToCreate: types.maybe(EntryModel),
+    isFavoritesOnly: types.optional(types.boolean, false),
+    areEntriesLoading: types.optional(types.boolean, false),
   })
   .views((self) => ({
-    get isEntryToCreateSelected() {
-      return self.selectedEntry?.id === -self.id;
+    isEntryEditable(entry: Entry) {
+      return self.selectedEntry && self.selectedEntry.id === entry.id;
     },
   }))
   .actions((self) => ({
-    prepareEntryToCreate() {
-      if (!self.entryToCreate) {
-        self.entryToCreate = EntryModel.create({
-          id: -self.id,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          isFavorite: false,
-          text: '',
-        });
+    handlePressAdd() {
+      if (!self.entries[0]?.isBeingCreated) {
+        self.entries.splice(
+          0,
+          0,
+          EntryModel.create({
+            id: -self.id,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            isFavorite: false,
+            text: '',
+          }),
+        );
       }
-      self.selectedEntry = self.entryToCreate;
+      self.selectedEntry = self.entries[0];
     },
-    select(entry?: Entry) {
+    handlePressEdit(entry: Entry) {
+      entry.beforeEdit = { text: getSnapshot(entry).text };
       self.selectedEntry = entry;
     },
-    readFirstEntries: flow(function* (showFavoritesOnly: boolean) {
+    handlePressCancel(entry: Entry) {
+      self.selectedEntry = undefined;
+      if (entry.isBeingCreated) {
+        self.entries.splice(0, 1);
+      } else {
+        copyDefinedValues(entry, entry.beforeEdit);
+      }
+    },
+  }))
+  .actions((self) => ({
+    reloadEntries: flow(function* (toggleFavoritesOnly?: boolean) {
+      self.areEntriesLoading = true;
+      self.selectedEntry = undefined;
       const response = yield api.readManyEntries(
         self.id,
         undefined,
         10,
-        showFavoritesOnly,
+        toggleFavoritesOnly ? !self.isFavoritesOnly : self.isFavoritesOnly,
       );
       if (response.kind === 'ok') {
+        self.isFavoritesOnly = toggleFavoritesOnly
+          ? !self.isFavoritesOnly
+          : self.isFavoritesOnly;
         self.entries = response.entries;
       }
+      self.areEntriesLoading = false;
       return response;
     }),
-    readMoreEntries: flow(function* (showFavoritesOnly: boolean) {
+    loadMoreEntries: flow(function* () {
+      self.areEntriesLoading = true;
       const response = yield api.readManyEntries(
         self.id,
         self.entries[self.entries.length - 1]?.createdAt,
         10,
-        showFavoritesOnly,
+        self.isFavoritesOnly,
       );
       if (response.kind === 'ok') {
         self.entries.push(...response.entries);
       }
+      self.areEntriesLoading = false;
       return response;
     }),
-    createOneEntry: flow(function* () {
-      const response = yield api.createOneEntry(self.id, self.entryToCreate);
-      if (response.kind === 'ok') {
-        self.entries.splice(0, 0, response.entry);
+    handlePressDone: flow(function* (entry: Entry) {
+      if (entry.isBeingCreated) {
+        entry.isDoneLoading = true;
+        const response = yield api.createOneEntry(self.id, entry);
+        if (response.kind === 'ok') {
+          self.selectedEntry = undefined;
+          self.entries.splice(0, 1, response.entry);
+        } else {
+          entry.isDoneLoading = false;
+        }
+        return response;
+      } else {
+        entry.isDoneLoading = true;
+        const response = yield api.updateOneEntry(self.id, entry.id, {
+          text: entry.text,
+        });
+        if (response.kind === 'ok') {
+          self.selectedEntry = undefined;
+          copyDefinedValues(entry, response.entry);
+        }
+        entry.isDoneLoading = false;
+        return response;
       }
-      return response;
     }),
-    updateOneEntry: flow(function* (
-      entry: Entry,
-      updateData: { isFavorite?: boolean; text?: string },
-    ) {
-      const response = yield api.updateOneEntry(self.id, entry.id, updateData);
-      if (response.kind === 'ok') {
-        entry.updatedAt = response.entry.updatedAt;
-        entry.isFavorite = response.entry.isFavorite;
-        entry.text = response.entry.text;
+    handlePressFavorite: flow(function* (entry: Entry) {
+      if (entry.isBeingCreated) {
+        entry.isFavorite = !entry.isFavorite;
+      } else {
+        entry.isFavoriteLoading = true;
+        const response = yield api.updateOneEntry(self.id, entry.id, {
+          isFavorite: !entry.isFavorite,
+        });
+        if (response.kind === 'ok') {
+          const beforeEdit = { text: getSnapshot(entry).text };
+          copyDefinedValues(entry, response.entry);
+          copyDefinedValues(entry, beforeEdit);
+        }
+        entry.isFavoriteLoading = false;
+        return response;
       }
-      return response;
     }),
-    deleteOneEntry: flow(function* () {
-      const response = yield api.deleteOneEntry(self.id, self.selectedEntry.id);
+    handlePressDelete: flow(function* (entry: Entry) {
+      entry.isDeleteLoading = true;
+      const response = yield api.deleteOneEntry(self.id, entry.id);
       if (response.kind === 'ok') {
-        const selectedEntryId = self.selectedEntry.id;
         self.selectedEntry = undefined;
-        self.entries.splice(
-          self.entries.findIndex((item) => item.id === selectedEntryId),
-          1,
-        );
+        destroy(entry);
+      } else {
+        entry.isDeleteLoading = false;
       }
       return response;
     }),

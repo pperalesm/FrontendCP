@@ -14,14 +14,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NotebooksNavigator, NotebooksParamList } from './NotebooksNavigator';
 import { colors } from '../theme/colors';
 import { DemoShowroomScreen } from '../screens/DemoShowroomScreen/DemoShowroomScreen';
-import { DemoDebugScreen } from '../screens/DemoDebugScreen';
 import { PlansNavigator, PlansParamList } from './PlansNavigator';
+import { HomeParamList } from './HomeNavigator';
+import { HomeScreen } from '../screens/home/HomeScreen';
 
 export type MainTabParamList = {
-  DemoShowroom: { queryIndex?: string; itemIndex?: string };
+  Home: NavigatorScreenParams<HomeParamList>;
   PlansNavigator: NavigatorScreenParams<PlansParamList>;
   NotebooksNavigator: NavigatorScreenParams<NotebooksParamList>;
-  DemoDebug: undefined;
+  DemoShowroom: { queryIndex?: string; itemIndex?: string };
 };
 
 export type MainTabScreenProps<T extends keyof MainTabParamList> =
@@ -47,8 +48,8 @@ export function MainNavigator() {
       }}
     >
       <Tab.Screen
-        name="DemoShowroom"
-        component={DemoShowroomScreen}
+        name="Home"
+        component={HomeScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
@@ -89,8 +90,8 @@ export function MainNavigator() {
       />
 
       <Tab.Screen
-        name="DemoDebug"
-        component={DemoDebugScreen}
+        name="DemoShowroom"
+        component={DemoShowroomScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons

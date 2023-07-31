@@ -1,15 +1,15 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
-import { NotebooksScreen } from '../screens/notebooks/NotebooksScreen';
-import { EntriesScreen } from '../screens/notebooks/EntriesScreen';
+import { NotebooksStoreScreen } from '../screens/notebooks/NotebooksStoreScreen';
+import { NotebookScreen } from '../screens/notebooks/NotebookScreen';
 
 export type NotebooksParamList = {
   Notebooks: undefined;
   Entries: undefined;
 };
 
-export type NotebooksScreenProps<T extends keyof NotebooksParamList> =
+export type NotebooksStoreScreenProps<T extends keyof NotebooksParamList> =
   StackScreenProps<NotebooksParamList, T>;
 
 const Stack = createNativeStackNavigator<NotebooksParamList>();
@@ -21,8 +21,8 @@ export function NotebooksNavigator() {
       initialRouteName={'Notebooks'}
     >
       <>
-        <Stack.Screen name="Notebooks" component={NotebooksScreen} />
-        <Stack.Screen name="Entries" component={EntriesScreen} />
+        <Stack.Screen name="Notebooks" component={NotebooksStoreScreen} />
+        <Stack.Screen name="Entries" component={NotebookScreen} />
       </>
     </Stack.Navigator>
   );
