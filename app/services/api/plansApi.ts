@@ -23,7 +23,7 @@ export async function readAllPlans(this: Api) {
 export async function updateOnePlan(
   this: Api,
   planId: number,
-  updateData: { assigned?: boolean },
+  updateData: { isActive?: boolean },
 ) {
   const response: ApiResponse<PrivatePlanDto> = await this.apisauce.patch(
     `plans/${planId}`,

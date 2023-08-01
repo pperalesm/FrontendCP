@@ -11,17 +11,20 @@ import { ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppStackParamList, AppStackScreenProps } from './AppNavigator';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { NotebooksNavigator, NotebooksParamList } from './NotebooksNavigator';
+import {
+  NotebooksNavigator,
+  NotebooksStoreParamList,
+} from './NotebooksNavigator';
 import { colors } from '../theme/colors';
 import { DemoShowroomScreen } from '../screens/DemoShowroomScreen/DemoShowroomScreen';
-import { PlansNavigator, PlansParamList } from './PlansNavigator';
+import { PlansNavigator, PlansStoreParamList } from './PlansNavigator';
 import { HomeParamList } from './HomeNavigator';
 import { HomeScreen } from '../screens/home/HomeScreen';
 
 export type MainTabParamList = {
   Home: NavigatorScreenParams<HomeParamList>;
-  PlansNavigator: NavigatorScreenParams<PlansParamList>;
-  NotebooksNavigator: NavigatorScreenParams<NotebooksParamList>;
+  PlansNavigator: NavigatorScreenParams<PlansStoreParamList>;
+  NotebooksNavigator: NavigatorScreenParams<NotebooksStoreParamList>;
   DemoShowroom: { queryIndex?: string; itemIndex?: string };
 };
 

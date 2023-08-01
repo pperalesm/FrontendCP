@@ -4,25 +4,25 @@ import React from 'react';
 import { NotebooksStoreScreen } from '../screens/notebooks/NotebooksStoreScreen';
 import { NotebookScreen } from '../screens/notebooks/NotebookScreen';
 
-export type NotebooksParamList = {
-  Notebooks: undefined;
-  Entries: undefined;
+export type NotebooksStoreParamList = {
+  NotebooksStore: undefined;
+  Notebook: undefined;
 };
 
-export type NotebooksStoreScreenProps<T extends keyof NotebooksParamList> =
-  StackScreenProps<NotebooksParamList, T>;
+export type NotebooksStoreScreenProps<T extends keyof NotebooksStoreParamList> =
+  StackScreenProps<NotebooksStoreParamList, T>;
 
-const Stack = createNativeStackNavigator<NotebooksParamList>();
+const Stack = createNativeStackNavigator<NotebooksStoreParamList>();
 
 export function NotebooksNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={'Notebooks'}
+      initialRouteName={'NotebooksStore'}
     >
       <>
-        <Stack.Screen name="Notebooks" component={NotebooksStoreScreen} />
-        <Stack.Screen name="Entries" component={NotebookScreen} />
+        <Stack.Screen name="NotebooksStore" component={NotebooksStoreScreen} />
+        <Stack.Screen name="Notebook" component={NotebookScreen} />
       </>
     </Stack.Navigator>
   );

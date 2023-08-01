@@ -15,9 +15,7 @@ export const EntryItem = observer(function EntryItem({
 }: {
   entry: Entry;
 }) {
-  const {
-    notebooksStore: { selectedNotebook },
-  } = useStores();
+  const { notebooksStore } = useStores();
 
   const textFieldRef = useRef<TextInput>();
 
@@ -34,7 +32,7 @@ export const EntryItem = observer(function EntryItem({
         <View style={$itemHeaderSection}>
           <Button
             onPress={() => {
-              selectedNotebook.handlePressFavorite(entry);
+              notebooksStore.selectedNotebook.handlePressFavorite(entry);
             }}
             fitToContent
             style={$topButton}
@@ -49,18 +47,18 @@ export const EntryItem = observer(function EntryItem({
           </Button>
           <Button
             onPress={() => {
-              selectedNotebook.handlePressEdit(entry);
+              notebooksStore.selectedNotebook.handlePressEdit(entry);
               setTimeout(() => textFieldRef.current?.focus(), 1);
             }}
             fitToContent
             style={$topButton}
-            disabled={!!selectedNotebook.selectedEntry}
+            disabled={!!notebooksStore.selectedNotebook.selectedEntry}
           >
             <MaterialCommunityIcons
               name="pencil-outline"
               size={20}
               color={
-                selectedNotebook.selectedEntry
+                notebooksStore.selectedNotebook.selectedEntry
                   ? colors.disabled
                   : colors.primary
               }
@@ -77,20 +75,22 @@ export const EntryItem = observer(function EntryItem({
         value={entry.text}
         onChangeText={entry.setText}
         status={
-          selectedNotebook.isEntryEditable(entry) ? undefined : 'disabled'
+          notebooksStore.selectedNotebook.isEntryEditable(entry)
+            ? undefined
+            : 'disabled'
         }
         inputWrapperStyle={
-          selectedNotebook.isEntryEditable(entry)
+          notebooksStore.selectedNotebook.isEntryEditable(entry)
             ? undefined
             : $disabledTextField
         }
       />
-      {selectedNotebook.isEntryEditable(entry) && (
+      {notebooksStore.selectedNotebook.isEntryEditable(entry) && (
         <View style={$itemFooter}>
           {!entry.isBeingCreated && (
             <Button
               onPress={() => {
-                selectedNotebook.handlePressDelete(entry);
+                notebooksStore.selectedNotebook.handlePressDelete(entry);
               }}
               fitToContent
               style={$deleteButton}
@@ -106,7 +106,7 @@ export const EntryItem = observer(function EntryItem({
           )}
           <Button
             onPress={() => {
-              selectedNotebook.handlePressCancel(entry);
+              notebooksStore.selectedNotebook.handlePressCancel(entry);
             }}
             fitToContent
             style={$baseButton}
@@ -115,7 +115,7 @@ export const EntryItem = observer(function EntryItem({
           </Button>
           <Button
             onPress={() => {
-              selectedNotebook.handlePressDone(entry);
+              notebooksStore.selectedNotebook.handlePressDone(entry);
             }}
             fitToContent
             style={$successButton}

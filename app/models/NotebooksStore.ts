@@ -25,21 +25,23 @@ export const NotebooksStoreModel = types
       reset: () => {
         applySnapshot(self, initialState);
       },
-      reloadNotebooks: flow(function* () {
-        self.areNotebooksLoading = true;
-        self.selectedNotebook = undefined;
-        const response = yield api.readAllNotebooks();
-        if (response.kind === 'ok') {
-          self.notebooks = response.notebooks;
-        }
-        self.areNotebooksLoading = false;
-        return response;
-      }),
       handlePressCard(notebook: Notebook) {
         self.selectedNotebook = notebook;
       },
     };
-  });
+  })
+  .actions((self) => ({
+    reloadNotebooks: flow(function* () {
+      self.areNotebooksLoading = true;
+      self.selectedNotebook = undefined;
+      const response = yield api.readAllNotebooks();
+      if (response.kind === 'ok') {
+        self.notebooks = response.notebooks;
+      }
+      self.areNotebooksLoading = false;
+      return response;
+    }),
+  }));
 
 export interface NotebooksStore extends Instance<typeof NotebooksStoreModel> {}
 export interface NotebooksStoreSnapshot

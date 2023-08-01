@@ -1,30 +1,28 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
-import { PlansScreen } from '../screens/plans/PlansScreen';
-import { RoutinesScreen } from '../screens/plans/RoutinesScreen';
+import { PlansStoreScreen } from '../screens/plans/PlansStoreScreen';
+import { PlanScreen } from '../screens/plans/PlanScreen';
 
-export type PlansParamList = {
-  Plans: undefined;
-  Routines: undefined;
+export type PlansStoreParamList = {
+  PlansStore: undefined;
+  Plan: undefined;
 };
 
-export type PlansScreenProps<T extends keyof PlansParamList> = StackScreenProps<
-  PlansParamList,
-  T
->;
+export type PlansStoreScreenProps<T extends keyof PlansStoreParamList> =
+  StackScreenProps<PlansStoreParamList, T>;
 
-const Stack = createNativeStackNavigator<PlansParamList>();
+const Stack = createNativeStackNavigator<PlansStoreParamList>();
 
 export function PlansNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
-      initialRouteName={'Plans'}
+      initialRouteName={'PlansStore'}
     >
       <>
-        <Stack.Screen name="Plans" component={PlansScreen} />
-        <Stack.Screen name="Routines" component={RoutinesScreen} />
+        <Stack.Screen name="PlansStore" component={PlansStoreScreen} />
+        <Stack.Screen name="Plan" component={PlanScreen} />
       </>
     </Stack.Navigator>
   );

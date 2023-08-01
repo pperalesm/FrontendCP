@@ -7,11 +7,11 @@ import { useStores } from '../../models/helpers/useStores';
 import { Notebook } from '../../models/Notebook';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { NotebooksParamList } from '../../navigators/NotebooksNavigator';
+import { NotebooksStoreParamList } from '../../navigators/NotebooksNavigator';
 
-type NotebooksScreenNavigationProp = NativeStackNavigationProp<
-  NotebooksParamList,
-  'Notebooks'
+type NotebooksStoreScreenNavigationProp = NativeStackNavigationProp<
+  NotebooksStoreParamList,
+  'NotebooksStore'
 >;
 
 export const NotebookItem = observer(function NotebookItem({
@@ -21,7 +21,7 @@ export const NotebookItem = observer(function NotebookItem({
 }) {
   const { notebooksStore } = useStores();
 
-  const navigation = useNavigation<NotebooksScreenNavigationProp>();
+  const navigation = useNavigation<NotebooksStoreScreenNavigationProp>();
 
   return (
     <Card
@@ -29,7 +29,7 @@ export const NotebookItem = observer(function NotebookItem({
       verticalAlignment="force-footer-bottom"
       onPress={() => {
         notebooksStore.handlePressCard(notebook);
-        navigation.navigate('Entries');
+        navigation.navigate('Notebook');
       }}
       heading={notebook.name}
       content={notebook.description}

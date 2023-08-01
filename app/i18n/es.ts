@@ -70,14 +70,14 @@ const es = {
   NotebookScreen: {
     favorites: 'Favoritos',
   },
-  PlansScreen: {
+  PlansStoreScreen: {
     title: 'Planes',
     active: 'Activo',
     days: 'días',
     warning:
       'Los planes de bienestar en ningún caso sustituyen la terapia. Si ves que los problemas se hacen cada vez más difíciles de afrontar, busca ayuda profesional.',
   },
-  RoutinesScreen: {
+  PlanScreen: {
     day: 'Día',
     start: 'Empezar',
     end: 'Terminar',

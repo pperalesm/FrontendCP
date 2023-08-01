@@ -39,6 +39,7 @@ export interface PrivatePlanDto {
   imageUrl: string;
   numDays: number;
   currentDay?: number;
+  isActive: boolean;
 }
 
 export interface PublicRoutineDto {

@@ -10,44 +10,45 @@ import { Notebook } from '../../models/Notebook';
 import { NotebooksStoreScreenProps } from '../../navigators/NotebooksNavigator';
 import { NotebookItem } from './NotebookItem';
 
-export const NotebooksStoreScreen: FC<NotebooksStoreScreenProps<'Notebooks'>> =
-  observer(function NotebooksStoreScreen(_props) {
-    const { notebooksStore } = useStores();
+export const NotebooksStoreScreen: FC<
+  NotebooksStoreScreenProps<'NotebooksStore'>
+> = observer(function NotebooksStoreScreen(_props) {
+  const { notebooksStore } = useStores();
 
-    useEffect(() => {
-      notebooksStore.reloadNotebooks();
-    }, []);
+  useEffect(() => {
+    notebooksStore.reloadNotebooks();
+  }, []);
 
-    return (
-      <Screen preset="fixed" safeAreaEdges={['top']}>
-        <FlatList<Notebook>
-          data={notebooksStore.notebooks}
-          ListHeaderComponent={
-            <Text preset="heading" tx="NotebooksStoreScreen.title" />
-          }
-          ListHeaderComponentStyle={$heading}
-          contentContainerStyle={$flatListContentContainer}
-          progressViewOffset={spacing.massive * 2}
-          refreshing={notebooksStore.areNotebooksLoading}
-          onRefresh={notebooksStore.reloadNotebooks}
-          ListEmptyComponent={
-            notebooksStore.areNotebooksLoading ? (
-              <View style={$emptyList} />
-            ) : (
-              <EmptyState
-                style={$emptyList}
-                preset="generic"
-                buttonOnPress={notebooksStore.reloadNotebooks}
-              />
-            )
-          }
-          renderItem={({ item }) => (
-            <NotebookItem key={item.id} notebook={item} />
-          )}
-        />
-      </Screen>
-    );
-  });
+  return (
+    <Screen preset="fixed" safeAreaEdges={['top']}>
+      <FlatList<Notebook>
+        data={notebooksStore.notebooks}
+        ListHeaderComponent={
+          <Text preset="heading" tx="NotebooksStoreScreen.title" />
+        }
+        ListHeaderComponentStyle={$heading}
+        contentContainerStyle={$flatListContentContainer}
+        progressViewOffset={spacing.massive * 2}
+        refreshing={notebooksStore.areNotebooksLoading}
+        onRefresh={notebooksStore.reloadNotebooks}
+        ListEmptyComponent={
+          notebooksStore.areNotebooksLoading ? (
+            <View style={$emptyList} />
+          ) : (
+            <EmptyState
+              style={$emptyList}
+              preset="generic"
+              buttonOnPress={notebooksStore.reloadNotebooks}
+            />
+          )
+        }
+        renderItem={({ item }) => (
+          <NotebookItem key={item.id} notebook={item} />
+        )}
+      />
+    </Screen>
+  );
+});
 
 const $flatListContentContainer: ViewStyle = {
   paddingHorizontal: spacing.medium,

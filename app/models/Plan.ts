@@ -19,14 +19,19 @@ export const PlanModel = types
     imageUrl: types.string,
     numDays: types.number,
     currentDay: types.maybe(types.number),
+    isActive: types.boolean,
     routines: types.array(RoutineModel),
+    areRoutinesLoading: types.optional(types.boolean, false),
+    isStartOrEndLoading: types.optional(types.boolean, false),
   })
   .actions((self) => ({
-    readAllRoutines: flow(function* () {
+    reloadRoutines: flow(function* () {
+      self.areRoutinesLoading = true;
       const response = yield api.readAllRoutines(self.id);
       if (response.kind === 'ok') {
         self.routines = response.routines;
       }
+      self.areRoutinesLoading = false;
       return response;
     }),
   }));

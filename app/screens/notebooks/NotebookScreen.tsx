@@ -21,19 +21,19 @@ import Animated, {
 } from 'react-native-reanimated';
 import { EntryItem } from './EntryItem';
 
-export const NotebookScreen: FC<NotebooksStoreScreenProps<'Entries'>> =
+export const NotebookScreen: FC<NotebooksStoreScreenProps<'Notebook'>> =
   observer(function NotebookScreen(_props) {
-    const {
-      notebooksStore: { selectedNotebook },
-    } = useStores();
+    const { notebooksStore } = useStores();
 
     useEffect(() => {
-      selectedNotebook.reloadEntries();
+      notebooksStore.selectedNotebook.reloadEntries();
     }, []);
 
     const listRef = useRef<FlashList<Entry>>();
 
-    const heart = useSharedValue(selectedNotebook.isFavoritesOnly ? 1 : 0);
+    const heart = useSharedValue(
+      notebooksStore.selectedNotebook.isFavoritesOnly ? 1 : 0,
+    );
 
     const animatedHeartButtonStyles = useAnimatedStyle(() => {
       return {
@@ -101,21 +101,26 @@ export const NotebookScreen: FC<NotebooksStoreScreenProps<'Entries'>> =
             ref={listRef}
             estimatedItemSize={100}
             keyboardShouldPersistTaps="always"
-            data={[...selectedNotebook.entries]}
+            data={[...notebooksStore.selectedNotebook.entries]}
             ListHeaderComponent={
               <View>
-                <Text preset="heading" text={selectedNotebook.name} />
+                <Text
+                  preset="heading"
+                  text={notebooksStore.selectedNotebook.name}
+                />
                 <Button
                   onPress={async () => {
-                    const response = await selectedNotebook.reloadEntries(true);
+                    const response =
+                      await notebooksStore.selectedNotebook.reloadEntries(true);
                     if (response?.kind === 'ok') {
                       heart.value = withSpring(heart.value ? 0 : 1);
                     }
                   }}
-                  isLoading={selectedNotebook.areEntriesLoading}
+                  isLoading={notebooksStore.selectedNotebook.areEntriesLoading}
                   style={[
                     $unFavoriteButton,
-                    selectedNotebook.isFavoritesOnly && $favoriteButton,
+                    notebooksStore.selectedNotebook.isFavoritesOnly &&
+                      $favoriteButton,
                   ]}
                   RightAccessory={ButtonHeartAccessory}
                 >
@@ -126,18 +131,18 @@ export const NotebookScreen: FC<NotebooksStoreScreenProps<'Entries'>> =
             ListHeaderComponentStyle={$heading}
             contentContainerStyle={$flatListContentContainer}
             progressViewOffset={spacing.massive * 3}
-            refreshing={selectedNotebook.areEntriesLoading}
-            onRefresh={selectedNotebook.reloadEntries}
-            onEndReached={selectedNotebook.loadMoreEntries}
+            refreshing={notebooksStore.selectedNotebook.areEntriesLoading}
+            onRefresh={notebooksStore.selectedNotebook.reloadEntries}
+            onEndReached={notebooksStore.selectedNotebook.loadMoreEntries}
             ListEmptyComponent={
-              selectedNotebook.areEntriesLoading ? (
+              notebooksStore.selectedNotebook.areEntriesLoading ? (
                 <View style={$emptyList} />
               ) : (
                 <EmptyState
                   style={$emptyList}
                   preset="generic"
                   buttonOnPress={() => {
-                    selectedNotebook.reloadEntries();
+                    notebooksStore.selectedNotebook.reloadEntries();
                   }}
                 />
               )
@@ -145,11 +150,11 @@ export const NotebookScreen: FC<NotebooksStoreScreenProps<'Entries'>> =
             renderItem={({ item }) => <EntryItem key={item.id} entry={item} />}
           />
         </Screen>
-        {selectedNotebook.selectedEntry?.id === undefined && (
+        {notebooksStore.selectedNotebook.selectedEntry?.id === undefined && (
           <Button
             preset="filled"
             onPress={() => {
-              selectedNotebook.handlePressAdd();
+              notebooksStore.selectedNotebook.handlePressAdd();
               listRef.current?.scrollToIndex({ index: 0, viewPosition: 1 });
             }}
             fitToContent
